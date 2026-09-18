@@ -1,0 +1,5 @@
+- [Repo layout & doc locations](repo_layout.md) — root has `docs/` (architecture+plan), not `backend/docs/`; backend/frontend are separate git repos
+- [Customer-auth slice status](project_customer_auth_slice.md) — Phase 0 auth build tracker, updated 2026-09-10
+- [Trust disk audits over prior chat/memory](feedback_verify_before_trusting_memory.md) — a cut-off session's beliefs about "in flight" work can be wrong; always verify on disk first
+- [Sign-off convention](reference_signoff_convention.md) — qa-lead sign-off is a standing per-phase gate; security-agent sign-off is called out per-row in the task breakdown only where auth/payments/PII apply
+- [backend/ has no git — recurring friction](project_backend_no_git.md) — blocks scoped Pint (--dirty), causes full-repo reformats; surface to user, don't silently work around it again

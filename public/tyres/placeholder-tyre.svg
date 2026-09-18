@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Tyre placeholder image">
+  <circle cx="100" cy="100" r="90" fill="#18181b" />
+  <circle cx="100" cy="100" r="55" fill="#3f3f46" />
+  <circle cx="100" cy="100" r="22" fill="#a1a1aa" />
+  <circle cx="100" cy="100" r="90" fill="none" stroke="#52525b" stroke-width="4" />
+</svg>

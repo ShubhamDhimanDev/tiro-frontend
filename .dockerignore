@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+test-results
+playwright-report
+blob-report
+playwright/.cache
+*.tsbuildinfo
+next-env.d.ts
+.env*
+npm-debug.log*
