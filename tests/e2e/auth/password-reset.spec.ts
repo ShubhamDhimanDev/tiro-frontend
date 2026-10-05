@@ -37,7 +37,18 @@ test.describe("password reset", () => {
     // Log out, then confirm the reset actually took: old password now fails,
     // new password now works.
     await page.getByRole("button", { name: "Log out" }).click();
-    await expect(page.getByRole("link", { name: "Log in" })).toBeVisible();
+    // Scoped to the header (`<header>`'s implicit `banner` landmark, unique
+    // sitewide) — `<SiteFooter>` always renders a static, server-rendered
+    // "Log in" link regardless of session state (by design, it's not
+    // auth-aware), while the header's own is client-hydrated
+    // (`<AuthStatus>`) and mounts slightly later. An unscoped page-wide
+    // query is therefore not just wrong but genuinely flaky here: it can
+    // transiently resolve to only the footer's link (passing) before the
+    // header's own mounts and it becomes a real 2-match strict-mode
+    // violation — confirmed directly, not assumed (both links coexist once
+    // settled: `getByRole("banner")` finds exactly 1, `getByRole("contentinfo")`
+    // finds exactly 1, unscoped finds 2).
+    await expect(page.getByRole("banner").getByRole("link", { name: "Log in" })).toBeVisible();
 
     await page.goto("/login");
     await page.getByLabel("Email").fill(email);

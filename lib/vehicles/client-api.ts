@@ -1,6 +1,7 @@
 "use client";
 
 import type { MakesResponse, ModelsResponse, VehicleFitmentResponse, VehicleYearsResponse } from "./types";
+import { FRIENDLY_NETWORK_MESSAGE, friendlyMessage } from "@/lib/http/friendly-error";
 
 /**
  * Typed client-side helper for this app's own `/api/vehicles/*` Route
@@ -26,7 +27,7 @@ async function request<T>(path: string): Promise<VehiclesApiResult<T>> {
   try {
     res = await fetch(path, { headers: { Accept: "application/json" }, cache: "no-store" });
   } catch {
-    return { kind: "unknown_error", status: 0, message: "Couldn't reach the server. Check your connection and try again." };
+    return { kind: "unknown_error", status: 0, message: FRIENDLY_NETWORK_MESSAGE };
   }
 
   const body = await res.json().catch(() => ({}));
@@ -45,7 +46,7 @@ async function request<T>(path: string): Promise<VehiclesApiResult<T>> {
       errors: body.errors ?? {},
     };
   }
-  return { kind: "unknown_error", status: res.status, message: body.message ?? "Something went wrong." };
+  return { kind: "unknown_error", status: res.status, message: friendlyMessage(res.status, body) };
 }
 
 export const vehiclesApi = {

@@ -38,7 +38,11 @@ test.describe("registration", () => {
 
     await expect(page).toHaveURL("/");
     await expect(page.getByText(/^Hi, /)).toBeVisible();
-    await expect(page.getByRole("link", { name: "Log in" })).toHaveCount(0);
+    // Scoped to the header (`<header>`'s implicit `banner` landmark, unique
+    // sitewide) — `<SiteFooter>` always renders a static "Log in" link
+    // regardless of session state (by design, it's not auth-aware), so an
+    // unscoped page-wide query would wrongly still find one after login.
+    await expect(page.getByRole("banner").getByRole("link", { name: "Log in" })).toHaveCount(0);
   });
 
   test("registering an email that's already activated is rejected with a specific error, not a generic one", async ({

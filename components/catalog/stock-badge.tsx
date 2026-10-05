@@ -1,26 +1,27 @@
 import type { StockStatus } from "@/lib/catalog/types";
 
-const STOCK_LABEL: Record<StockStatus, { label: string; className: string }> = {
-  in_stock: {
-    label: "In stock",
-    className: "bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-300",
-  },
-  limited: {
-    label: "Limited stock",
-    className: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
-  },
-  out_of_stock: {
-    label: "Out of stock",
-    className: "bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-  },
-  unavailable_in_zone: {
-    label: "Not available in your area",
-    className: "bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-  },
+/**
+ * palette tokens: green dot for in-stock, yellow dot (black ring) for low/limited
+ * stock (urgency), grey dot for
+ * out-of-stock/unavailable. Labels are unchanged text (asserted verbatim by
+ * `tests/e2e/catalog/pdp.spec.ts`/`search.spec.ts` — "In stock"/"Limited
+ * stock"/"Out of stock"/"Not available in your area") — only the visual
+ * treatment (dot + text instead of a filled pill) changed.
+ */
+const STOCK_META: Record<StockStatus, { label: string; dotClassName: string; textClassName: string }> = {
+  in_stock: { label: "In stock", dotClassName: "bg-green", textClassName: "text-green" },
+  limited: { label: "Limited stock", dotClassName: "bg-gold ring-1 ring-black", textClassName: "text-black" },
+  out_of_stock: { label: "Out of stock", dotClassName: "bg-steel", textClassName: "text-muted" },
+  unavailable_in_zone: { label: "Not available in your area", dotClassName: "bg-steel", textClassName: "text-muted" },
 };
 
 /** Shared between search/browse cards and the PDP availability section. */
 export function StockBadge({ status }: { status: StockStatus }) {
-  const { label, className } = STOCK_LABEL[status];
-  return <span className={`inline-block w-fit rounded-full px-2.5 py-0.5 text-xs font-medium ${className}`}>{label}</span>;
+  const { label, dotClassName, textClassName } = STOCK_META[status];
+  return (
+    <span className={`inline-flex w-fit items-center gap-1.5 text-xs font-semibold ${textClassName}`}>
+      <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotClassName}`} aria-hidden="true" />
+      {label}
+    </span>
+  );
 }

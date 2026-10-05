@@ -28,8 +28,8 @@ export function StaleZoneNotice() {
   if (dismissed) return null;
 
   return (
-    <div className="rounded-md border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
-      <p className="mb-3 text-sm text-amber-800 dark:text-amber-300">
+    <div className="msg-warning p-4">
+      <p className="mb-3 text-sm text-black">
         We couldn&apos;t confirm your saved service area, so prices and stock aren&apos;t shown below. Please re-check your
         location.
       </p>

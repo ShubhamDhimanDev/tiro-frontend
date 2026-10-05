@@ -7,7 +7,13 @@ import { authApi } from "@/lib/auth/client-api";
 import { normalizeEmailForDisplay } from "@/lib/auth/normalize-email";
 import { useAuth } from "@/components/auth/auth-provider";
 import { CountdownButton } from "@/components/auth/countdown-button";
-import { FormField, FormError, FormNotice, inputClassName, primaryButtonClassName } from "@/components/auth/form-field";
+import { FormField, FormError, FormNotice, inputClassName } from "@/components/auth/form-field";
+import { PasswordField } from "@/components/auth/password-field";
+import { OtpField } from "@/components/auth/otp-field";
+import { Button } from "@/components/ui/button";
+import { authErrorMessage } from "@/lib/auth/error-copy";
+import { codeError, collectErrors, emailError, passwordError } from "@/lib/auth/validate";
+import { focusFirstInvalid } from "@/lib/checkout/validate";
 
 const DEFAULT_RESEND_COOLDOWN_SECONDS = 60;
 
@@ -32,9 +38,16 @@ export function PasswordResetForm({ initialEmail = "" }: { initialEmail?: string
   const [retryAfter, setRetryAfter] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
 
-  async function handleRequestSubmit(e: React.FormEvent) {
+  async function handleRequestSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setFormError(null);
+    const form = e.currentTarget;
+    const errors = collectErrors({ email: emailError(email) });
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      window.setTimeout(() => focusFirstInvalid(form), 0);
+      return;
+    }
     setSubmitting(true);
 
     const result = await authApi.passwordResetRequest(normalizeEmailForDisplay(email));
@@ -49,11 +62,11 @@ export function PasswordResetForm({ initialEmail = "" }: { initialEmail?: string
         setStep("reset");
         return;
       case "rate_limited":
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
         setRetryAfter(result.retryAfter);
         return;
       default:
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
     }
   }
 
@@ -64,17 +77,23 @@ export function PasswordResetForm({ initialEmail = "" }: { initialEmail?: string
       setNotice(result.data.message);
       setRetryAfter(DEFAULT_RESEND_COOLDOWN_SECONDS);
     } else if (result.kind === "rate_limited") {
-      setFormError(result.message);
+      setFormError(authErrorMessage(result));
       setRetryAfter(result.retryAfter);
     } else {
-      setFormError(result.message);
+      setFormError(authErrorMessage(result));
     }
   }
 
-  async function handleResetSubmit(e: React.FormEvent) {
+  async function handleResetSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setFormError(null);
-    setFieldErrors({});
+    const form = e.currentTarget;
+    const errors = collectErrors({ code: codeError(code), password: passwordError(newPassword, { min: 8 }) });
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      window.setTimeout(() => focusFirstInvalid(form), 0);
+      return;
+    }
     setSubmitting(true);
 
     const result = await authApi.passwordResetVerify(normalizeEmailForDisplay(email), code, newPassword);
@@ -88,67 +107,47 @@ export function PasswordResetForm({ initialEmail = "" }: { initialEmail?: string
         router.push("/");
         return;
       case "validation_error":
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
         setFieldErrors(result.errors);
         return;
       case "rate_limited":
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
         setRetryAfter(result.retryAfter);
         return;
       default:
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
     }
   }
 
   if (step === "reset") {
     return (
-      <form onSubmit={handleResetSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleResetSubmit} noValidate className="flex flex-col gap-4">
         <FormNotice message={notice ?? `If an account exists for ${email}, we've sent a reset code.`} />
         {formError && <FormError message={formError} />}
 
-        <FormField label="Verification code" htmlFor="reset-code" error={fieldErrors.code?.[0]}>
-          <input
-            id="reset-code"
-            name="code"
-            type="text"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            required
-            maxLength={6}
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className={inputClassName}
-          />
-        </FormField>
+        <OtpField id="reset-code" value={code} onChange={setCode} error={fieldErrors.code?.[0]} />
 
-        <FormField
+        <PasswordField
           label="New password"
-          htmlFor="new-password"
+          id="new-password"
+          name="new_password"
+          autoComplete="new-password"
+          minLength={8}
+          value={newPassword}
+          onChange={setNewPassword}
           error={fieldErrors.password?.[0]}
           hint="At least 8 characters."
-        >
-          <input
-            id="new-password"
-            name="new_password"
-            type="password"
-            autoComplete="new-password"
-            required
-            minLength={8}
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            className={inputClassName}
-          />
-        </FormField>
+        />
 
-        <button type="submit" disabled={submitting} className={primaryButtonClassName}>
+        <Button type="submit" loading={submitting} fullWidth>
           {submitting ? "Resetting…" : "Reset password and log in"}
-        </button>
+        </Button>
 
         <div className="flex items-center justify-between text-sm">
           <button
             type="button"
             onClick={() => setStep("request")}
-            className="text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+            className="inline-flex min-h-11 items-center px-1 text-sm font-semibold text-muted underline underline-offset-4 hover:text-ink"
           >
             Use a different email
           </button>
@@ -165,15 +164,17 @@ export function PasswordResetForm({ initialEmail = "" }: { initialEmail?: string
   }
 
   return (
-    <form onSubmit={handleRequestSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleRequestSubmit} noValidate className="flex flex-col gap-4">
       {formError && <FormError message={formError} />}
 
-      <FormField label="Email" htmlFor="reset-email">
+      <FormField label="Email" htmlFor="reset-email" error={fieldErrors.email?.[0]}>
         <input
           id="reset-email"
           name="email"
           type="email"
-          autoComplete="email"
+          autoComplete="username"
+          autoCapitalize="none"
+          spellCheck={false}
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -188,16 +189,17 @@ export function PasswordResetForm({ initialEmail = "" }: { initialEmail?: string
           label="Send reset code"
           pendingLabel={(s) => `Try again in ${s}s`}
           type="submit"
+          appearance="button"
         />
       ) : (
-        <button type="submit" disabled={submitting} className={primaryButtonClassName}>
+        <Button type="submit" loading={submitting} fullWidth>
           {submitting ? "Sending code…" : "Send reset code"}
-        </button>
+        </Button>
       )}
 
-      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="text-center text-sm text-muted">
         Remembered your password?{" "}
-        <Link href="/login" className="font-medium text-zinc-900 underline underline-offset-2 dark:text-zinc-50">
+        <Link href="/login" className="inline-flex min-h-11 items-center font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted">
           Log in
         </Link>
       </p>

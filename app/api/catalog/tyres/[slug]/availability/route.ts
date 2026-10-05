@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { proxyResponse } from "@/lib/http/proxy-response";
 import { catalogBackend } from "@/lib/catalog/backend";
 
 /**
@@ -15,12 +15,12 @@ import { catalogBackend } from "@/lib/catalog/backend";
  * zone id is 404 — both pass through unchanged so the client component can
  * distinguish "no location set" (own client-side check, before even
  * calling this) from "location was set but got rejected as stale" (404
- * here — see `components/catalog/pdp-availability.tsx`).
+ * here — see `components/catalog/pdp-buy-context.tsx`).
  */
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const zone = new URL(request.url).searchParams.get("zone");
 
   const result = await catalogBackend.availability(slug, zone);
-  return NextResponse.json(result.body, { status: result.status });
+  return proxyResponse(result);
 }

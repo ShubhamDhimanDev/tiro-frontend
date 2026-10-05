@@ -1,26 +1,746 @@
 @import "tailwindcss";
 
+/*
+ * Tiro Mobile Tyres design tokens, v2 (2026-10-01). Replaces the old
+ * red/ink/gold + Big Shoulders/Plex system. Direction: docs/redesign/PLAN-v2.md
+ * (layout/palette/type modelled on the reference storefront, own brand + copy).
+ * Source numbers: research/competitor-mts-au/01-design-tokens.md.
+ *
+ *   Yellow #FFCE00  brand: header CTA, brands band, footer headings, tab underline
+ *   Green  #3C8425  (was #509E31; AA with white text) primary CTA ("Find tyres"), mid-range tier
+ *   Black  #000     nav, premium tier, fills, prices, links; body text #212529
+ *   White + neutral greys for surfaces, lines and secondary text.
+ *
+ * PALETTE RULE (2026-10-01): ONLY yellow, white, black, green + neutral greys.
+ * No red/orange/amber/blue/purple anywhere (guarded by tests/unit/palette.test.ts).
+ *   prices -> black bold (green for "from"/discount emphasis)
+ *   "4 for 3", discount badges, promo strips -> green fill + white text, or black fill + yellow text
+ *   urgency -> yellow badge, black text
+ *   errors -> danger text + thick danger left border + icon + aria-live (.msg-error); never colour alone
+ *   success -> green; warnings -> yellow wash (#fff4bf) + black text; destructive buttons -> black
+ *   links -> black underlined, yellow highlight on hover (light); yellow (dark surfaces)
+ *
+ * Two deliberate departures from the reference: body/small text has 0
+ * tracking (only headings get -1px), and every control gets a visible focus
+ * ring. Dark mode is dropped.
+ *
+ * DEPRECATED aliases kept so un-migrated pages still compile; they now
+ * resolve to palette colours only: asphalt/link/warning -> ink (black), steel -> line,
+ * radius-xs..2xl. (red/teal/amber/caliper/signal aliases removed 2026-10-05, zero usages.)
+ *
+ * ERROR COLOUR (2026-10-05, WS-B): the one deliberate exception to the no-red rule is
+ * --c-danger #b3261e (text-danger / border-danger / bg-danger-soft), used ONLY for
+ * validation/error messages (.msg-error), paired with an icon and text, never colour alone.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --c-ink: #000000; /* nav text, black fills, premium tier */
+  --c-text: #212529; /* default body text */
+  --c-gold: #ffce00; /* brand yellow */
+  --c-gold-soft: #fff4bf; /* yellow wash */
+  --c-green: #3c8425; /* primary CTA, mid tier. Darkened from #509E31 for AA: white on #3C8425 = 4.65:1 */
+  --c-green-hover: #2f6f1f;
+  --c-tarmac: #ffffff; /* page background */
+  --c-surface: #ffffff; /* cards, inputs */
+  --c-band: #f8f8f8; /* light section band */
+  --c-chip: #f4f4f4; /* chips, quiet fills, pills */
+  --c-line: #e5e5e5; /* dividers, card borders */
+  --c-field: #9a9a9a; /* input borders */
+  --c-muted: #4e535a; /* secondary text, ~7.6:1 on white, ~7:1 on --c-chip */
+  --c-link: #000000; /* links on light surfaces: black, underlined, yellow hover */
+  --c-success: #3f7f27; /* success TEXT (AA on white); brand green is --c-green */
+  --c-danger: #b3261e; /* error TEXT/border/icon: 6.6:1 on white, 5.9:1 on --c-danger-soft. Never the only cue (keep icon + text). */
+  --c-danger-soft: #fdeceb; /* error wash */
+  --c-disabled-bg: #f1f1f1; /* disabled controls: light fill + 4.5:1 border + dark-grey text, so they read as disabled but not hidden */
+  --c-disabled-border: #767676;
+  --c-disabled-text: #4e535a;
+  --c-warning: #000000; /* warnings use .msg-warning (yellow wash + black text); alias only */
+  --c-footer: #242424;
+  --c-footer-muted: #c4c4c4;
+
+  --focus-ring: #000000;
+  --focus-halo: #ffce00;
+
+  --sh-rest: 0 2px 4px rgb(0 0 0 / 0.25);
+  --sh-raised: 0 8px 24px rgb(0 0 0 / 0.14);
+  --sh-overlay: 0 16px 56px rgb(0 0 0 / 0.1), 0 4px 12px rgb(0 0 0 / 0.12);
+  --scrim: rgb(0 0 0 / 0.6);
+
+  --motion-fast: 150ms;
+  --motion-base: 300ms;
+  --motion-slow: 400ms;
+  --ease-out-soft: cubic-bezier(0.2, 0, 0, 1);
+
+  --container-max: 1140px;
+  --gutter: 20px; /* phone; 24px >=768 */
+  --section-pad: 50px; /* phone; 80px >=992 */
+
+  --background: var(--c-tarmac);
+  --foreground: var(--c-text);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@media (min-width: 768px) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --gutter: 24px;
+  }
+}
+@media (min-width: 992px) {
+  :root {
+    --section-pad: 80px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-ink: var(--c-ink);
+  --color-text: var(--c-text);
+  --color-gold: var(--c-gold);
+  --color-yellow: var(--c-gold);
+  --color-gold-soft: var(--c-gold-soft);
+  --color-green: var(--c-green);
+  --color-green-hover: var(--c-green-hover);
+  --color-tarmac: var(--c-tarmac);
+  --color-surface: var(--c-surface);
+  --color-band: var(--c-band);
+  --color-chip: var(--c-chip);
+  --color-line: var(--c-line);
+  --color-field: var(--c-field);
+  --color-muted: var(--c-muted);
+  --color-link: var(--c-link);
+  --color-success: var(--c-success);
+  --color-warning: var(--c-warning);
+  --color-danger: var(--c-danger);
+  --color-danger-soft: var(--c-danger-soft);
+  --color-disabled-bg: var(--c-disabled-bg);
+  --color-disabled-border: var(--c-disabled-border);
+  --color-disabled-text: var(--c-disabled-text);
+  --color-footer: var(--c-footer);
+  --color-footer-muted: var(--c-footer-muted);
+  --color-scrim: var(--scrim);
+  /* Tier colours: premium black, mid-range green, budget yellow */
+  --color-tier-premium: var(--c-ink);
+  --color-tier-mid: var(--c-green);
+  --color-tier-budget: var(--c-gold);
+
+  /* DEPRECATED aliases */
+  --color-asphalt: var(--c-ink);
+  --color-steel: var(--c-line);
+
+  /* Type: Montserrat everywhere (variable, next/font) */
+  --font-display: var(--font-montserrat);
+  --font-sans: var(--font-montserrat);
+  --font-mono: var(--font-montserrat);
+
+  /* Radii: 8 controls/buttons, 10 cards/panels, 24 top sheet */
+  --radius-control: 8px;
+  --radius-card: 10px;
+  --radius-sheet: 24px;
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 24px;
+
+  --shadow-rest: var(--sh-rest);
+  --shadow-raised: var(--sh-raised);
+  --shadow-overlay: var(--sh-overlay);
+
+  --spacing: 0.25rem;
+
+  /* Breakpoints: Bootstrap-style 576 / 768 / 992 / 1200 */
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+
+  --ease-soft: var(--ease-out-soft);
+}
+
+/* Layout helpers: 1140px container, 20/24px gutters; section padding 50/80. */
+@utility container-page {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+@utility section-pad {
+  padding-block: var(--section-pad);
+}
+@utility tap-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+@utility control-h {
+  min-height: 48px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--c-tarmac);
+    color: var(--c-text);
+    font-family: var(--font-montserrat), Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0;
+    /* `clip` (not `hidden`) keeps position: sticky working. */
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -1px;
+  }
+
+  /* Focus: 3px black ring + yellow halo, visible on white, yellow and black. */
+  :focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 5px var(--focus-halo);
+  }
+
+  ::selection {
+    background: var(--c-gold);
+    color: #000;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Type scale. Montserrat; headings -1px tracking, body 0.
+ * | Role  | Class         | Spec                                           |
+ * | H1    | .type-display | 800, clamp(32px, 6vw, 56px), lh 1.1            |
+ * | H2    | .type-h2      | 700, clamp(25px, 4vw, 40px), lh 1.1            |
+ * | H3    | .type-h3      | 700, 18px (20px >=768)                         |
+ * | Small | .type-small   | 14px                                           |
+ * | Num   | .type-mono    | tabular-nums (prices, sizes)                   |
+ */
+.font-display {
+  letter-spacing: -1px;
+}
+.type-display {
+  font-weight: 800;
+  font-size: clamp(32px, 6vw, 56px);
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+.type-h2 {
+  font-weight: 700;
+  font-size: clamp(25px, 4vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+.type-h3 {
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.3;
+  letter-spacing: -0.5px;
+}
+@media (min-width: 768px) {
+  .type-h3 {
+    font-size: 1.25rem;
+  }
+}
+.type-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.type-mono {
+  font-variant-numeric: tabular-nums;
+}
+.type-subheading {
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.type-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+/* Yellow marker behind emphasised headline words (black text on yellow). */
+.brand-highlight {
+  background-color: var(--c-gold);
+  color: #000;
+  padding: 0 0.25em;
+  border-radius: 6px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Dark placeholder panel (stands in for photography). */
+.asphalt-texture {
+  background-color: #111;
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 206, 0, 0.07) 0px,
+    rgba(255, 206, 0, 0.07) 2px,
+    transparent 2px,
+    transparent 18px
+  );
+}
+
+/* Hide scrollbars on swipe rows while staying scrollable. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Brands band marquee. Frozen for reduced motion by the global override. */
+@keyframes tiro-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (min-width: 768px) {
+  .marquee-track {
+    animation: tiro-marquee 40s linear infinite;
+    width: max-content;
+  }
+  .marquee-fade {
+    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  }
+}
+/* Pause control (components/ui/motion-pause-button.tsx). */
+[data-paused="true"] *,
+[data-paused="true"] {
+  animation-play-state: paused !important;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Rotating USP line: one phrase visible at a time, clipped by its box. */
+@keyframes tiro-usp {
+  0%,
+  28% {
+    transform: translateY(0);
+  }
+  33%,
+  61% {
+    transform: translateY(-100%);
+  }
+  66%,
+  94% {
+    transform: translateY(-200%);
+  }
+  100% {
+    transform: translateY(-300%);
+  }
+}
+.usp-rotator > span {
+  display: block;
+  animation: tiro-usp 12s ease-in-out infinite;
+}
+
+/* Decorative hero art entrance (the heading and finder are never animated: LCP). */
+@keyframes tiro-van-in {
+  from {
+    opacity: 0;
+    transform: translateX(48px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes tiro-bar-in {
+  from {
+    opacity: 0;
+    transform: skewX(-18deg) translateY(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: skewX(-18deg) translateY(0);
+  }
+}
+.hero-van-in {
+  animation: tiro-van-in 700ms var(--ease-out-soft) 150ms both;
+}
+.hero-bar-in {
+  animation: tiro-bar-in 600ms var(--ease-out-soft) both;
+}
+
+/* Mega-menu panel + status panels: short enter motion (CSS, so server components can use it). */
+@keyframes tiro-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.mega-panel:not([hidden]) {
+  animation: tiro-pop-in var(--motion-fast) var(--ease-out-soft);
+}
+.accordion-panel:not([hidden]) {
+  animation: tiro-pop-in var(--motion-base) var(--ease-out-soft);
+}
+.state-enter {
+  animation: tiro-pop-in var(--motion-base) var(--ease-out-soft);
+}
+/* Error shake, played once on mount. */
+@keyframes tiro-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+.shake-once {
+  animation: tiro-shake 320ms ease-in-out;
+}
+
+/* Route change: new page fades in (app/template.tsx). */
+@keyframes tiro-page-in {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.page-enter {
+  animation: tiro-page-in 200ms var(--ease-out-soft);
+}
+
+/* Sticky header gains a shadow once scrolled (components/layout/header-scroll-state.tsx). */
+.site-header {
+  transition: box-shadow var(--motion-base) var(--ease-out-soft);
+}
+.site-header[data-scrolled="true"] {
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.1);
+}
+/* Desktop: once scrolled well down, the nav row (row 2) tucks up behind the 72px
+   main row, so logo, location, search and cart always stay fully visible. The
+   header keeps its full 115px layout box (no layout shift) but is transparent and
+   click-through; each row paints its own background. The nav row returns on hover
+   or keyboard focus anywhere in the header. */
+@media (min-width: 992px) {
+  .site-header {
+    border-bottom: 0;
+    background: transparent;
+    pointer-events: none;
+  }
+  .site-header > * {
+    pointer-events: auto;
+  }
+  .site-header[data-scrolled="true"] {
+    box-shadow: none;
+  }
+  .site-header[data-scrolled="true"] .site-header-main {
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.1);
+  }
+  .site-header-main {
+    border-bottom: 1px solid rgb(0 0 0 / 0.1);
+  }
+  .site-header-nav {
+    transition: transform var(--motion-base) var(--ease-out-soft), opacity var(--motion-base) var(--ease-out-soft);
+  }
+  .site-header[data-collapsed="true"]:not(:hover):not(:focus-within) .site-header-nav {
+    transform: translateY(-43px);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* Success badge pop. */
+@keyframes tiro-badge-pop {
+  0% {
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.badge-pop {
+  animation: tiro-badge-pop 450ms var(--ease-out-soft) 100ms both;
+}
+
+/* Top navigation progress bar (components/layout/nav-progress.tsx). */
+.nav-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 70;
+  height: 3px;
+  background: var(--c-gold);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+/* Brand tyre loader (components/ui/tyre-loader.tsx). */
+@keyframes tiro-tyre-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes tiro-road {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.tyre-loader-spin {
+  animation: tiro-tyre-spin 0.9s linear infinite;
+}
+.tyre-loader-road-dash {
+  background: repeating-linear-gradient(90deg, #000 0 10px, transparent 10px 20px);
+  animation: tiro-road 0.6s linear infinite;
+}
+
+/*
+ * Prose (`.prose-tiro`): typographic styles for admin-authored
+ * `ContentPage.body` HTML (components/content/prose.tsx). Replaces the old
+ * hand-rolled `.cms-body`. No typography plugin is installed, so this is the
+ * whole set: rhythm, headings, lists, links, quotes, code, media, and tables
+ * that scroll inside themselves instead of widening the page. The reading
+ * column width (68ch) is set by the layout, not here.
+ */
+.prose-tiro {
+  color: var(--c-ink);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+.prose-tiro > :first-child {
+  margin-top: 0;
+}
+.prose-tiro :where(p, ul, ol, blockquote, pre, figure, table, hr) {
+  margin-block: 1.25em;
+}
+.prose-tiro :where(h2, h3, h4) {
+  scroll-margin-top: 96px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+.prose-tiro h2 {
+  margin-top: 1.75em;
+  margin-bottom: 0.6em;
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem);
+}
+.prose-tiro h3 {
+  margin-top: 1.9em;
+  margin-bottom: 0.5em;
+  font-size: 1.3125rem;
+}
+.prose-tiro h4 {
+  margin-top: 1.6em;
+  margin-bottom: 0.4em;
+  font-size: 1.0625rem;
+}
+.prose-tiro :where(ul, ol) {
+  padding-left: 1.5em;
+}
+.prose-tiro ul {
+  list-style-type: disc;
+}
+.prose-tiro ol {
+  list-style-type: decimal;
+}
+.prose-tiro li {
+  margin-block: 0.4em;
+  padding-left: 0.25em;
+}
+.prose-tiro li::marker {
+  color: var(--c-green);
+}
+.prose-tiro :where(li > ul, li > ol) {
+  margin-block: 0.4em;
+}
+.prose-tiro a {
+  color: var(--c-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose-tiro a:hover {
+  background: var(--c-gold);
+}
+.prose-tiro strong {
+  font-weight: 700;
+}
+.prose-tiro blockquote {
+  border-left: 4px solid var(--c-gold);
+  background: var(--c-chip);
+  border-radius: 0 var(--radius-card) var(--radius-card) 0;
+  padding: 1em 1.25em;
+  font-size: 1.125rem;
+}
+.prose-tiro blockquote > :first-child {
+  margin-top: 0;
+}
+.prose-tiro blockquote > :last-child {
+  margin-bottom: 0;
+}
+.prose-tiro hr {
+  border: 0;
+  border-top: 1px solid var(--c-line);
+}
+.prose-tiro img,
+.prose-tiro video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-card);
+}
+.prose-tiro iframe {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  border: 0;
+  border-radius: var(--radius-card);
+}
+.prose-tiro figure {
+  margin-inline: 0;
+}
+.prose-tiro figcaption {
+  margin-top: 0.5em;
+  font-size: 0.875rem;
+  color: var(--c-muted);
+}
+.prose-tiro pre {
+  overflow-x: auto;
+  border-radius: var(--radius-control);
+  background: var(--c-ink);
+  color: #ffffff;
+  padding: 1em 1.25em;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+.prose-tiro :where(code, kbd) {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.9em;
+}
+.prose-tiro :not(pre) > code {
+  border-radius: 6px;
+  background: var(--c-chip);
+  padding: 0.1em 0.35em;
+}
+/* Tables scroll inside their own box (the table itself becomes the scroller). */
+.prose-tiro table {
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.prose-tiro :where(th, td) {
+  border: 1px solid var(--c-line);
+  padding: 0.6em 0.9em;
+  text-align: left;
+  vertical-align: top;
+}
+.prose-tiro th {
+  background: var(--c-chip);
+  font-weight: 700;
+}
+
+/* Sheet/drawer entrance + exit motion lives in components/ui/sheet.tsx (framer-motion). */
+
+/* Links on light surfaces: black text, yellow highlight on hover. */
+.text-link:hover {
+  background-color: var(--c-gold);
+  color: #000;
+}
+
+/*
+ * Error messages (palette rule: never colour alone). Black text, thick black
+ * left border and an icon; use with role="alert" / aria-live.
+ * .msg-error = inline message; .msg-error-box = boxed banner.
+ */
+:root {
+  --icon-error: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill-rule='evenodd' d='M12 2a10 10 0 100 20 10 10 0 000-20zm-1.1 5h2.2v7h-2.2V7zm0 9h2.2v2.2h-2.2V16z'/%3E%3C/svg%3E");
+}
+.msg-error {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  border-left: 4px solid var(--c-danger);
+  padding-left: 0.625rem;
+  color: var(--c-danger);
+  font-weight: 600;
+}
+.msg-error::before {
+  content: "";
+  flex: none;
+  width: 1.125em;
+  height: 1.125em;
+  margin-top: 0.1em;
+  background: currentColor;
+  -webkit-mask: var(--icon-error) center / contain no-repeat;
+  mask: var(--icon-error) center / contain no-repeat;
+}
+.msg-error-box {
+  border: 1px solid var(--c-danger);
+  border-left-width: 6px;
+  border-radius: var(--radius-control);
+  background: var(--c-danger-soft);
+  padding: 0.75rem 0.875rem;
+}
+/* Warning notice: yellow wash, black text, thick yellow left rule. */
+.msg-warning {
+  border: 1px solid #000;
+  border-left: 6px solid var(--c-gold);
+  border-radius: var(--radius-control);
+  background: var(--c-gold-soft);
+  color: #000;
+  padding: 0.75rem 0.875rem;
+}
+
+/* Native selects: one consistent custom chevron, inset from the right edge
+   (the browser default sits flush against the border and looks cramped).
+   Unlayered + !important on padding so it also wins over utility padding. */
+select:not([multiple]):not([size]) {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%23111' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  background-size: 0.75rem 0.5rem;
+  padding-right: 2.5rem !important;
+  text-overflow: ellipsis;
+}
+select:not([multiple]):not([size]):disabled {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5' stroke='%23888' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+@media (max-width: 480px) {
+  select:not([multiple]):not([size]) {
+    background-position: right 0.5rem center;
+    padding-right: 1.5rem !important;
+  }
 }

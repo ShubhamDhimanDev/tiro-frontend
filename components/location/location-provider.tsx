@@ -12,6 +12,10 @@ interface LocationContextValue {
   setZone: (zone: ServiceZoneSnapshot) => void;
   /** Clears zone state + cookie — explicit "change location", or a downstream stale/invalid-zone signal. */
   clearZone: () => Promise<void>;
+  /** The "change location" sheet (rendered once by the site header). No blocking modal: this only opens on a user action. */
+  pickerOpen: boolean;
+  openPicker: () => void;
+  closePicker: () => void;
 }
 
 const LocationContext = createContext<LocationContextValue | null>(null);
@@ -33,6 +37,9 @@ const LocationContext = createContext<LocationContextValue | null>(null);
 export function LocationProvider({ children }: { children: React.ReactNode }) {
   const [zone, setZoneState] = useState<ServiceZoneSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const openPicker = useCallback(() => setPickerOpen(true), []);
+  const closePicker = useCallback(() => setPickerOpen(false), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -62,7 +69,10 @@ export function LocationProvider({ children }: { children: React.ReactNode }) {
     setZoneState(null);
   }, []);
 
-  const value = useMemo(() => ({ zone, loading, setZone, clearZone }), [zone, loading, setZone, clearZone]);
+  const value = useMemo(
+    () => ({ zone, loading, setZone, clearZone, pickerOpen, openPicker, closePicker }),
+    [zone, loading, setZone, clearZone, pickerOpen, openPicker, closePicker],
+  );
 
   return <LocationContext.Provider value={value}>{children}</LocationContext.Provider>;
 }

@@ -11,9 +11,9 @@ import type { BrandSummary, StockStatus, TyreCategory, TyreType } from "./types"
 export type FixtureBrand = BrandSummary;
 
 export const FIXTURE_BRANDS: FixtureBrand[] = [
-  { id: 1, name: "Bridgestone", slug: "bridgestone", logo_path: null, country_of_origin: "Japan" },
-  { id: 2, name: "Michelin", slug: "michelin", logo_path: null, country_of_origin: "France" },
-  { id: 3, name: "Goodyear", slug: "goodyear", logo_path: null, country_of_origin: "United States" },
+  { id: 1, name: "Bridgestone", slug: "bridgestone", logo_path: null, country_of_origin: "Japan", tier: "premium" },
+  { id: 2, name: "Michelin", slug: "michelin", logo_path: null, country_of_origin: "France", tier: "premium" },
+  { id: 3, name: "Goodyear", slug: "goodyear", logo_path: null, country_of_origin: "United States", tier: "mid" },
 ];
 
 export interface FixtureModel {

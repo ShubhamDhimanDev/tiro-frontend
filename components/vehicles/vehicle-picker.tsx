@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { vehiclesApi } from "@/lib/vehicles/client-api";
 import { disambiguationLabel, groupByYearRange, yearRangeLabel } from "@/lib/vehicles/year-groups";
 import { FormField, selectClassName } from "@/components/ui/form-field";
+import { Steps, type Step, type StepState } from "@/components/ui/steps";
 import { VehicleFitmentResult } from "@/components/vehicles/vehicle-fitment-result";
 import type { VehicleFitmentData, VehicleYearOption } from "@/lib/vehicles/types";
 
@@ -13,21 +14,28 @@ type LoadState<T> =
   | { status: "error"; message: string }
   | { status: "ready"; data: T };
 
+/** 56px native selects: large tap targets, and the OS picker on phones. */
+const bigSelect = `${selectClassName} min-h-14! text-base`;
+
 /**
  * The 4-step cascade picker (requirements §2 step 2, §3.2's vehicle-browse
  * discovery path): make -> model -> year/generation -> (series/body_type
  * disambiguation, only when more than one `Vehicle` row shares a year
  * range) -> fitment. Every step is a live client fetch through this app's
- * `/api/vehicles/*` proxy routes (`lib/vehicles/client-api.ts`) — there's
+ * `/api/vehicles/*` proxy routes (`lib/vehicles/client-api.ts`): there's
  * no server-rendered first paint to hydrate into, since each step's options
- * depend on the previous step's live user choice, unlike the SSR `/tyres`
- * search page which reads its filters from the URL up front.
+ * depend on the previous step's live user choice.
+ *
+ * Redesign: a four-step progress header (Make, Model, Year, Fitment) with the
+ * chosen values, large native selects, a summary chip with "Start over", and a
+ * prominent fitment result. The controls are still real `<select>`s with the
+ * same labels and ids, so the behaviour (and the e2e selectors) are unchanged.
  *
  * There's deliberately no separate "confirm vehicle" step, per the
  * contract ("the id the user lands on is the same id the fitment endpoint
- * takes"): resolving to a single vehicle id — either because a year group
- * has exactly one row, or because the user just picked one in the
- * disambiguation step — immediately triggers the fitment fetch.
+ * takes"): resolving to a single vehicle id, either because a year group
+ * has exactly one row or because the user just picked one in the
+ * disambiguation step, immediately triggers the fitment fetch.
  */
 export function VehiclePicker() {
   const [makes, setMakes] = useState<LoadState<string[]>>({ status: "loading" });
@@ -100,7 +108,7 @@ export function VehiclePicker() {
         setFitment({ status: "ready", data: result.data.data });
       } else if (result.kind === "not_found") {
         // Vehicle id disappeared/deactivated between listing and this
-        // fetch — treat as a real error (per the contract, distinct from
+        // fetch: treat as a real error (per the contract, distinct from
         // the zero-fitment 200 case), not a silent fallthrough.
         setFitment({ status: "error", message: "This vehicle isn't available anymore — please start over." });
       } else {
@@ -138,9 +146,42 @@ export function VehiclePicker() {
     resolveVehicle(Number(idValue));
   }
 
+  const yearLabel = selectedGroup.length > 0 ? yearRangeLabel(selectedGroup[0]) : "";
+  const disambiguationDone = !needsDisambiguation || disambiguationValue !== "";
+  const fitmentDone = fitment.status === "ready";
+
+  const done = [Boolean(make), Boolean(model), Boolean(yearGroupSelected) && disambiguationDone, fitmentDone];
+  const currentIndex = done.indexOf(false);
+  const stepState = (i: number): StepState => (done[i] ? "done" : i === currentIndex ? "current" : "todo");
+  const steps: Step[] = [
+    { label: "Make", value: make || undefined, state: stepState(0) },
+    { label: "Model", value: model || undefined, state: stepState(1) },
+    { label: "Year", value: yearLabel || undefined, state: stepState(2) },
+    { label: "Fitment", value: fitmentDone ? "Found" : undefined, state: stepState(3) },
+  ];
+
+  const summary = [make, model, yearLabel].filter(Boolean).join(" · ");
+
   return (
     <div className="flex flex-col gap-6">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <Steps steps={steps} label="Vehicle finder progress" />
+
+      {summary && (
+        <div className="flex flex-wrap items-center gap-2" data-testid="vehicle-summary">
+          <span className="inline-flex min-h-10 items-center rounded-full bg-ink px-4 text-sm font-semibold text-white">
+            {summary}
+          </span>
+          <button
+            type="button"
+            onClick={() => handleMakeChange("")}
+            className="inline-flex min-h-11 items-center px-2 font-semibold text-link underline underline-offset-4 hover:text-ink"
+          >
+            Start over
+          </button>
+        </div>
+      )}
+
+      <div className="grid gap-4 sm:grid-cols-3">
         <FormField
           label="Make"
           htmlFor="vehicle-make"
@@ -152,7 +193,7 @@ export function VehiclePicker() {
             value={make}
             onChange={(e) => handleMakeChange(e.target.value)}
             disabled={makes.status !== "ready"}
-            className={selectClassName}
+            className={bigSelect}
           >
             <option value="">Select make</option>
             {makes.status === "ready" &&
@@ -181,7 +222,7 @@ export function VehiclePicker() {
             value={model}
             onChange={(e) => handleModelChange(e.target.value)}
             disabled={models.status !== "ready" || models.data.length === 0}
-            className={selectClassName}
+            className={bigSelect}
           >
             <option value="">Select model</option>
             {models.status === "ready" &&
@@ -210,7 +251,7 @@ export function VehiclePicker() {
             value={yearGroupSelected}
             onChange={(e) => handleYearGroupChange(e.target.value)}
             disabled={years.status !== "ready" || years.data.length === 0}
-            className={selectClassName}
+            className={bigSelect}
           >
             <option value="">Select year</option>
             {yearGroupKeys.map((key) => {
@@ -225,33 +266,35 @@ export function VehiclePicker() {
         </FormField>
 
         {needsDisambiguation && (
-          <FormField label="Series / body type" htmlFor="vehicle-disambiguation">
-            <select
-              id="vehicle-disambiguation"
-              value={disambiguationValue}
-              onChange={(e) => handleDisambiguationChange(e.target.value)}
-              className={selectClassName}
-            >
-              <option value="">Select your exact vehicle</option>
-              {selectedGroup.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {disambiguationLabel(v)}
-                </option>
-              ))}
-            </select>
-          </FormField>
+          <div className="sm:col-span-3">
+            <FormField label="Series / body type" htmlFor="vehicle-disambiguation">
+              <select
+                id="vehicle-disambiguation"
+                value={disambiguationValue}
+                onChange={(e) => handleDisambiguationChange(e.target.value)}
+                className={bigSelect}
+              >
+                <option value="">Select your exact vehicle</option>
+                {selectedGroup.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {disambiguationLabel(v)}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+          </div>
         )}
       </div>
 
-      {fitment.status === "loading" && (
-        <div className="h-32 animate-pulse rounded-md bg-zinc-100 dark:bg-zinc-900" aria-hidden />
-      )}
-      {fitment.status === "error" && (
-        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
-          {fitment.message}
-        </p>
-      )}
-      {fitment.status === "ready" && <VehicleFitmentResult result={fitment.data} />}
+      <div aria-live="polite" className="flex flex-col gap-4">
+        {fitment.status === "loading" && <div className="h-40 animate-pulse rounded-card bg-chip" aria-hidden />}
+        {fitment.status === "error" && (
+          <p role="alert" className="text-sm msg-error">
+            {fitment.message}
+          </p>
+        )}
+        {fitment.status === "ready" && <VehicleFitmentResult result={fitment.data} />}
+      </div>
     </div>
   );
 }

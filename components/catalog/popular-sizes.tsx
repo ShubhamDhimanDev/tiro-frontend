@@ -10,16 +10,17 @@ export function PopularSizes({ sizes }: { sizes: PopularSize[] }) {
   if (sizes.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <ul className="flex flex-wrap gap-2">
       {sizes.map((size) => (
-        <Link
-          key={`${size.width}-${size.profile}-${size.rim_diameter}`}
-          href={`/tyres?width=${size.width}&profile=${size.profile}&rim_diameter=${size.rim_diameter}`}
-          className="rounded-full border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
-        >
-          {size.width}/{size.profile} R{size.rim_diameter}
-        </Link>
+        <li key={`${size.width}-${size.profile}-${size.rim_diameter}`}>
+          <Link
+            href={`/tyres?width=${size.width}&profile=${size.profile}&rim_diameter=${size.rim_diameter}`}
+            className="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-4 font-mono text-sm font-medium text-ink transition-colors hover:bg-chip"
+          >
+            {size.width}/{size.profile} R{size.rim_diameter}
+          </Link>
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }

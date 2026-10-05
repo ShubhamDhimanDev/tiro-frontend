@@ -59,6 +59,7 @@ function toModelSummary(modelId: number): TyreModelSummary {
     category: model.category,
     tyre_type: model.tyre_type,
     images: model.images,
+    tier: brand.tier ?? null,
   };
 }
 
@@ -74,6 +75,7 @@ function toListItem(v: FixtureVariant, includeZoneFields: boolean): TyreListItem
     speed_rating: v.speed_rating,
     sidewall: v.sidewall,
     tyre_model: toModelSummary(v.modelId),
+    tier: toModelSummary(v.modelId).tier,
   };
   if (includeZoneFields) {
     base.unit_price = v.unit_price;
@@ -274,6 +276,13 @@ async function brands(_cacheInit?: RequestInit): Promise<BackendResponse<BrandsR
   return { status: 200, body: { data: FIXTURE_BRANDS } };
 }
 
+async function brandDetail(slug: string, _cacheInit?: RequestInit): Promise<BackendResponse<unknown>> {
+  void _cacheInit;
+  const brand = FIXTURE_BRANDS.find((b) => b.slug === slug);
+  if (!brand) return notFound("Brand not found.");
+  return { status: 200, body: { data: { ...brand, tyre_model_count: FIXTURE_MODELS.filter((m) => m.brandId === brand.id).length } } };
+}
+
 async function variantDetail(slug: string, _cacheInit?: RequestInit): Promise<BackendResponse<unknown>> {
   void _cacheInit;
   const variant = FIXTURE_VARIANTS.find((v) => v.slug === slug);
@@ -285,6 +294,7 @@ async function variantDetail(slug: string, _cacheInit?: RequestInit): Promise<Ba
     status: 200,
     body: {
       data: {
+        id: variant.id,
         slug: variant.slug,
         width: variant.width,
         profile: variant.profile,
@@ -334,5 +344,15 @@ async function availability(slug: string, zone: string | null): Promise<BackendR
   };
 }
 
-export const stubCatalogBackend = { search, popularSizes, latestReleases, brands, variantDetail, availability };
+/** The stub has no facet counts: callers fall back to brands/patterns derived from the page. */
+async function facets(): Promise<BackendResponse<unknown>> {
+  return notFound("The stub has no facets.");
+}
+
+/** The stub has no pricing engine: callers fall back to the flat list price. */
+async function priceLadders(): Promise<BackendResponse<unknown>> {
+  return { status: 200, body: { data: {} } };
+}
+
+export const stubCatalogBackend = { search, popularSizes, latestReleases, brands, brandDetail, variantDetail, availability, facets, priceLadders };
 export type CatalogBackend = typeof stubCatalogBackend;

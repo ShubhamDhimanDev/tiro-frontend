@@ -1,5 +1,9 @@
 - [Repo layout & doc locations](repo_layout.md) — root has `docs/` (architecture+plan), not `backend/docs/`; backend/frontend are separate git repos
 - [Customer-auth slice status](project_customer_auth_slice.md) — Phase 0 auth build tracker, updated 2026-09-10
+- [Phase 3 booking/capacity — CLOSED, GO](project_phase3_booking_capacity.md) — signed off 2026-09-21; reusable conventions (idempotent-secret-replay, hold-with-TTL) + 1 open fast-follow
+- [Absolute paths for backend-rooted agents](feedback_absolute_paths_for_backend_rooted_agents.md) — bare `docs/...` citations fail silently for backend-agent/super-admin-agent, always use the full absolute path or inline the content
+- [Manual verification isn't test coverage](feedback_manual_verification_not_substitute_for_tests.md) — reading an agent's code confirms its report, not that a regression test exists; don't conflate the two
 - [Trust disk audits over prior chat/memory](feedback_verify_before_trusting_memory.md) — a cut-off session's beliefs about "in flight" work can be wrong; always verify on disk first
 - [Sign-off convention](reference_signoff_convention.md) — qa-lead sign-off is a standing per-phase gate; security-agent sign-off is called out per-row in the task breakdown only where auth/payments/PII apply
 - [backend/ has no git — recurring friction](project_backend_no_git.md) — blocks scoped Pint (--dirty), causes full-repo reformats; surface to user, don't silently work around it again
+- [Launch content + design refinement round (2026-09-28)](project_launch_content_design_pass.md) — CMS content seeded, design tokens refined; flags a real zinc-scaffold backlog (auth layout, price-guarantee-claims/new, account lists) + an unreverted php.ini change for devops-agent

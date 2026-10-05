@@ -24,7 +24,25 @@ export function isSearchRequest(values: Record<string, string | undefined>): boo
   return Boolean(values.width || values.profile || values.rim_diameter);
 }
 
-const PASSTHROUGH_FIELDS = [
+/**
+ * A filter-only browse: no size, but a brand, category or type (what an offer's
+ * "Shop this offer" link sends, e.g. `/tyres?brand=bridgestone&category=suv`).
+ * The API accepts these without a size, so the listing shows them rather than
+ * the size-search hub.
+ */
+export function isBrowseRequest(values: Record<string, string | undefined>): boolean {
+  return !isSearchRequest(values) && Boolean(values.brand || values.category || values.tyre_type);
+}
+
+/**
+ * Extra sidebar filters (Phase 7: all forwarded to the API, which applies them
+ * server-side): `min_load`, `min_speed`, `runflat`, `pattern` (CSV of model
+ * slugs), `price_min` / `price_max` (whole AUD dollars), `car_make`.
+ * `brand`, `tyre_type` and `category` also accept CSV (multi-select).
+ */
+export const EXTRA_FILTER_KEYS = ["min_load", "min_speed", "runflat", "pattern", "price_min", "price_max", "car_make"] as const;
+
+export const PASSTHROUGH_FIELDS = [
   "width",
   "profile",
   "rim_diameter",
@@ -40,7 +58,10 @@ const PASSTHROUGH_FIELDS = [
   "category",
   "sort",
   "per_page",
+  ...EXTRA_FILTER_KEYS,
 ] as const;
+
+const HREF_FIELDS = PASSTHROUGH_FIELDS;
 
 /**
  * Builds the `URLSearchParams` sent to `catalogBackend.search`, appending
@@ -78,7 +99,7 @@ export function buildTyreSearchQuery(
 /** Builds a `/tyres?...` href preserving the current filters but updating `page`. Non-staggered only — see `buildTyresStaggeredPageHref` for staggered mode's independent front/rear pagination. */
 export function buildTyresPageHref(values: Record<string, string | undefined>, page: number): string {
   const params = new URLSearchParams();
-  for (const field of PASSTHROUGH_FIELDS) {
+  for (const field of HREF_FIELDS) {
     const value = values[field];
     if (value) params.set(field, value);
   }
@@ -98,7 +119,7 @@ export function buildTyresStaggeredPageHref(
   page: number
 ): string {
   const params = new URLSearchParams();
-  for (const field of PASSTHROUGH_FIELDS) {
+  for (const field of HREF_FIELDS) {
     const value = values[field];
     if (value) params.set(field, value);
   }

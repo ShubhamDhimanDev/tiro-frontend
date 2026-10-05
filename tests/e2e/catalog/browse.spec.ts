@@ -24,8 +24,9 @@ test.describe("brand browsing", () => {
     await expect(page.getByRole("heading", { name: "Michelin tyres" })).toBeVisible();
     // Michelin's two seeded models — Primacy 4 and Pilot Sport 4 — both show
     // up, and no other brand's model leaks onto this page.
-    await expect(page.getByText("Primacy 4")).toBeVisible();
-    await expect(page.getByText("Pilot Sport 4")).toBeVisible();
+    // .first(): a pattern can appear in the tier columns and again in the full range.
+    await expect(page.getByText("Primacy 4").first()).toBeVisible();
+    await expect(page.getByText("Pilot Sport 4").first()).toBeVisible();
     await expect(page.getByText("Turanza T005")).not.toBeVisible();
 
     // BreadcrumbList structured data — "rendering with the right structured
@@ -81,7 +82,7 @@ test.describe("latest releases", () => {
     // Road Venture MT51 (1mo) and Michelin Primacy 4 (3mo) are the two
     // newest of the 7 seeded models — assert they both appear ahead of
     // Michelin Pilot Sport 4, the oldest (24mo).
-    const cardText = await page.locator("main, body").innerText();
+    const cardText = await page.locator("main").innerText();
     const mt51Index = cardText.indexOf("Road Venture MT51");
     const primacyIndex = cardText.indexOf("Primacy 4");
     const pilotSportIndex = cardText.indexOf("Pilot Sport 4");

@@ -69,6 +69,54 @@ test.describe("PDP static content", () => {
   });
 });
 
+/**
+ * Regression guard for the fix documented in `app/tyres/[slug]/page.tsx`'s
+ * own doc comment: an invalid PDP slug used to serve a `200` instead of a
+ * real `404` because `[slug]` was nested under a `loading.tsx` ancestor,
+ * which makes Next.js stream the response and commit the `200` status
+ * before the async `notFound()` call below it could run. The fix moved
+ * every search/browse route into `app/tyres/(catalog)/` and deleted
+ * `app/tyres/[slug]/loading.tsx` so `[slug]` is no longer under any
+ * `loading.tsx` in its ancestor chain (a route group's parentheses don't
+ * appear in the URL, so this is a pure internal restructure — every URL
+ * below stays exactly the same).
+ *
+ * The test above ("an unknown slug 404s") already guards the actual bug —
+ * checking `res?.status()`, not just 404-looking page content, so it can't
+ * pass vacuously against a `200` that merely renders a not-found message.
+ * This block adds the other half explicitly: confirming the move didn't
+ * silently break any of the routes that got relocated into `(catalog)`
+ * along the way (same URLs, still resolving, not orphaned/404ing
+ * themselves) — a quick sibling-route smoke check, not a re-test of each
+ * page's own functionality (already covered in depth by
+ * `tests/e2e/catalog/browse.spec.ts` and `tests/e2e/vehicles/picker.spec.ts`).
+ */
+test.describe("route-group regression guard: app/tyres/(catalog)/ move", () => {
+  test("sibling /tyres routes still resolve at their original URLs after being relocated into (catalog)", async ({
+    page,
+  }) => {
+    const tyresRes = await page.goto("/tyres");
+    expect(tyresRes?.status()).toBe(200);
+    await expect(page).toHaveURL("/tyres");
+    await expect(page.getByRole("heading", { name: "Find your tyre size" })).toBeVisible();
+
+    const typeRes = await page.goto("/tyres/type/mud_terrain");
+    expect(typeRes?.status()).toBe(200);
+    await expect(page).toHaveURL("/tyres/type/mud_terrain");
+    await expect(page.getByRole("heading", { name: "Mud-Terrain tyres" })).toBeVisible();
+
+    const latestRes = await page.goto("/tyres/latest-releases");
+    expect(latestRes?.status()).toBe(200);
+    await expect(page).toHaveURL("/tyres/latest-releases");
+    await expect(page.getByRole("heading", { name: "Latest releases" })).toBeVisible();
+
+    const byVehicleRes = await page.goto("/tyres/by-vehicle");
+    expect(byVehicleRes?.status()).toBe(200);
+    await expect(page).toHaveURL("/tyres/by-vehicle");
+    await expect(page.getByRole("heading", { name: "Find tyres for your vehicle" })).toBeVisible();
+  });
+});
+
 test.describe("PDP availability (separate live fetch)", () => {
   test("prompts for location before showing price/stock when no zone is resolved", async ({ page }) => {
     await page.goto("/tyres/bridgestone-turanza-t005-205-55-r16");

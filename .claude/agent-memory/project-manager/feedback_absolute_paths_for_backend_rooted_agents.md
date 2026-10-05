@@ -1,0 +1,14 @@
+---
+name: feedback-absolute-paths-for-backend-rooted-agents
+description: backend-agent (and likely super-admin-agent) can't resolve bare "docs/architecture/..." citations — their working directory is backend/, not the repo root — always give the full absolute Windows path, every message, not just the first dispatch
+metadata:
+  type: feedback
+---
+
+When citing a root-level doc (`docs/architecture/*.md`, `docs/plan/*.md` — see [[repo_layout]]) in an instruction to `backend-agent`, always give the full absolute path (`C:\zzz-shubham\MTS\docs\architecture\02-api-contract.md`), not a bare-looking relative citation like `` `docs/architecture/02-api-contract.md` ``.
+
+**Why:** On 2026-09-21 (Phase 3), a SendMessage follow-up to an already-running backend-agent instance cited three project-architect decisions with a bare `docs/architecture/02-api-contract.md`-style reference, asking it to go verify before applying. backend-agent's working directory is `backend/`, so that citation resolved (or attempted to resolve) under `backend/docs/architecture/...`, which does not exist (`backend/docs/` doesn't exist at all — see [[repo_layout]]). backend-agent correctly could not find it and **correctly refused** to apply the three changes rather than blindly comply with an unverifiable instruction — this is the right default behavior, not a bug in the agent. The fix cost a full round-trip: resending the same three items with their actual content inlined directly in the message instead of a citation to go look up.
+
+Contrast: the very first Phase 3 dispatch to backend-agent (a fresh `Agent()` call, not a `SendMessage` continuation) explicitly wrote out full absolute Windows paths for every doc it needed to read (`C:\zzz-shubham\MTS\docs\architecture\04-booking-capacity-engine.md` etc.) and that dispatch worked perfectly — backend-agent read and correctly implemented every detail. The failure mode is specific to shorthand citations in later follow-up messages, where it's easy to slip into writing `` `docs/architecture/...` `` as a familiar-looking shorthand once a session has been going a while.
+
+**How to apply:** Every time a message to `backend-agent` (and treat `super-admin-agent` as the same risk — it's also rooted in `backend/`, building the Inertia admin panel from inside that same working directory) references a root-level doc, use the full absolute path, not a bare `docs/...` citation — even in a quick one-line follow-up, even mid-conversation when it feels redundant to spell it out again. If a decision only needs to be relayed (not independently re-verified by the receiving agent), consider inlining the actual content directly instead of citing a path at all — removes the dependency on path resolution entirely, and was the actual fix applied in the 2026-09-21 incident.

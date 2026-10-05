@@ -7,7 +7,13 @@ import { authApi } from "@/lib/auth/client-api";
 import { normalizeEmailForDisplay } from "@/lib/auth/normalize-email";
 import { useAuth } from "@/components/auth/auth-provider";
 import { CountdownButton } from "@/components/auth/countdown-button";
-import { FormField, FormError, FormNotice, inputClassName, primaryButtonClassName } from "@/components/auth/form-field";
+import { FormField, FormError, FormNotice, inputClassName } from "@/components/auth/form-field";
+import { PasswordField } from "@/components/auth/password-field";
+import { OtpField } from "@/components/auth/otp-field";
+import { Button } from "@/components/ui/button";
+import { authErrorMessage } from "@/lib/auth/error-copy";
+import { codeError, collectErrors, emailError, passwordError } from "@/lib/auth/validate";
+import { focusFirstInvalid } from "@/lib/checkout/validate";
 
 /**
  * Registration is a two-step, bundled flow (password up front, OTP
@@ -33,10 +39,16 @@ export function RegisterForm({ initialEmail = "" }: { initialEmail?: string }) {
   const [retryAfter, setRetryAfter] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
 
-  async function handleCredentialsSubmit(e: React.FormEvent) {
+  async function handleCredentialsSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setFormError(null);
-    setFieldErrors({});
+    const form = e.currentTarget;
+    const errors = collectErrors({ email: emailError(email), password: passwordError(password, { min: 8 }) });
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      window.setTimeout(() => focusFirstInvalid(form), 0);
+      return;
+    }
     setSubmitting(true);
 
     const normalized = normalizeEmailForDisplay(email);
@@ -49,15 +61,15 @@ export function RegisterForm({ initialEmail = "" }: { initialEmail?: string }) {
         setStep("verify");
         return;
       case "validation_error":
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
         setFieldErrors(result.errors);
         return;
       case "rate_limited":
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
         setRetryAfter(result.retryAfter);
         return;
       default:
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
     }
   }
 
@@ -68,19 +80,23 @@ export function RegisterForm({ initialEmail = "" }: { initialEmail?: string }) {
     if (result.kind === "success") {
       setNotice(result.data.message);
     } else if (result.kind === "rate_limited") {
-      setFormError(result.message);
+      setFormError(authErrorMessage(result));
       setRetryAfter(result.retryAfter);
-    } else if (result.kind === "validation_error") {
-      setFormError(result.message);
     } else {
-      setFormError(result.message);
+      setFormError(authErrorMessage(result));
     }
   }
 
-  async function handleVerifySubmit(e: React.FormEvent) {
+  async function handleVerifySubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setFormError(null);
-    setFieldErrors({});
+    const form = e.currentTarget;
+    const errors = collectErrors({ code: codeError(code) });
+    setFieldErrors(errors);
+    if (Object.keys(errors).length > 0) {
+      window.setTimeout(() => focusFirstInvalid(form), 0);
+      return;
+    }
     setSubmitting(true);
 
     const normalized = normalizeEmailForDisplay(email);
@@ -93,48 +109,35 @@ export function RegisterForm({ initialEmail = "" }: { initialEmail?: string }) {
         router.push("/");
         return;
       case "validation_error":
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
         setFieldErrors(result.errors);
         return;
       case "rate_limited":
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
         setRetryAfter(result.retryAfter);
         return;
       default:
-        setFormError(result.message);
+        setFormError(authErrorMessage(result));
     }
   }
 
   if (step === "verify") {
     return (
-      <form onSubmit={handleVerifySubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleVerifySubmit} noValidate className="flex flex-col gap-4">
         <FormNotice message={notice ?? `We've sent a 6-digit code to ${email}.`} />
         {formError && <FormError message={formError} />}
 
-        <FormField label="Verification code" htmlFor="code" error={fieldErrors.code?.[0]}>
-          <input
-            id="code"
-            name="code"
-            type="text"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            required
-            maxLength={6}
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className={inputClassName}
-          />
-        </FormField>
+        <OtpField id="code" value={code} onChange={setCode} error={fieldErrors.code?.[0]} />
 
-        <button type="submit" disabled={submitting} className={primaryButtonClassName}>
+        <Button type="submit" loading={submitting} fullWidth>
           {submitting ? "Verifying…" : "Verify and create account"}
-        </button>
+        </Button>
 
         <div className="flex items-center justify-between text-sm">
           <button
             type="button"
             onClick={() => setStep("credentials")}
-            className="text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+            className="inline-flex min-h-11 items-center px-1 text-sm font-semibold text-muted underline underline-offset-4 hover:text-ink"
           >
             Use a different email
           </button>
@@ -151,7 +154,7 @@ export function RegisterForm({ initialEmail = "" }: { initialEmail?: string }) {
   }
 
   return (
-    <form onSubmit={handleCredentialsSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleCredentialsSubmit} noValidate className="flex flex-col gap-4">
       {formError && <FormError message={formError} />}
 
       <FormField label="Email" htmlFor="email" error={fieldErrors.email?.[0]}>
@@ -160,6 +163,8 @@ export function RegisterForm({ initialEmail = "" }: { initialEmail?: string }) {
           name="email"
           type="email"
           autoComplete="email"
+          autoCapitalize="none"
+          spellCheck={false}
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -167,24 +172,17 @@ export function RegisterForm({ initialEmail = "" }: { initialEmail?: string }) {
         />
       </FormField>
 
-      <FormField
+      <PasswordField
         label="Password"
-        htmlFor="password"
+        id="password"
+        name="password"
+        autoComplete="new-password"
+        minLength={8}
+        value={password}
+        onChange={setPassword}
         error={fieldErrors.password?.[0]}
         hint="At least 8 characters."
-      >
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          required
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className={inputClassName}
-        />
-      </FormField>
+      />
 
       {retryAfter > 0 ? (
         <CountdownButton
@@ -193,16 +191,17 @@ export function RegisterForm({ initialEmail = "" }: { initialEmail?: string }) {
           label="Create account"
           pendingLabel={(s) => `Try again in ${s}s`}
           type="submit"
+          appearance="button"
         />
       ) : (
-        <button type="submit" disabled={submitting} className={primaryButtonClassName}>
+        <Button type="submit" loading={submitting} fullWidth>
           {submitting ? "Sending code…" : "Create account"}
-        </button>
+        </Button>
       )}
 
-      <p className="text-center text-sm text-zinc-500 dark:text-zinc-400">
+      <p className="text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-zinc-900 underline underline-offset-2 dark:text-zinc-50">
+        <Link href="/login" className="inline-flex min-h-11 items-center font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted">
           Log in
         </Link>
       </p>

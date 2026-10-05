@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { setAuthSession } from "./cookies";
+import { friendlyErrorBody, isUpstreamFailure } from "@/lib/http/friendly-error";
 import type { BackendResponse, TokenEnvelope } from "./types";
 
 function isTokenEnvelope(body: unknown): body is TokenEnvelope {
@@ -28,6 +29,10 @@ export async function respondWithSession(result: BackendResponse): Promise<NextR
     const { token, customer } = result.body.data;
     await setAuthSession({ token, customer });
     return NextResponse.json({ customer }, { status: 200 });
+  }
+
+  if (isUpstreamFailure(result.status)) {
+    return NextResponse.json(friendlyErrorBody(result.status), { status: result.status === 0 ? 503 : result.status });
   }
 
   return NextResponse.json(result.body, { status: result.status });

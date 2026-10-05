@@ -21,7 +21,7 @@ test.describe("suburb/postcode serviceability capture", () => {
     await page.getByRole("textbox", { name: "Suburb or postcode" }).fill("St Kilda");
     await page.getByRole("button", { name: "Check", exact: true }).click();
 
-    await expect(page.getByRole("button", { name: "Delivering to Melbourne Metro" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Fitting in Melbourne Metro" })).toBeVisible();
 
     // Cookie persistence, not just React state: a hard reload re-hydrates
     // <LocationProvider> from scratch via GET /api/location/session, which
@@ -29,11 +29,11 @@ test.describe("suburb/postcode serviceability capture", () => {
     // actually survived — this is the property under test, not the click
     // itself.
     await page.reload();
-    await expect(page.getByRole("button", { name: "Delivering to Melbourne Metro" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Fitting in Melbourne Metro" })).toBeVisible();
 
     // And across a real navigation to a different route.
     await page.goto("/tyres");
-    await expect(page.getByRole("button", { name: "Delivering to Melbourne Metro" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Fitting in Melbourne Metro" })).toBeVisible();
 
     const cookies = await page.context().cookies();
     const zoneCookie = cookies.find((c) => c.name === "mts_service_zone");
@@ -84,10 +84,10 @@ test.describe("stale/tampered zone cookie", () => {
     await expect(page.getByRole("textbox", { name: "Suburb or postcode" })).toBeVisible();
 
     // Results are still rendered (never a hard error) but degrade to
-    // unscoped: no price, no stock badge for the matching product.
-    await expect(page.getByText("Turanza T005")).toBeVisible();
-    await expect(page.getByText(/^from \$/i)).not.toBeVisible();
-    await expect(page.getByText("Set your location to see pricing")).toBeVisible();
+    // unscoped: no zone price or stock, but the catalogue list price (Phase 7 `list_price`) still shows.
+    await expect(page.getByText("Turanza T005").first()).toBeVisible();
+    await expect(page.getByText(/\$\d+(\.\d{2})?ea/).first()).toBeVisible();
+    await expect(page.getByText("In stock")).toHaveCount(0);
 
     // The notice clears the now-known-bad cookie on mount so it doesn't keep
     // silently failing on every subsequent SSR load.
@@ -110,6 +110,6 @@ test.describe("stale/tampered zone cookie", () => {
     await page.getByRole("button", { name: "Check", exact: true }).click();
 
     await expect(page.getByText(/couldn.t confirm your saved service area/i)).not.toBeVisible();
-    await expect(page.getByRole("button", { name: "Delivering to Melbourne Metro" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Fitting in Melbourne Metro" })).toBeVisible();
   });
 });

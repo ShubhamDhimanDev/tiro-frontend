@@ -112,3 +112,48 @@ describe("buildTyresStaggeredPageHref", () => {
     expect(url.searchParams.get("rear_page")).toBe("1");
   });
 });
+
+describe("Phase 7 filters are forwarded to the API", () => {
+  it("passes min load, min speed, runflat, pattern, price range, car make and CSV multi-selects through", () => {
+    const params = buildTyreSearchQuery(
+      {
+        width: "205",
+        profile: "55",
+        rim_diameter: "16",
+        brand: "michelin,kumho",
+        tyre_type: "highway,eco",
+        category: "car,suv",
+        min_load: "90",
+        min_speed: "V",
+        runflat: "no",
+        pattern: "michelin-primacy-4,kumho-ecsta",
+        price_min: "150",
+        price_max: "300",
+        car_make: "toyota",
+        junk: "x",
+      },
+      { zoneId: "3" },
+    );
+    expect(Object.fromEntries(params)).toEqual({
+      width: "205",
+      profile: "55",
+      rim_diameter: "16",
+      brand: "michelin,kumho",
+      tyre_type: "highway,eco",
+      category: "car,suv",
+      min_load: "90",
+      min_speed: "V",
+      runflat: "no",
+      pattern: "michelin-primacy-4,kumho-ecsta",
+      price_min: "150",
+      price_max: "300",
+      car_make: "toyota",
+      zone: "3",
+      page: "1",
+    });
+  });
+
+  it("keeps the extra filters on page links", () => {
+    expect(buildTyresPageHref({ width: "205", min_load: "90", runflat: "no" }, 2)).toBe("/tyres?width=205&runflat=no&min_load=90&page=2".replace("runflat=no&min_load=90", "min_load=90&runflat=no"));
+  });
+});

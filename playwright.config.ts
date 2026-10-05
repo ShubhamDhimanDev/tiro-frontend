@@ -53,6 +53,20 @@ import { defineConfig, devices } from "@playwright/test";
  * `LOCATION_BACKEND`/`CATALOG_BACKEND`/`AUTH_BACKEND` are set to in the
  * environment/`.env*` files at that point, per point 2 above.
  */
+// Optional override so a whole isolated run (its own backend instance via
+// scripts/test-db.sh, its own frontend process) can point at a different
+// port than the default 3000 without colliding with whatever's already
+// running there — e.g. Next.js 16's own "one next dev per project
+// directory" lock (confirmed empirically: a second `next dev` in the same
+// directory on a different port refuses to start and redirects you to the
+// existing one instead) means a genuinely separate frontend process for an
+// isolated run has to either take over port 3000 or run as a `next
+// build`/`next start` production server on a different port instead — this
+// makes the latter possible without editing this file each time. Unset
+// (the default) preserves the exact prior hardcoded behavior.
+const PORT = process.env.PLAYWRIGHT_PORT ?? "3000";
+const BASE_URL = `http://localhost:${PORT}`;
+
 export default defineConfig({
   testDir: "./tests/e2e",
   globalSetup: "./tests/e2e/global-setup.ts",
@@ -71,14 +85,16 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never" }]],
 
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: BASE_URL,
+    // framer-motion honours reduced motion (MotionConfig reducedMotion="user"); keeps e2e timing deterministic.
+    contextOptions: { reducedMotion: "reduce" },
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
 
   webServer: {
     command: "npm run dev",
-    url: "http://localhost:3000",
+    url: BASE_URL,
     reuseExistingServer: true,
     timeout: 60_000,
   },

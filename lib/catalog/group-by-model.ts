@@ -13,7 +13,7 @@ import type { TyreListItem, TyreModelSummary } from "./types";
 export interface TyreModelGroup {
   model: TyreModelSummary;
   variants: TyreListItem[];
-  /** Lowest `unit_price` among variants that have one — `undefined` if none do (e.g. no zone resolved yet). */
+  /** Lowest price (promo, zone or list price) among variants that have one — `undefined` if none do. */
   fromPrice?: number;
 }
 
@@ -34,7 +34,7 @@ export function groupTyresByModel(items: TyreListItem[]): TyreModelGroup[] {
 
   for (const group of groups.values()) {
     const prices = group.variants
-      .map((v) => v.promotional_price ?? v.unit_price)
+      .map((v) => v.promotional_price ?? v.unit_price ?? v.list_price)
       .filter((p): p is number => typeof p === "number");
     if (prices.length > 0) group.fromPrice = Math.min(...prices);
   }

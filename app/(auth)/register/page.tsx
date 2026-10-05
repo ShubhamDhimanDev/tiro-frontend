@@ -15,8 +15,8 @@ export default async function RegisterPage({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">Create an account</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="type-h2">Create an account</h1>
+        <p className="mt-2 text-muted">
           Set a password, then verify your email with a code we send you. If you&apos;ve checked out as a guest
           before, this also unlocks your past order history.
         </p>

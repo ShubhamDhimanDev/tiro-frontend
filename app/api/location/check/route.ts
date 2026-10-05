@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { proxyResponse } from "@/lib/http/proxy-response";
 import { locationBackend } from "@/lib/location/backend";
 import { setServiceZone, clearServiceZone } from "@/lib/location/cookies";
 import type { ServiceabilityCheckInput, ServiceabilityResult } from "@/lib/location/types";
@@ -44,5 +45,5 @@ export async function POST(request: Request) {
   }
 
   await clearServiceZone();
-  return NextResponse.json(result.body, { status: result.status });
+  return proxyResponse(result);
 }

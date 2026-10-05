@@ -22,13 +22,13 @@ export function LocationGate({
   const { zone, loading } = useLocation();
 
   if (loading) {
-    return <div className="h-24 animate-pulse rounded-md bg-zinc-100 dark:bg-zinc-900" aria-hidden />;
+    return <div className="h-24 animate-pulse rounded-card bg-chip" aria-hidden />;
   }
 
   if (!zone) {
     return (
-      <div className="rounded-md border border-zinc-200 p-4 dark:border-zinc-800">
-        <p className="mb-3 text-sm text-zinc-600 dark:text-zinc-400">{prompt}</p>
+      <div className="rounded-card border border-line bg-surface p-4">
+        <p className="mb-3 text-muted">{prompt}</p>
         <LocationCaptureForm />
       </div>
     );

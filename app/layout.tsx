@@ -1,68 +1,77 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
+import { Montserrat } from "next/font/google";
+import { NavProgress } from "@/components/layout/nav-progress";
+import { ToastProvider } from "@/components/ui/toast";
+import { MotionProvider } from "@/components/motion/motion-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
-import { AuthStatus } from "@/components/auth/auth-status";
 import { LocationProvider } from "@/components/location/location-provider";
-import { LocationBadge } from "@/components/location/location-badge";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { CartProvider } from "@/components/cart/cart-provider";
+import { CartDrawerProvider } from "@/components/cart/cart-drawer";
+import { SocialProofToast } from "@/components/ui/social-proof-toast";
+import { SiteHeader } from "@/components/layout/site-header";
+import { SiteFooter } from "@/components/layout/site-footer";
+import { SITE_NAME } from "@/lib/site/config";
+import { SITE_URL } from "@/lib/site/url";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Tiro Mobile Tyres",
-  description: "Mobile tyre fitting — we come to you. Search by size, browse by brand, and book a fitting.",
+  description: "Mobile tyre fitting. We come to you. Search by size, browse by brand, and book a fitting.",
+  applicationName: SITE_NAME,
+  openGraph: { siteName: SITE_NAME, locale: "en_AU", type: "website" },
+  twitter: { card: "summary_large_image" },
 };
 
+/**
+ * Montserrat (variable, 400-800) is the only typeface (design v2). The
+ * `--font-montserrat` variable is mapped to `font-sans`/`font-display`/
+ * `font-mono` in app/globals.css's `@theme inline` block.
+ */
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-montserrat",
+  display: "swap",
+});
+
 // Deliberately NOT reading the session/zone cookies here (no `cookies()`
-// call in this file). This project's `cacheComponents` flag is off
-// (next.config.ts), so under the classic rendering model any dynamic-API
-// read in the root layout would force *every* route that shares it into
-// per-request SSR — including the SSG/ISR brand/browse/PDP pages that are
-// the whole reason this is Next.js. `<AuthProvider>` and `<LocationProvider>`
-// instead hydrate client-side after mount (see components/auth/auth-provider.tsx
-// and components/location/location-provider.tsx) so this layout, and
-// therefore every static page under it, stays static.
+// call in this file). `cacheComponents` is off (next.config.ts), so any
+// dynamic-API read in the root layout would force every route that shares it
+// into per-request SSR, including the SSG/ISR pages that are the reason this
+// is Next.js. `<AuthProvider>`, `<LocationProvider>` and `<CartProvider>`
+// hydrate client-side after mount instead.
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
+    <html lang="en" className={`h-full antialiased ${montserrat.variable}`}>
+      <body className="flex min-h-full flex-col overflow-x-clip bg-tarmac text-text">
+        <MotionProvider>
+        <NavProgress />
+        <ToastProvider>
         <LocationProvider>
           <AuthProvider>
-            <header className="flex items-center justify-between gap-4 border-b border-zinc-200 px-6 py-3 dark:border-zinc-800">
-              <nav className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-                <Link href="/" className="font-semibold text-zinc-900 dark:text-zinc-50">
-                  Tiro Mobile Tyres
-                </Link>
-                <Link href="/tyres" className="hover:text-zinc-900 dark:hover:text-zinc-100">
-                  Shop tyres
-                </Link>
-                <Link href="/tyres/by-vehicle" className="hover:text-zinc-900 dark:hover:text-zinc-100">
-                  Find by vehicle
-                </Link>
-                <Link href="/brands" className="hover:text-zinc-900 dark:hover:text-zinc-100">
-                  Brands
-                </Link>
-              </nav>
-              <div className="flex items-center gap-4">
-                <LocationBadge />
-                <AuthStatus />
-              </div>
-            </header>
-            {children}
+            <CartProvider>
+              <CartDrawerProvider>
+                <a
+                  href="#page-content"
+                  className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[60] focus:rounded-control focus:bg-black focus:px-5 focus:py-3 focus:text-sm focus:font-bold focus:text-white"
+                >
+                  Skip to content
+                </a>
+                <SiteHeader />
+                {/* The one `<main>` landmark for the whole site (pages must not
+                    render their own `<main>`). The skip link targets its id. */}
+                <main id="page-content" tabIndex={-1} className="flex-1 overflow-x-clip outline-none">
+                  {children}
+                </main>
+                <SiteFooter />
+                <SocialProofToast />
+              </CartDrawerProvider>
+            </CartProvider>
           </AuthProvider>
         </LocationProvider>
+        </ToastProvider>
+        </MotionProvider>
       </body>
     </html>
   );

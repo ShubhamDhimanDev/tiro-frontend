@@ -1,6 +1,7 @@
 "use client";
 
 import type { PublicCustomer } from "./types";
+import { FRIENDLY_NETWORK_MESSAGE, friendlyMessage } from "@/lib/http/friendly-error";
 
 /**
  * Typed client-side helper for calling this app's own `/api/auth/*` Route
@@ -26,7 +27,7 @@ async function request<T>(path: string, init: RequestInit): Promise<AuthApiResul
       headers: { "Content-Type": "application/json", ...init.headers },
     });
   } catch {
-    return { kind: "unknown_error", status: 0, message: "Couldn't reach the server. Check your connection and try again." };
+    return { kind: "unknown_error", status: 0, message: FRIENDLY_NETWORK_MESSAGE };
   }
 
   if (res.status === 204) {
@@ -57,7 +58,7 @@ async function request<T>(path: string, init: RequestInit): Promise<AuthApiResul
         retryAfter: typeof body.retry_after === "number" ? body.retry_after : 30,
       };
     default:
-      return { kind: "unknown_error", status: res.status, message: body.message ?? "Something went wrong." };
+      return { kind: "unknown_error", status: res.status, message: friendlyMessage(res.status, body) };
   }
 }
 

@@ -1,6 +1,7 @@
 "use client";
 
 import type { ServiceZoneSnapshot, ServiceabilityResult } from "./types";
+import { FRIENDLY_NETWORK_MESSAGE, friendlyMessage } from "@/lib/http/friendly-error";
 
 /**
  * Typed client-side helper for this app's own `/api/location/*` Route
@@ -14,15 +15,19 @@ export type LocationApiResult<T> =
   | { kind: "validation_error"; status: 422; message: string; errors: Record<string, string[]> }
   | { kind: "unknown_error"; status: number; message: string };
 
+/** Client-side abort so a hung backend never leaves the form on "Checking..." forever. */
+const REQUEST_TIMEOUT_MS = 10_000;
+
 async function request<T>(path: string, init: RequestInit): Promise<LocationApiResult<T>> {
   let res: Response;
   try {
     res = await fetch(path, {
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
       ...init,
       headers: { "Content-Type": "application/json", ...init.headers },
     });
   } catch {
-    return { kind: "unknown_error", status: 0, message: "Couldn't reach the server. Check your connection and try again." };
+    return { kind: "unknown_error", status: 0, message: FRIENDLY_NETWORK_MESSAGE };
   }
 
   if (res.status === 204) {
@@ -42,7 +47,7 @@ async function request<T>(path: string, init: RequestInit): Promise<LocationApiR
       errors: body.errors ?? {},
     };
   }
-  return { kind: "unknown_error", status: res.status, message: body.message ?? "Something went wrong." };
+  return { kind: "unknown_error", status: res.status, message: friendlyMessage(res.status, body) };
 }
 
 export const locationApi = {

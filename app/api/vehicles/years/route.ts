@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { proxyResponse } from "@/lib/http/proxy-response";
 import { vehiclesBackend } from "@/lib/vehicles/backend";
 
 /**
@@ -12,5 +12,5 @@ export async function GET(request: Request) {
   const make = url.searchParams.get("make");
   const model = url.searchParams.get("model");
   const result = await vehiclesBackend.years(make, model);
-  return NextResponse.json(result.body, { status: result.status });
+  return proxyResponse(result);
 }

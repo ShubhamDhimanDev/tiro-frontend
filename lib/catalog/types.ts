@@ -21,12 +21,28 @@ export type TyreType = (typeof TYRE_TYPES)[number];
 export const STOCK_STATUSES = ["in_stock", "limited", "out_of_stock", "unavailable_in_zone"] as const;
 export type StockStatus = (typeof STOCK_STATUSES)[number];
 
+/** Phase 6a: curated tier. `null` or absent means unclassified. */
+export const TYRE_TIERS = ["premium", "mid", "budget"] as const;
+export type ApiTier = (typeof TYRE_TIERS)[number];
+
 export interface BrandSummary {
   id: number;
   name: string;
   slug: string;
   logo_path: string | null;
   country_of_origin: string | null;
+  /** Phase 6a: from `brands.tier`. */
+  tier?: ApiTier | null;
+}
+
+/** `GET /api/v1/brands/{slug}` (Phase 6a). */
+export interface BrandDetail extends BrandSummary {
+  /** Active models only. */
+  tyre_model_count: number;
+}
+
+export interface BrandDetailResponse {
+  data: BrandDetail;
 }
 
 /** Nested on every `/api/v1/tyres`-shaped list item — "so frontend-agent can group into 'from $X' cards client-side without a separate model-level endpoint." */
@@ -38,6 +54,10 @@ export interface TyreModelSummary {
   category: TyreCategory;
   tyre_type: TyreType;
   images: string[];
+  /** Phase 6a. */
+  tier?: ApiTier | null;
+  /** Phase 7. */
+  run_flat?: boolean;
 }
 
 /**
@@ -63,6 +83,18 @@ export interface TyreListItem {
   unit_price?: number | null;
   promotional_price?: number | null;
   stock_status?: StockStatus;
+  /** Phase 6a: same value as `tyre_model.tier`. */
+  tier?: ApiTier | null;
+  /** Phase 7: catalogue price per tyre in cents, always present (no zone needed). */
+  list_price?: number;
+  /** Phase 7: model-level run-flat flag. */
+  run_flat?: boolean;
+  /** Phase 7: same string as `tyre_model.slug`. */
+  pattern?: string;
+  /** Phase 7: an auto-applied 4 for 3 promotion covers this tyre (drives the sticker). */
+  four_for_three?: boolean;
+  /** MOCK (design phase): `unit_price` is a placeholder from `lib/catalog/mock-merchandising.ts`, not an API price. */
+  mock_price?: boolean;
 }
 
 export interface PaginatorMeta {
@@ -102,8 +134,19 @@ export interface BrandsResponse {
   links?: Record<string, string | null>;
 }
 
-/** `GET /api/v1/tyres/{slug}` — static content only, no price/stock ever. */
+/**
+ * `GET /api/v1/tyres/{slug}` — static content only, no price/stock ever.
+ *
+ * `id` was added 2026-09-21 (Phase 3 booking round): the contract's prose
+ * for this endpoint only names `slug` and the fitment fields, but
+ * `TyreVariantDetailResource` (verified directly against the backend
+ * source, same posture `lib/vehicles/backend.ts` documents for its own
+ * domain) does return `id` — and the booking endpoints' `items[].tyre_variant_id`
+ * need exactly this numeric id, not the slug. Without it, the PDP has no
+ * way to construct a valid booking line item at all.
+ */
 export interface TyreVariantDetail {
+  id: number;
   slug: string;
   width: number;
   profile: number;
@@ -143,6 +186,48 @@ export interface TyreAvailability {
 
 export interface TyreAvailabilityResponse {
   data: TyreAvailability;
+}
+
+/** One row of `GET /tyres/price-ladders`: per-tyre price when buying `quantity` tyres (promotions applied by the pricing engine). */
+export interface LadderEntry {
+  quantity: number;
+  /** Cents per tyre. */
+  unit_price: number;
+  total: number;
+  discount_total: number;
+}
+
+export interface PriceLadder {
+  tyre_variant_id: number;
+  list_price: number;
+  four_for_three: boolean;
+  currency: string;
+  ladder: LadderEntry[];
+}
+
+/** `GET /tyres/price-ladders`, keyed by variant id (string). */
+export interface PriceLaddersResponse {
+  data: Record<string, PriceLadder>;
+}
+
+/** `GET /tyres/facets` (Phase 7): filter sidebar options with counts, over the size scope only. */
+export interface TyreFacets {
+  total: number;
+  brands: { slug: string; name: string; tier?: ApiTier | null; count: number }[];
+  patterns: { slug: string; name: string; brand_slug: string; brand_name: string; tier?: ApiTier | null; count: number }[];
+  tyre_types: { value: string; count: number }[];
+  categories: { value: string; count: number }[];
+  tiers: { value: string; count: number }[];
+  run_flat: { yes: number; no: number };
+  /** Cents; `null` when `total` is 0. */
+  price: { min: number; max: number } | null;
+  load_index: { min: number; max: number } | null;
+  speed_ratings: string[];
+  car_makes: { make: string; count: number }[];
+}
+
+export interface TyreFacetsResponse {
+  data: TyreFacets;
 }
 
 /** Non-staggered search/filter params (`GET /api/v1/tyres`, also `/latest-releases`). */

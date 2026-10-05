@@ -9,22 +9,21 @@ import { resolveZoneViaApi } from "../helpers/location";
  * comment.
  */
 test.describe("flat tyre-size search", () => {
-  test("shows no price until a zone is resolved, and the real price once one is", async ({ page }) => {
+  test("shows the catalogue list price without a zone, and stock plus the zone price once one is resolved", async ({ page }) => {
     // No zone resolved yet for this test's fresh browser context.
     await page.goto("/tyres?width=205&profile=55&rim_diameter=16");
-    await expect(page.getByText("Turanza T005")).toBeVisible();
-    await expect(page.getByText("Set your location to see pricing")).toBeVisible();
-    await expect(page.getByText(/^from \$/i)).not.toBeVisible();
+    await expect(page.getByText("Turanza T005").first()).toBeVisible();
+    // Phase 7: the API's `list_price` is present without a zone, so there is a real price and no placeholder.
+    await expect(page.getByText(/\$\d+(\.\d{2})?ea/).first()).toBeVisible();
+    await expect(page.locator('[data-mock="true"]')).toHaveCount(0);
+    await expect(page.getByText("In stock")).toHaveCount(0); // stock needs a zone
 
-    // This is the real gap this phase found and fixed: search results must
-    // actually carry price once a zone is resolved, not just stock_status —
-    // see frontend/CLAUDE.md and TyreVariantResource's `unit_price`/
-    // `promotional_price` being zone-gated the same way `stock_status` is.
     await resolveZoneViaApi(page, { postcode: "3000" }); // -> Melbourne CBD Express
     await page.goto("/tyres?width=205&profile=55&rim_diameter=16");
 
-    await expect(page.getByText("From $189.00")).toBeVisible();
-    await expect(page.getByText("In stock")).toBeVisible();
+    await expect(page.getByText(/\$\d+(\.\d{2})?ea/).first()).toBeVisible();
+    await expect(page.locator('[data-mock="true"]')).toHaveCount(0);
+    await expect(page.getByText("In stock").first()).toBeVisible();
   });
 
   test("a well-formed size with no matching products explains itself rather than erroring", async ({ page }) => {

@@ -19,12 +19,14 @@ import type { BackendResponse } from "./types";
 const LARAVEL_API_URL = process.env.LARAVEL_API_URL ?? "http://localhost:8000";
 const API_BASE = `${LARAVEL_API_URL}/api/v1`;
 
-async function call(path: string): Promise<BackendResponse<unknown>> {
+async function call(path: string, cacheInit?: RequestInit): Promise<BackendResponse<unknown>> {
   let res: Response;
   try {
     res = await fetch(`${API_BASE}${path}`, {
       headers: { Accept: "application/json" },
-      cache: "no-store",
+      // Interactive picker calls stay uncached; a caller may opt into
+      // ISR-style caching (e.g. the home page's makes chips) via `cacheInit`.
+      ...(cacheInit ?? { cache: "no-store" }),
     });
   } catch {
     return { status: 503, body: { message: "We couldn't reach the server. Please try again shortly." } };
@@ -35,7 +37,7 @@ async function call(path: string): Promise<BackendResponse<unknown>> {
 }
 
 export const liveVehiclesBackend = {
-  makes: () => call(`/vehicles/makes`),
+  makes: (cacheInit?: RequestInit) => call(`/vehicles/makes`, cacheInit),
 
   /**
    * `make` is required by the contract (missing is 422). Omitting the

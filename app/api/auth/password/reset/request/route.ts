@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { proxyResponse } from "@/lib/http/proxy-response";
 import { authBackend } from "@/lib/auth/backend";
 
 /**
@@ -14,5 +15,5 @@ export async function POST(request: Request) {
   }
 
   const result = await authBackend.passwordResetRequest(email);
-  return NextResponse.json(result.body, { status: result.status });
+  return proxyResponse(result);
 }

@@ -15,8 +15,8 @@ export default async function PasswordResetPage({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">Reset your password</h1>
-        <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <h1 className="type-h2">Reset your password</h1>
+        <p className="mt-2 text-muted">
           We&apos;ll email you a code. Enter it along with your new password to finish.
         </p>
       </div>

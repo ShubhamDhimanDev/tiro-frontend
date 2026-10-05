@@ -25,7 +25,8 @@ function notFound(message = "Not found."): BackendResponse<unknown> {
   return { status: 404, body: { message } };
 }
 
-async function makes(): Promise<BackendResponse<unknown>> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- signature parity with the live client
+async function makes(_cacheInit?: RequestInit): Promise<BackendResponse<unknown>> {
   return { status: 200, body: { data: FIXTURE_MAKES } };
 }
 

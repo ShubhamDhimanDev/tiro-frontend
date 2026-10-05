@@ -1,12 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { inputClassName, primaryButtonClassName } from "@/components/ui/form-field";
+import { inputClassName } from "@/components/ui/form-field";
+import { Button } from "@/components/ui/button";
+import { SearchIcon } from "@/components/ui/icons";
+import { cx } from "@/components/ui/cx";
+import { readLastSize, writeLastSize } from "@/lib/catalog/last-search";
 
-const WIDTHS = [165, 175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285, 295, 305, 315];
-const PROFILES = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80];
-const RIMS = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+export const WIDTHS = [165, 175, 185, 195, 205, 215, 225, 235, 245, 255, 265, 275, 285, 295, 305, 315];
+export const PROFILES = [25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80];
+export const RIMS = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 
 export interface TyreSearchFormValues {
   width?: string;
@@ -21,26 +25,39 @@ export interface TyreSearchFormValues {
   rear_rim_diameter?: string;
 }
 
-function SizeSelects({
+export function SizeSelects({
   prefix,
   width,
   profile,
   rim,
   onChange,
+  large = false,
 }: {
   prefix: string;
   width: string;
   profile: string;
   rim: string;
   onChange: (field: "width" | "profile" | "rim", value: string) => void;
+  /** Finder style: 62px controls with a visible label above each. */
+  large?: boolean;
 }) {
+  const selectClass = cx(inputClassName, "font-mono", large && "!min-h-[62px] !px-2.5 text-[15px] font-semibold md:!px-4 md:text-base");
+  const wrap = (label: string, node: React.ReactNode) =>
+    large ? (
+      <div className="flex flex-col gap-1.5">
+        <span className="text-sm font-bold text-black">{label}</span>
+        {node}
+      </div>
+    ) : (
+      node
+    );
   return (
-    <div className="grid grid-cols-3 gap-2">
-      <select
+    <div className="grid grid-cols-3 gap-2 md:gap-3">
+      {wrap("Width", <select
         aria-label={`${prefix} width`}
         value={width}
         onChange={(e) => onChange("width", e.target.value)}
-        className={inputClassName}
+        className={selectClass}
       >
         <option value="">Width</option>
         {WIDTHS.map((w) => (
@@ -48,12 +65,12 @@ function SizeSelects({
             {w}
           </option>
         ))}
-      </select>
-      <select
+      </select>)}
+      {wrap("Profile", <select
         aria-label={`${prefix} profile`}
         value={profile}
         onChange={(e) => onChange("profile", e.target.value)}
-        className={inputClassName}
+        className={selectClass}
       >
         <option value="">Profile</option>
         {PROFILES.map((p) => (
@@ -61,12 +78,12 @@ function SizeSelects({
             {p}
           </option>
         ))}
-      </select>
-      <select
+      </select>)}
+      {wrap("Rim", <select
         aria-label={`${prefix} rim diameter`}
         value={rim}
         onChange={(e) => onChange("rim", e.target.value)}
-        className={inputClassName}
+        className={selectClass}
       >
         <option value="">Rim</option>
         {RIMS.map((r) => (
@@ -74,7 +91,7 @@ function SizeSelects({
             R{r}
           </option>
         ))}
-      </select>
+      </select>)}
     </div>
   );
 }
@@ -83,13 +100,28 @@ function SizeSelects({
  * Tyre-size search UI — requirements §3.1 (P0 core flow). Width/profile/rim
  * selectors, plus an explicit staggered-fit toggle revealing separate
  * front/rear selectors. Submitting navigates to `/tyres?...` — the search
- * results page (`app/tyres/page.tsx`) reads `searchParams` server-side and
+ * results page (`app/tyres/(catalog)/page.tsx`) reads `searchParams` server-side and
  * SSRs the first paint, per the contract's server-rendered-vs-client-fetched
  * table. This is a client-side URL-driven navigation (`router.push`), not a
  * separate fetch/proxy layer, so results stay crawlable/bookmarkable.
  */
-export function TyreSearchForm({ initial }: { initial: TyreSearchFormValues }) {
+export function TyreSearchForm({
+  initial,
+  finder = false,
+}: {
+  initial: TyreSearchFormValues;
+  /** Home/landing finder style: large controls, green "Find tyres" button. */
+  finder?: boolean;
+}) {
   const router = useRouter();
+  // Drives the submit button's "Searching…" pending state below —
+  // `router.push` itself doesn't return anything awaitable, so `isPending`
+  // here is what actually stays `true` until the new `/tyres?...` route's
+  // RSC render commits (the same signal React uses internally to decide
+  // when to show `app/tyres/(catalog)/loading.tsx`'s fallback instead of blocking).
+  // Without this the button gave no feedback at all between click and the
+  // page visibly changing — the exact "feels laggy" gap this pass is fixing.
+  const [isPending, startTransition] = useTransition();
 
   const [staggered, setStaggered] = useState(initial.staggered === "true");
   const [width, setWidth] = useState(initial.width ?? "");
@@ -102,6 +134,21 @@ export function TyreSearchForm({ initial }: { initial: TyreSearchFormValues }) {
   const [rearProfile, setRearProfile] = useState(initial.rear_profile ?? "");
   const [rearRim, setRearRim] = useState(initial.rear_rim_diameter ?? "");
   const [error, setError] = useState<string | null>(null);
+
+  // Prefill an untouched finder with the visitor's last size search (this browser only). Deferred to a microtask, same
+  // reason as the cart/location providers: no synchronous setState in the effect body.
+  useEffect(() => {
+    const untouched = !initial.width && !initial.profile && !initial.rim_diameter && initial.staggered !== "true";
+    if (!untouched) return;
+    queueMicrotask(() => {
+      const last = readLastSize();
+      // Only sizes the selects actually offer, so a stale value never shows a blank control.
+      if (!last || !WIDTHS.includes(+last.width) || !PROFILES.includes(+last.profile) || !RIMS.includes(+last.rim_diameter)) return;
+      setWidth((w) => w || last.width);
+      setProfile((p) => p || last.profile);
+      setRim((r) => r || last.rim_diameter);
+    });
+  }, [initial.width, initial.profile, initial.rim_diameter, initial.staggered]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -126,31 +173,36 @@ export function TyreSearchForm({ initial }: { initial: TyreSearchFormValues }) {
         setError("Select a width, profile, and rim diameter.");
         return;
       }
+      writeLastSize({ width, profile, rim_diameter: rim });
       params.set("width", width);
       params.set("profile", profile);
       params.set("rim_diameter", rim);
     }
 
-    router.push(`/tyres?${params.toString()}`);
+    const href = `/tyres?${params.toString()}`;
+    startTransition(() => {
+      router.push(href);
+    });
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-      <label className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <label className="flex min-h-11 w-fit cursor-pointer items-center gap-2 text-sm text-black">
         <input
           type="checkbox"
           checked={staggered}
           onChange={(e) => setStaggered(e.target.checked)}
-          className="h-4 w-4 rounded border-zinc-300 dark:border-zinc-700"
+          className="h-5 w-5 shrink-0 rounded-xs border-steel accent-green"
         />
-        My front and rear tyres are different sizes (staggered fitment)
+        Different front and rear sizes? (staggered fitment)
       </label>
 
       {staggered ? (
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Front</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Front</span>
             <SizeSelects
+              large={finder}
               prefix="Front"
               width={frontWidth}
               profile={frontProfile}
@@ -163,8 +215,9 @@ export function TyreSearchForm({ initial }: { initial: TyreSearchFormValues }) {
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Rear</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted">Rear</span>
             <SizeSelects
+              large={finder}
               prefix="Rear"
               width={rearWidth}
               profile={rearProfile}
@@ -179,6 +232,7 @@ export function TyreSearchForm({ initial }: { initial: TyreSearchFormValues }) {
         </div>
       ) : (
         <SizeSelects
+          large={finder}
           prefix="Size"
           width={width}
           profile={profile}
@@ -192,14 +246,15 @@ export function TyreSearchForm({ initial }: { initial: TyreSearchFormValues }) {
       )}
 
       {error && (
-        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+        <p role="alert" className="text-sm msg-error">
           {error}
         </p>
       )}
 
-      <button type="submit" className={`${primaryButtonClassName} sm:w-auto`}>
-        Search tyres
-      </button>
+      <Button type="submit" loading={isPending} size={finder ? "lg" : "md"} fullWidth={finder} className={finder ? undefined : "sm:w-auto"}>
+        {!isPending && finder && <SearchIcon className="h-5 w-5" />}
+        {isPending ? "Searching…" : finder ? "Find tyres" : "Search tyres"}
+      </Button>
     </form>
   );
 }

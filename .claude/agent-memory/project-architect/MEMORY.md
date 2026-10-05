@@ -1,0 +1,4 @@
+- [Project orientation](project_tiro_rebuild_orientation.md) — where docs live (`docs/` at root, not under `frontend/`), doc map, recurring code-vs-doc drift habit
+- [Readiness-pass style](feedback_readiness_pass_style.md) — how the user wants pre-phase landmine-hunt passes conducted, recurring pattern across 4 phases
+- [Phase R2 integration decisions](project_r2_integration_decisions.md) — 2026-10-02 chat/logos/map/social-proof/badges decisions + CSP, Places-legacy, brand-tag, social-proof gaps
+- [Phase 3 booking/capacity readiness findings](project_phase3_booking_capacity_readiness.md) — 2026-09-18 pass: Idempotency/hold mechanism gap, Redis decision, address_id fix, CancellationPolicy schema, RBAC clean, verdict

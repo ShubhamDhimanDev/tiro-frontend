@@ -15,3 +15,11 @@ export const TYRE_CATEGORY_LABELS: Record<TyreCategory, string> = {
   "4x4": "4x4",
   light_truck: "Light Truck",
 };
+
+/**
+ * "Brand Pattern" display name. Some API rows already prefix the model name
+ * with the brand (e.g. "Bridgestone Turanza T005"); don't double it up.
+ */
+export function fullTyreName(brandName: string, modelName: string): string {
+  return modelName.toLowerCase().startsWith(brandName.toLowerCase()) ? modelName : `${brandName} ${modelName}`;
+}
