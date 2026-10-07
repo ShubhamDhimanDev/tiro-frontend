@@ -1,3 +1,5 @@
+import { HERO_IMAGES } from "@/lib/site/images";
+
 /**
  * Placeholder hero artwork: yellow chevron bars with a stylised van. Shared by
  * the home hero and `PageHero` as the graceful fallback while no photograph
@@ -5,6 +7,15 @@
  * Decorative and desktop-only (`lg`).
  */
 export function HeroArt() {
+  const photo = HERO_IMAGES.desktop;
+  if (photo) {
+    return (
+      <div className="relative hidden h-full min-h-[420px] lg:block">
+        {/* eslint-disable-next-line @next/next/no-img-element -- static generated asset with known dimensions */}
+        <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} className="absolute inset-0 h-full w-full rounded-sheet object-cover" />
+      </div>
+    );
+  }
   return (
     <div aria-hidden="true" className="relative hidden h-full min-h-[420px] lg:block">
       <div className="absolute inset-y-0 -right-16 left-8 overflow-hidden">

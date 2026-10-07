@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { InlineSizeFinder } from "@/components/catalog/inline-size-finder";
+import { ImageSlot } from "@/components/page/image-slot";
 import { buttonClassName } from "@/components/ui/button";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/site/config";
 
@@ -23,6 +24,7 @@ export default function NotFound() {
   return (
     <section aria-labelledby="not-found-heading" className="bg-surface">
       <div className="container-page flex flex-col gap-8 py-12 md:py-16">
+        <ImageSlot slot="error-404" rounded={false} className="w-full max-w-sm" />
         <div className="flex max-w-2xl flex-col gap-3">
           <p className="type-eyebrow font-bold uppercase text-muted">Error 404</p>
           <h1 id="not-found-heading" className="type-display">

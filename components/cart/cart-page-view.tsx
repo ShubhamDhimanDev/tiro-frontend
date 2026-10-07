@@ -6,6 +6,7 @@ import { CartExtrasPanel } from "@/components/cart/cart-extras-panel";
 import { CartTotalsSummary } from "@/components/cart/cart-totals";
 import { useLivePricing } from "@/components/cart/use-live-pricing";
 import { TyreImage } from "@/components/catalog/tyre-image";
+import { ImageSlot } from "@/components/page/image-slot";
 import { ServiceError } from "@/components/ui/service-error";
 import { Button, buttonClassName } from "@/components/ui/button";
 import { CartIcon, CheckIcon, MinusIcon, PinIcon, PlusIcon } from "@/components/ui/icons";
@@ -35,10 +36,7 @@ export function CartPageView() {
         data-testid="cart-empty"
         className="mx-auto flex max-w-md flex-col items-center gap-4 rounded-card border border-line bg-surface px-6 py-12 text-center shadow-rest"
       >
-        {/* IMAGE SLOT: empty-cart.webp (see docs/prompts/IMAGE-MANIFEST.md). Icon until then. */}
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gold text-black">
-          <CartIcon className="h-8 w-8" />
-        </span>
+        <ImageSlot slot="empty-cart" rounded={false} className="w-56" icon={<CartIcon className="h-8 w-8" />} />
         <div>
           <h2 className="type-h3">Your cart is currently empty</h2>
           <p className="mt-1 text-muted">Find your tyres and we will fit them at your place.</p>
