@@ -23,7 +23,42 @@ export type ContentImage = {
   src: string | null;
 };
 
-const img = (file: string, width: number, height: number, alt: string): ContentImage => ({ file, width, height, alt, src: null });
+/** Files that exist under `frontend/public`. Slots whose file is listed here render the real photo; the rest keep the CSS placeholder. */
+const AVAILABLE_FILES = new Set<string>([
+  "/images/services/service-tyre-sales.webp",
+  "/images/services/service-onsite-fitting.webp",
+  "/images/services/service-puncture-repair.webp",
+  "/images/services/service-rotation.webp",
+  "/images/services/service-inspection.webp",
+  "/images/services/service-recycling.webp",
+  "/images/about/about-hero-van.webp",
+  "/images/about/about-technician-wheel.webp",
+  "/images/about/about-team-portrait.webp",
+  "/images/about/about-van-interior.webp",
+  "/images/blog/blog-thumb-safety.webp",
+  "/images/blog/blog-thumb-fleet.webp",
+  "/images/blog/blog-thumb-generic-tread.webp",
+  "/images/illustrations/empty-cart.webp",
+  "/images/illustrations/empty-results.webp",
+  "/images/illustrations/empty-orders.webp",
+  "/images/illustrations/error-404.webp",
+  "/images/how-it-works/how-step-1-select.webp",
+  "/images/how-it-works/how-step-2-book.webp",
+  "/images/how-it-works/how-step-3-we-come.webp",
+  "/images/fleet/fleet-depot-service.webp",
+  "/images/fleet/fleet-manager.webp",
+  "/images/banners/brand-banner-premium.webp",
+  "/images/banners/brand-banner-midrange.webp",
+  "/images/banners/brand-banner-budget.webp",
+]);
+
+const img = (file: string, width: number, height: number, alt: string): ContentImage => ({
+  file,
+  width,
+  height,
+  alt,
+  src: AVAILABLE_FILES.has(file) ? file : null,
+});
 
 export const CONTENT_IMAGES = {
   // Offers hub bands (4:3)
@@ -70,7 +105,10 @@ export const CONTENT_IMAGES = {
   "auth-side": img("/images/auth/auth-side-van.webp", 1000, 1250, "A Tiro van at a driveway at sunrise"),
   "empty-vehicles": img("/images/empty/empty-vehicles.webp", 800, 800, "An empty garage"),
   "empty-addresses": img("/images/empty/empty-addresses.webp", 800, 800, "A map pin on a street"),
-  "empty-orders": img("/images/empty/empty-orders.webp", 800, 800, "An empty parcel box"),
+  "empty-orders": img("/images/illustrations/empty-orders.webp", 1200, 896, "An empty parcel box"),
+  "empty-cart": img("/images/illustrations/empty-cart.webp", 1200, 896, "A shopping cart beside a tyre and a Tiro van"),
+  "empty-results": img("/images/illustrations/empty-results.webp", 1200, 896, "A magnifying glass over a wheel"),
+  "error-404": img("/images/illustrations/error-404.webp", 1264, 848, "A Tiro van on a road with a tyre that rolled away"),
 } as const satisfies Record<string, ContentImage>;
 
 export type ContentImageKey = keyof typeof CONTENT_IMAGES;

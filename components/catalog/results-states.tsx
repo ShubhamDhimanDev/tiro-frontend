@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ImageSlot } from "@/components/page/image-slot";
 import { ChangeSizeSheet } from "@/components/catalog/change-size-sheet";
 import type { TyreSearchFormValues } from "@/components/catalog/tyre-search-form";
 import { buttonClassName } from "@/components/ui/button";
@@ -36,6 +37,7 @@ export function NoResultsState({
         className,
       )}
     >
+      <ImageSlot slot="empty-results" rounded={false} className="w-40" />
       <p className="text-base font-semibold text-ink">{text}</p>
       <p className="text-sm text-muted">
         We can often source other sizes and brands. Tell us what you need and we will get back to you.
