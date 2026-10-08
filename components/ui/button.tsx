@@ -6,7 +6,7 @@ export type ButtonVariant = "primary" | "green" | "yellow" | "black" | "danger" 
 export type ButtonSize = "md" | "sm" | "lg";
 
 const base =
-  "inline-flex select-none items-center justify-center gap-2 rounded-control border-2 font-bold whitespace-nowrap transition-colors duration-300 ease-out disabled:cursor-not-allowed disabled:border-dashed";
+  "inline-flex select-none items-center justify-center gap-2 rounded-control border-2 font-bold max-w-full text-center transition-colors duration-300 ease-out disabled:cursor-not-allowed disabled:border-dashed";
 
 const green =
   "border-green bg-green text-white hover:border-green-hover hover:bg-green-hover disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text";

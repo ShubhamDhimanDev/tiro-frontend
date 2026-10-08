@@ -267,19 +267,22 @@ function ManualAddressFields({
           onChange={(e) => setLine2(e.target.value)}
         />
       )}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <SuburbTypeahead
-          value={suburb}
-          disabled={disabled}
-          error={errors.suburb}
-          onChange={setSuburb}
-          onPick={(s) => {
-            // One pick fills the suburb, state and postcode together.
-            setSuburb(s.name);
-            setState(s.state);
-            setPostcode(s.postcode);
-          }}
-        />
+      {/* Phones: suburb on its own row, then State and Postcode side by side. */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <div className="col-span-2 sm:col-span-1">
+          <SuburbTypeahead
+            value={suburb}
+            disabled={disabled}
+            error={errors.suburb}
+            onChange={setSuburb}
+            onPick={(s) => {
+              // One pick fills the suburb, state and postcode together.
+              setSuburb(s.name);
+              setState(s.state);
+              setPostcode(s.postcode);
+            }}
+          />
+        </div>
         <Select
           id="manual-state"
           label="State"

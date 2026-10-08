@@ -7,6 +7,9 @@ vi.mock("@/components/location/location-provider", () => ({ useLocation: () => (
 const check = vi.fn();
 vi.mock("@/lib/location/client-api", () => ({ locationApi: { check: (...a: unknown[]) => check(...a) } }));
 vi.mock("@/lib/enquiries/client-api", () => ({ submitEnquiry: vi.fn(), THROTTLE_MESSAGE: "x" }));
+// City photos are wired in `lib/site/images.ts`, so the test controls whether one exists.
+const locationImage = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/site/images", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/lib/site/images")>()), locationImage }));
 
 import { CitySuburbs } from "@/components/locations/city-suburbs";
 import { CityAreaButton } from "@/components/locations/city-area-button";
@@ -87,7 +90,14 @@ describe("CityAreaButton", () => {
 });
 
 describe("CityPhoto", () => {
+  it("draws the photo when one exists", () => {
+    locationImage.mockReturnValue({ src: "/images/locations/location-melbourne.webp", width: 1600, height: 900, alt: "A Tiro van in Melbourne" });
+    render(<CityPhoto citySlug="melbourne" cityName="Melbourne" />);
+    expect(screen.getByAltText("A Tiro van in Melbourne")).toBeInTheDocument();
+  });
+
   it("draws the CSS fallback with the city name until a photo exists", () => {
+    locationImage.mockReturnValue(null);
     render(<CityPhoto citySlug="melbourne" cityName="Melbourne" />);
     const slot = screen.getByTestId("city-photo");
     expect(slot).toHaveClass("asphalt-texture");

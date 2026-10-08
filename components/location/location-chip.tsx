@@ -55,9 +55,9 @@ export function LocationChip({
       )}
     >
       <PinIcon className={cx("h-5 w-5 shrink-0", zone ? "text-green" : "text-black")} />
-      <span aria-hidden="true" className="min-w-0 flex-1 truncate">
-        <span className="sm:hidden">{zone ? locationLabel(zone) : "Set location"}</span>
-        <span className="hidden sm:inline">{locationLabel(zone)}</span>
+      {/* Visible text equals the accessible name (WCAG 2.5.3, voice control). The phone field wraps to two lines instead of truncating, so a long zone name stays readable. */}
+      <span aria-hidden="true" className={cx("min-w-0 flex-1", variant === "field" ? "line-clamp-2 leading-tight" : "truncate")}>
+        {locationLabel(zone)}
       </span>
       <ChevronDownIcon className={cx("h-4 w-4 shrink-0 text-muted", variant === "field" && "max-lg:hidden")} />
     </button>

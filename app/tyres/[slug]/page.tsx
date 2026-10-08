@@ -198,9 +198,9 @@ export default async function TyreDetailPage({ params }: { params: Promise<{ slu
           Back to tyres
         </Link>
 
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:gap-x-12">
-          {/* Photo. This is the LCP image on every PDP (eager, high priority). */}
-          <div className="lg:sticky lg:top-24 lg:self-start">
+        <div className="grid gap-6 md:grid-cols-2 md:gap-x-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:gap-x-12">
+          {/* Photo. This is the LCP image on every PDP (eager, high priority). Two columns from 768px so tablets are not one very tall column. */}
+          <div className="md:sticky md:top-20 md:self-start lg:top-24">
             <PdpGallery images={images} alt={productName} />
           </div>
 

@@ -53,6 +53,12 @@ export function formatEa(cents: number): string {
  * `four_for_three` flag (mock fallback only with `NEXT_PUBLIC_CATALOG_MOCKS=on`,
  * see `lib/catalog/mock-merchandising.ts`). The hidden face is `inert` so it is out
  * of the tab order and the accessibility tree. Priority image: first card only.
+ *
+ * `compact` (the results grid sets it): below 576px the front face is a
+ * horizontal card (square thumbnail on the left, details on the right) instead
+ * of a 530px-tall stacked one, so about three cards fit per phone screen. On
+ * phones only the active face is displayed, so the tall quantity panel does not
+ * set the card's height; it opens in place and the list below moves down.
  */
 export function TyreModelCard({
   group,
@@ -61,6 +67,7 @@ export function TyreModelCard({
   position = "all",
   className,
   bare = false,
+  compact = false,
 }: {
   group: TyreModelGroup;
   priority?: boolean;
@@ -70,6 +77,8 @@ export function TyreModelCard({
   className?: string;
   /** No own border, radius or shadow: the parent (a tier column) draws them. */
   bare?: boolean;
+  /** Horizontal front face below 576px (see above). */
+  compact?: boolean;
 }) {
   const { add } = useCart();
   const { model, fromPrice } = group;
@@ -175,35 +184,47 @@ export function TyreModelCard({
       >
         {/* Front */}
         <div
-          className={cx(face, "overflow-hidden transition-opacity duration-300", !bare && "rounded-card", flipped && "opacity-0")}
+          className={cx(face, "overflow-hidden transition-opacity duration-300", !bare && "rounded-card", flipped && "opacity-0", compact && flipped && "max-sm:hidden")}
           inert={flipped}
           aria-hidden={flipped || undefined}
         >
-          <div className="relative">
+          <div className={cx(compact && "max-sm:flex max-sm:items-start")}>
+          <div className={cx("relative", compact && "max-sm:m-3 max-sm:w-28 max-sm:shrink-0")}>
             <TyreImage
               src={model.images[0]}
               alt=""
               priority={priority}
-              sizes="(min-width: 1024px) 300px, (min-width: 576px) 45vw, 90vw"
-              ratioClassName="aspect-[4/3]"
-              className="bg-gradient-to-b from-[#f4f4f4] to-[#e6e6e6] [&_img]:transition-transform [&_img]:duration-500 [&_img]:ease-out group-hover/card:[&_img]:scale-105"
+              sizes={compact ? "(min-width: 1024px) 300px, (min-width: 576px) 45vw, 112px" : "(min-width: 1024px) 300px, (min-width: 576px) 45vw, 90vw"}
+              ratioClassName={compact ? "aspect-square min-[576px]:aspect-[4/3]" : "aspect-[4/3]"}
+              className={cx(
+                "bg-gradient-to-b from-[#f4f4f4] to-[#e6e6e6] [&_img]:transition-transform [&_img]:duration-500 [&_img]:ease-out group-hover/card:[&_img]:scale-105",
+                compact && "max-sm:rounded-control",
+              )}
             />
             {fourForThree && (
               <span
                 data-testid="four-for-three"
-                className="badge-pop absolute right-3 top-3 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-green text-white shadow-rest"
+                className={cx(
+                  "badge-pop absolute right-3 top-3 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-green text-white shadow-rest",
+                  compact && "max-sm:right-1 max-sm:top-1 max-sm:h-11 max-sm:w-11",
+                )}
               >
-                <span className="text-[26px] font-extrabold leading-none">
-                  4<span className="text-[13px] font-semibold"> for </span>3
+                <span className={cx("text-[26px] font-extrabold leading-none", compact && "max-sm:text-[17px]")}>
+                  4<span className={cx("text-[13px] font-semibold", compact && "max-sm:text-[8px]")}> for </span>3
                 </span>
               </span>
             )}
-            <span className="absolute bottom-0 left-3 max-w-[calc(100%-1.5rem)] translate-y-1/2 truncate rounded-control border border-line bg-surface px-3 py-1.5 text-[13px] font-extrabold uppercase tracking-tight text-black shadow-rest">
+            <span
+              className={cx(
+                "absolute bottom-0 left-3 max-w-[calc(100%-1.5rem)] translate-y-1/2 truncate rounded-control border border-line bg-surface px-3 py-1.5 text-[13px] font-extrabold uppercase tracking-tight text-black shadow-rest",
+                compact && "max-sm:bottom-1 max-sm:left-1 max-sm:max-w-[calc(100%-0.5rem)] max-sm:translate-y-0 max-sm:px-1.5 max-sm:py-0.5 max-sm:text-[10px] max-sm:shadow-none",
+              )}
+            >
               {model.brand.name}
             </span>
           </div>
 
-          <div className="flex flex-1 flex-col gap-1.5 px-4 pb-4 pt-6">
+          <div className={cx("flex flex-1 flex-col gap-1.5 px-4 pb-4 pt-6", compact && "max-sm:min-w-0 max-sm:px-0 max-sm:pb-3 max-sm:pr-3 max-sm:pt-3")}>
             <h3 className="line-clamp-2 text-[17px] font-extrabold uppercase leading-tight tracking-normal text-black">
               <Link href={`/tyres/${primary.slug}`} className="hover:text-link after:absolute after:inset-0 after:z-[1] after:content-['']">
                 <LinkPendingOverlay />
@@ -227,12 +248,13 @@ export function TyreModelCard({
               )}
             </div>
             <ul className="flex flex-wrap gap-1.5" aria-label="Tyre features">
-              {chips.map((chip) => (
-                <li key={chip} className="rounded-full bg-chip px-2.5 py-1 text-xs font-medium text-black">
+              {chips.map((chip, i) => (
+                <li key={chip} className={cx("rounded-full bg-chip px-2.5 py-1 text-xs font-medium text-black", compact && i >= 2 && "max-sm:hidden")}>
                   {chip}
                 </li>
               ))}
             </ul>
+          </div>
           </div>
 
           {fromPrice !== undefined ? (
@@ -265,7 +287,7 @@ export function TyreModelCard({
             <p className="flex min-h-12 items-center border-t border-line px-4 py-2.5 text-sm text-muted">Set your location to see pricing</p>
           )}
 
-          <div className="relative z-[2] px-4 pb-4 pt-3">
+          <div className={cx("relative z-[2] px-4 pb-4 pt-3", compact && "max-sm:px-3 max-sm:pb-3 max-sm:pt-2.5")}>
             <button
               ref={flipBtn}
               type="button"
@@ -288,6 +310,7 @@ export function TyreModelCard({
               "z-10 bg-[#1a1a1a] p-4 text-white transition-[opacity,visibility] duration-300",
               !bare && "rounded-card",
               flipped ? "visible opacity-100" : "invisible opacity-0",
+              compact && !flipped && "max-sm:hidden",
             )}
             inert={!flipped}
             aria-hidden={!flipped || undefined}

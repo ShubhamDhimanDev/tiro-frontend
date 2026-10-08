@@ -25,10 +25,20 @@ import { FITTING_INCLUSIONS } from "@/lib/site/inclusions";
  * and the summary asks for a location instead of showing a price.
  */
 export function CartPageView() {
+  // One wrapper that never changes: it reserves the height of the empty/loading states, and only its contents swap. Swapping the
+  // skeleton element itself for the content element was measured as a 254px layout shift (CLS 0.288) even at equal heights.
+  return (
+    <div className="min-h-[60dvh]">
+      <CartPageBody />
+    </div>
+  );
+}
+
+function CartPageBody() {
   const { state, hydrated, setQuantity, remove } = useCart();
   const { pricing, zoneId, zoneLoading, openPicker } = useLivePricing();
 
-  if (hydrated === false) return <div className="h-64 animate-pulse rounded-card bg-chip" aria-hidden />;
+  if (hydrated === false) return <div className="h-[60dvh] rounded-card bg-chip" aria-hidden />;
 
   if (state.items.length === 0) {
     return (
@@ -36,7 +46,7 @@ export function CartPageView() {
         data-testid="cart-empty"
         className="mx-auto flex max-w-md flex-col items-center gap-4 rounded-card border border-line bg-surface px-6 py-12 text-center shadow-rest"
       >
-        <ImageSlot slot="empty-cart" rounded={false} className="w-56" icon={<CartIcon className="h-8 w-8" />} />
+        <ImageSlot slot="empty-cart" eager rounded={false} className="w-56" icon={<CartIcon className="h-8 w-8" />} />
         <div>
           <h2 className="type-h3">Your cart is currently empty</h2>
           <p className="mt-1 text-muted">Find your tyres and we will fit them at your place.</p>

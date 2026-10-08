@@ -28,8 +28,11 @@ function readDismissed(): boolean {
  * gap, cycling. Fetches once after the first interaction or 8 s idle, so it
  * never competes with LCP. Dismiss stops it for the session. Paused while
  * hovered or focused. Never on checkout/booking/orders/account. No rows, no
- * output. Sits above the phone PDP sticky bar; the cart toast is bottom-centre.
+ * output. Not shown below 768px: on a phone it covered about 80% of the screen
+ * width just above the sticky bottom bars, and no request is made there. From
+ * 768px it sits above the PDP sticky bar; the cart toast is bottom-centre.
  */
+const PHONE_QUERY = "(max-width: 767px)";
 export function SocialProofToast() {
   const pathname = usePathname();
   const excluded = isSocialProofExcluded(pathname);
@@ -49,6 +52,8 @@ export function SocialProofToast() {
       fetched.current = true; // dismissed earlier this session: never fetch, render nothing
       return;
     }
+    // Phones never show the toast, so do not fetch for it either (no matchMedia, e.g. jsdom: carry on).
+    if (typeof window.matchMedia === "function" && window.matchMedia(PHONE_QUERY).matches) return;
     const run = () => {
       if (fetched.current) return;
       fetched.current = true;
@@ -97,7 +102,7 @@ export function SocialProofToast() {
   if (excluded || dismissed || !row) return null;
 
   return (
-    <div className="pointer-events-none fixed bottom-28 left-4 z-[54] max-w-[calc(100vw-2rem)] lg:bottom-6 lg:left-6">
+    <div className="pointer-events-none fixed bottom-28 left-4 z-[54] max-w-[calc(100vw-2rem)] max-md:hidden lg:bottom-6 lg:left-6">
       <AnimatePresence>
         {visible && (
           <m.div
@@ -125,7 +130,7 @@ export function SocialProofToast() {
               type="button"
               onClick={dismiss}
               aria-label="Dismiss recent purchase notice"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-black/70 hover:bg-band"
+              className="-my-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-black/70 hover:bg-band"
             >
               <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <path d="M6 6l12 12M18 6L6 18" />

@@ -25,6 +25,7 @@ export function ImageSlot({
   rounded = true,
   fit = "cover",
   hideOnMobile = false,
+  eager = false,
 }: {
   slot: ContentImageKey;
   /** Glyph drawn in the placeholder. */
@@ -34,6 +35,8 @@ export function ImageSlot({
   fit?: "cover" | "contain";
   /** Hide the placeholder (not a real photo) below md. */
   hideOnMobile?: boolean;
+  /** Load now instead of lazily: for an image that is the main thing on the first screen (the LCP element). */
+  eager?: boolean;
 }) {
   const image = CONTENT_IMAGES[slot];
   const shape = rounded ? "rounded-card" : "";
@@ -45,7 +48,7 @@ export function ImageSlot({
         width={image.width}
         height={image.height}
         alt={image.alt}
-        loading="lazy"
+        loading={eager ? "eager" : "lazy"}
         className={cx("h-auto w-full", fit === "cover" ? "object-cover" : "object-contain", shape, className)}
         style={{ aspectRatio: `${image.width} / ${image.height}` }}
       />

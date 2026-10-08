@@ -24,7 +24,7 @@ export default function NotFound() {
   return (
     <section aria-labelledby="not-found-heading" className="bg-surface">
       <div className="container-page flex flex-col gap-8 py-12 md:py-16">
-        <ImageSlot slot="error-404" rounded={false} className="w-full max-w-sm" />
+        <ImageSlot slot="error-404" eager rounded={false} className="w-full max-w-sm" />
         <div className="flex max-w-2xl flex-col gap-3">
           <p className="type-eyebrow font-bold uppercase text-muted">Error 404</p>
           <h1 id="not-found-heading" className="type-display">
@@ -39,14 +39,14 @@ export default function NotFound() {
           <InlineSizeFinder />
         </div>
 
-        <div className="flex flex-col gap-3 min-[420px]:flex-row">
-          <Link href="/tyres" className={buttonClassName({ variant: "green", className: "w-full min-[420px]:w-auto" })}>
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Link href="/tyres" className={buttonClassName({ variant: "green", className: "w-full sm:w-auto" })}>
             Search tyres
           </Link>
-          <Link href="/booking" className={buttonClassName({ variant: "secondary", className: "w-full min-[420px]:w-auto" })}>
+          <Link href="/booking" className={buttonClassName({ variant: "secondary", className: "w-full sm:w-auto" })}>
             Book a fitting
           </Link>
-          <Link href="/" className={buttonClassName({ variant: "ghost", className: "w-full min-[420px]:w-auto" })}>
+          <Link href="/" className={buttonClassName({ variant: "ghost", className: "w-full sm:w-auto" })}>
             Home
           </Link>
         </div>

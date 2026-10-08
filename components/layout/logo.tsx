@@ -21,6 +21,8 @@ export function Logo({ tone = "dark", className }: { tone?: "dark" | "light"; cl
         width={640}
         height={500}
         priority
+        // Rendered at 40-48px tall (about 52-62px wide). Without `sizes` next/image offers up to 1920px and phones fetch the full 640px file.
+        sizes="(min-width: 768px) 62px, 52px"
         className="h-10 w-auto md:h-12"
       />
     </span>

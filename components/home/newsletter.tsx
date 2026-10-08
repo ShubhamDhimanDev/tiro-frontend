@@ -45,7 +45,7 @@ export function Newsletter() {
   return (
     <section aria-labelledby="newsletter-heading" className="container-page pt-[50px] lg:pt-20">
       <div className="grid overflow-hidden rounded-card bg-band md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-        <div aria-hidden="true" className="asphalt-texture flex min-h-[200px] items-center justify-center md:min-h-[360px]">
+        <div aria-hidden="true" className="asphalt-texture flex min-h-[200px] items-center justify-center max-md:hidden md:min-h-[360px]">
           <TyreIcon className="h-28 w-28 text-gold" strokeWidth={1.2} />
         </div>
         <div className="flex flex-col gap-4 p-6 md:p-10">

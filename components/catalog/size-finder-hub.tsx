@@ -81,7 +81,7 @@ export function SizeFinderHub({ values, popular }: { values: TyreSearchFormValue
           {/* IMAGE SLOT: size-howto-sidewall.webp (see docs/prompts/IMAGE-MANIFEST.md). CSS placeholder until then. */}
           <div
             aria-hidden="true"
-            className="asphalt-texture flex aspect-[4/3] items-center justify-center rounded-card"
+            className="asphalt-texture flex aspect-[16/9] items-center justify-center rounded-card md:aspect-[4/3]"
           >
             <span className="rounded-full border-[14px] border-[#2a2a2a] px-8 py-10 text-center text-3xl font-extrabold tracking-normal text-gold">
               205/55 R16

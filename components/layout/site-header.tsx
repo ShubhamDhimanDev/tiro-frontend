@@ -31,7 +31,8 @@ export async function SiteHeader() {
   const groups = await loadNavGroups();
   return (
     <>
-      <header aria-label="Site header" className="site-header sticky top-0 z-40 border-b border-black/10 bg-surface">
+      {/* Landscape phones (under 500px tall): not sticky, so the header does not take a seventh of the screen while scrolling. */}
+      <header aria-label="Site header" className="site-header sticky top-0 z-40 border-b border-black/10 bg-surface [@media(max-height:500px)_and_(max-width:991px)]:static">
         <HeaderScrollState />
         <div className="site-header-main relative z-10 bg-surface">
         <div className="container-page flex h-14 items-center gap-2 lg:h-[72px] lg:gap-3">

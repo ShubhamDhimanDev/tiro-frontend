@@ -13,7 +13,7 @@ export function FlexibleBanner() {
         <p className="max-w-xl text-lg text-muted">
           Flexible means your fitting is booked for anytime between 8am and 5pm, so we can fit you in around our other jobs.
         </p>
-        <Link href="/tyres" className={buttonClassName({ variant: "yellow", size: "lg" })}>
+        <Link href="/tyres" className={buttonClassName({ variant: "green", size: "lg", className: "w-full sm:w-auto" })}>
           <SearchIcon className="h-5 w-5" />
           Search tyres
         </Link>

@@ -6,13 +6,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FittingDateStrip, FittingLocationStrip, useFittingSelection } from "@/components/checkout/fitting-date-strip";
 import { LocationCaptureForm } from "@/components/location/location-capture-form";
+import { useLocation } from "@/components/location/location-provider";
 import { BnplLines } from "@/components/catalog/bnpl-lines";
 import { PdpNextSlot } from "@/components/catalog/pdp-next-slot";
 import { usePdpBuy } from "@/components/catalog/pdp-buy-context";
 import { StockBadge } from "@/components/catalog/stock-badge";
 import { Button } from "@/components/ui/button";
 import { cx } from "@/components/ui/cx";
-import { CalendarIcon, CheckIcon, TruckIcon, WrenchIcon } from "@/components/ui/icons";
+import { CalendarIcon, CheckIcon, PinIcon, TruckIcon, WrenchIcon } from "@/components/ui/icons";
 import { formatMoney } from "@/lib/catalog/format-money";
 import { QUANTITY_STEPS } from "@/lib/catalog/mock-merchandising";
 
@@ -23,33 +24,37 @@ const POPULAR_QUANTITY = 4;
 export const INCLUDES_LINE = "Includes fitting, balancing, valves and old-tyre recycling.";
 
 /**
- * Price block. Height is reserved (`min-h-24`, 96px) in every branch so the
- * swap from loading to ready doesn't shift the page: a real Lighthouse run
- * measured CLS 0.224 when these branches had different heights.
+ * Price block. The page is static, so the server can't know whether the visitor
+ * already has a location: the loading skeleton is replaced after hydration by
+ * either the "no location" form (about 185px) or the price (about 120px).
+ * Heights are reserved so that swap stays small whichever way it goes: the
+ * skeleton (152px) sits between the two, and every price-state branch reserves
+ * 120px. Measured on a 390px phone with 4x CPU + Slow 4G: CLS 0.276 when the
+ * skeleton was 96px and the form was about 290px; an earlier Lighthouse run
+ * saw 0.224 when the branches had different heights.
  */
 function PriceBlock() {
   const { availability, unitCents } = usePdpBuy();
 
   if (availability.status === "zone-loading" || availability.status === "loading") {
-    return <div className="min-h-24 animate-pulse rounded-control bg-chip" aria-hidden />;
+    return <div className="min-h-[9.5rem] animate-pulse rounded-control bg-chip" aria-hidden />;
   }
 
   if (availability.status === "no-zone") {
     return (
-      <div className="rounded-card border border-line bg-band p-4">
-        <p className="mb-3 text-sm text-black">Enter your location to see price and availability for this tyre.</p>
-        <LocationCaptureForm />
-        <p className="mt-3 flex items-center gap-2 border-t border-line pt-3 text-sm text-black" data-testid="pdp-fitting-teaser">
-          <CalendarIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-ink" />
-          Add your suburb to see the next available fitting time.
+      <div className="rounded-card border border-line bg-band p-4" data-testid="pdp-fitting-teaser">
+        <p className="mb-3 flex items-start gap-2 text-sm text-black">
+          <CalendarIcon aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-ink" />
+          Enter your suburb to see the price and the next available fitting time.
         </p>
+        <LocationCaptureForm />
       </div>
     );
   }
 
   if (availability.status === "error") {
     return (
-      <div className="flex min-h-24 flex-col justify-center">
+      <div className="flex min-h-[7.5rem] flex-col justify-center">
         <p role="alert" className="text-sm msg-error">
           {availability.message}
         </p>
@@ -61,7 +66,7 @@ function PriceBlock() {
 
   if (data.stock_status === "unavailable_in_zone") {
     return (
-      <div className="flex min-h-24 flex-col justify-center msg-warning px-4 py-3 text-sm text-black">
+      <div className="flex min-h-[7.5rem] flex-col justify-center msg-warning px-4 py-3 text-sm text-black">
         This tyre isn&apos;t currently available in your area. Try a different location, or check back soon.
       </div>
     );
@@ -70,7 +75,7 @@ function PriceBlock() {
   const shown = unitCents ?? data.promotional_price ?? data.unit_price;
 
   return (
-    <div className="flex min-h-24 flex-col justify-center gap-2">
+    <div className="flex min-h-[7.5rem] flex-col justify-center gap-2">
       <div className="flex flex-wrap items-baseline gap-x-2">
         <PriceTick className="type-mono text-4xl font-extrabold text-black" value={formatMoney(shown, data.currency)} />
         {data.promotional_price ? <s className="type-mono text-sm text-muted">{formatMoney(data.unit_price, data.currency)}</s> : null}
@@ -215,17 +220,20 @@ export function PdpBuyPanel() {
       </ul>
       <BnplLines totalCents={totalCents} currency={currency} />
 
-      <section aria-labelledby="pdp-fitting-heading" className="flex flex-col gap-4 rounded-card border border-line p-4 shadow-rest">
-        <h2 id="pdp-fitting-heading" className="sr-only">
-          Choose a fitting time
-        </h2>
-        <FittingLocationStrip />
-        <FittingDateStrip value={fitting} onChange={setFitting} idPrefix="pdp" items={[{ tyre_variant_id: tyreVariantId, quantity, position }]} />
-        <Button onClick={express} disabled={!canExpress} variant="yellow" fullWidth size="lg" data-testid="pdp-express">
-          Express Checkout ({quantity} {quantity === 1 ? "tyre" : "tyres"})
-        </Button>
-        {!canExpress && <p className="-mt-2 text-center text-sm text-muted">Choose a fitting date and time to check out in one step.</p>}
-      </section>
+      {/* Nothing here can work without a location, so it only appears once there is one (no wall of disabled controls). */}
+      {!needsLocation && (
+        <section aria-labelledby="pdp-fitting-heading" className="flex flex-col gap-4 rounded-card border border-line p-4 shadow-rest">
+          <h2 id="pdp-fitting-heading" className="sr-only">
+            Choose a fitting time
+          </h2>
+          <FittingLocationStrip />
+          <FittingDateStrip value={fitting} onChange={setFitting} idPrefix="pdp" items={[{ tyre_variant_id: tyreVariantId, quantity, position }]} />
+          <Button onClick={express} disabled={!canExpress} variant="yellow" fullWidth size="lg" data-testid="pdp-express">
+            Express Checkout ({quantity} {quantity === 1 ? "tyre" : "tyres"})
+          </Button>
+          {!canExpress && <p className="-mt-2 text-center text-sm text-muted">Choose a fitting date and time to check out in one step.</p>}
+        </section>
+      )}
     </div>
   );
 }
@@ -238,7 +246,10 @@ export function PdpBuyPanel() {
  */
 export function PdpStickyBar() {
   const { addButtonInView, totalCents, quantity, add, availability } = usePdpBuy();
+  const { openPicker } = useLocation();
   if (addButtonInView) return null;
+  // No location yet: the one persistent control is "Set location" (opens the picker), not a disabled Add button.
+  const needsLocation = availability.status === "no-zone";
   const unavailable = availability.status === "ready" && availability.data.stock_status === "unavailable_in_zone";
   const currency = availability.status === "ready" ? availability.data.currency : "AUD";
 
@@ -257,12 +268,19 @@ export function PdpStickyBar() {
               </p>
             </>
           ) : (
-            <p className="text-sm font-medium leading-tight text-black">Set location for price</p>
+            <p className="text-sm font-medium leading-tight text-black">{needsLocation ? "See price and fitting times" : "Set location for price"}</p>
           )}
         </div>
-        <Button onClick={add} disabled={unavailable || availability.status === "no-zone" || availability.status === "zone-loading"} className="shrink-0">
-          Add to cart
-        </Button>
+        {needsLocation ? (
+          <Button onClick={openPicker} className="shrink-0" data-testid="pdp-sticky-set-location">
+            <PinIcon aria-hidden="true" className="h-5 w-5" />
+            Set location
+          </Button>
+        ) : (
+          <Button onClick={add} disabled={unavailable || availability.status === "zone-loading"} className="shrink-0">
+            Add to cart
+          </Button>
+        )}
       </div>
     </div>
   );

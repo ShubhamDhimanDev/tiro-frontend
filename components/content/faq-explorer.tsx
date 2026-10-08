@@ -7,6 +7,14 @@ import { Accordion } from "@/components/ui/accordion";
 
 export type FaqGroup = { category: string; items: { id: number; question: string; answer: string }[] };
 
+/** Category slugs that read badly as plain text. "pdp" is the reserved category for the product-page FAQs. */
+const CATEGORY_LABELS: Record<string, string> = { pdp: "Tyres" };
+
+/** Heading and chip text for a category slug ("pdp" -> "Tyres"; otherwise the slug with spaces, capitalised by CSS). */
+export function faqCategoryLabel(category: string): string {
+  return CATEGORY_LABELS[category] ?? category.replace(/-/g, " ");
+}
+
 /**
  * FAQ page body: category chips (All + one per category) over an accessible
  * accordion per category. The FAQPage JSON-LD is rendered by the server page
@@ -26,7 +34,7 @@ export function FaqExplorer({ groups }: { groups: FaqGroup[] }) {
             </ChipButton>
             {groups.map((g) => (
               <ChipButton key={g.category} selected={active === g.category} onClick={() => setActive(g.category)} className="capitalize">
-                {g.category.replace(/-/g, " ")}
+                {faqCategoryLabel(g.category)}
               </ChipButton>
             ))}
           </div>
@@ -35,7 +43,7 @@ export function FaqExplorer({ groups }: { groups: FaqGroup[] }) {
 
       {visible.map((group) => (
         <section key={group.category} className="flex flex-col gap-4">
-          <h2 className="type-h3 capitalize">{group.category.replace(/-/g, " ")}</h2>
+          <h2 className="type-h3 capitalize">{faqCategoryLabel(group.category)}</h2>
           <Accordion items={group.items.map((i) => ({ id: i.id, title: i.question, content: i.answer }))} />
         </section>
       ))}

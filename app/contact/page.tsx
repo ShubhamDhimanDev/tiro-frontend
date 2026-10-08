@@ -117,8 +117,8 @@ export default function ContactPage() {
       </div>
 
       <HomeSection id="out-of-area" title="Outside our area?" className="pb-[50px] lg:pb-20">
-        <div className="grid gap-6 rounded-card bg-band p-5 md:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-12">
-          <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-6 rounded-card bg-band p-5 md:p-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-12">
+          <div className="flex min-w-0 flex-col gap-3">
             <p className="flex items-center gap-3 text-lg font-bold text-black">
               <PinIcon aria-hidden="true" className="h-6 w-6" />
               We are adding areas all the time

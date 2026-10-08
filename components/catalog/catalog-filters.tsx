@@ -485,7 +485,7 @@ export function FilterBar({ values, brands, patterns, facets }: CommonProps) {
   return (
     <>
       <div className="sticky bottom-0 z-30 mt-auto -mx-5 border-t border-line bg-surface px-5 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-raised md:-mx-6 md:px-6 lg:hidden">
-        <div className="grid h-12 grid-cols-2 gap-2" data-testid="filter-bar">
+        <div className="grid h-12 grid-cols-[minmax(0,5fr)_minmax(0,7fr)] gap-2" data-testid="filter-bar">
           <button
             type="button"
             onClick={openSheet}
@@ -503,11 +503,11 @@ export function FilterBar({ values, brands, patterns, facets }: CommonProps) {
               value={values.sort ?? ""}
               disabled={isPending}
               onChange={(e) => apply({ ...currentFilters(values), sort: e.target.value || undefined })}
-              className="absolute inset-0 h-full w-full cursor-pointer appearance-none rounded-control bg-transparent pr-4 pl-16 text-right text-sm text-muted"
+              className="absolute inset-0 h-full w-full cursor-pointer appearance-none rounded-control bg-transparent pr-4 pl-16 text-right text-base text-muted"
             >
               {SORT_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
-                  {o.label}
+                  {o.short}
                 </option>
               ))}
             </select>
@@ -525,7 +525,7 @@ export function FilterBar({ values, brands, patterns, facets }: CommonProps) {
               type="button"
               onClick={() => setDraft({})}
               disabled={countActiveFilters(draft) === 0}
-              className="inline-flex min-h-11 items-center text-sm font-medium text-black underline underline-offset-4 disabled:text-muted disabled:no-underline"
+              className="inline-flex min-h-11 shrink-0 items-center whitespace-nowrap text-sm font-medium text-black underline underline-offset-4 disabled:text-muted disabled:no-underline"
             >
               Clear filters
             </button>

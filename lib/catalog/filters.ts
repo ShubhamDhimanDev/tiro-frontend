@@ -28,10 +28,10 @@ export const FILTER_KEYS = ["brand", "tyre_type", "category", ...EXTRA_FILTER_KE
 
 /** Values accepted by the API's `sort` param (TyreIndexRequest). Empty = API default (newest). */
 export const SORT_OPTIONS = [
-  { value: "", label: "Newest" },
-  { value: "price_asc", label: "Price: low to high" },
-  { value: "price_desc", label: "Price: high to low" },
-  { value: "name_asc", label: "Name: A to Z" },
+  { value: "", label: "Newest", short: "Newest" },
+  { value: "price_asc", label: "Price: low to high", short: "Lowest price" },
+  { value: "price_desc", label: "Price: high to low", short: "Highest price" },
+  { value: "name_asc", label: "Name: A to Z", short: "Name A to Z" },
 ] as const;
 
 export function isKnownTyreType(value: string | undefined): boolean {

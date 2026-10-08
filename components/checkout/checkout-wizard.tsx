@@ -417,7 +417,7 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
       panelTestId="checkout-wizard"
       renderHeader={({ titleId, close }) => (
         <div>
-          <div className="flex items-center justify-between gap-3 bg-black px-5 py-4 text-white md:rounded-t-sheet md:px-8">
+          <div className="flex items-center justify-between gap-3 bg-black px-5 py-3 text-white md:rounded-t-sheet md:px-8 md:py-4">
             <h2 id={titleId} className="min-w-0 text-lg leading-tight tracking-normal">
               <b>Step {step + 1} of {WIZARD_STEPS.length}:</b> {current.title}
             </h2>
@@ -440,8 +440,9 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
               </button>
             </div>
           </div>
-          <div className="px-5 pt-4 md:px-8">
-            <ol className="flex justify-between text-xl font-extrabold" aria-label="Checkout steps">
+          <div className="px-5 pt-3 md:px-8 md:pt-4">
+            {/* Phones: the title already says "Step N of 4", so the 01-04 row is read by screen readers only (saves about 36px of chrome). */}
+            <ol className="flex justify-between text-xl font-extrabold max-md:sr-only" aria-label="Checkout steps">
               {WIZARD_STEPS.map((s, i) => (
                 <li key={s.key} aria-current={i === step ? "step" : undefined} className={cx(i <= step ? "text-black" : "text-[#8a8a8a]")}>
                   {String(i + 1).padStart(2, "0")}
@@ -449,11 +450,11 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
                 </li>
               ))}
             </ol>
-            <div className="mt-2 h-1 rounded-full bg-line" aria-hidden="true">
+            <div className="h-1 rounded-full bg-line md:mt-2" aria-hidden="true">
               <div className="h-1 rounded-full bg-gold transition-all duration-300" style={{ width: `${((step + 1) / WIZARD_STEPS.length) * 100}%` }} />
             </div>
             {hold && step > 0 && !holdExpired && hold.record.hold_expires_at && !order && (
-              <div data-testid="wizard-hold" className="mt-3 rounded-control bg-band px-3 py-2 text-sm">
+              <div data-testid="wizard-hold" className="mt-2 rounded-control bg-band px-3 py-1.5 text-sm md:mt-3 md:py-2">
                 <HoldCountdown expiresAt={hold.record.hold_expires_at} onExpire={() => setHoldExpired(true)} />
               </div>
             )}
