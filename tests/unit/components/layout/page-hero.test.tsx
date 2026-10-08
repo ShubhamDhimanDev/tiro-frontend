@@ -1,6 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { PageHero } from "@/components/layout/page-hero";
+
+// The real hero photos are wired in `lib/site/images.ts`; these tests cover the no-photo fallback.
+vi.mock("@/lib/site/images", () => ({ HERO_IMAGES: { desktop: null, mobile: null } }));
 
 describe("PageHero", () => {
   it("renders exactly one h1 with the title, intro and children", () => {

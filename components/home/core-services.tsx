@@ -41,7 +41,7 @@ export function CoreServices() {
           <p className="max-w-md text-lg text-muted">
             Search our range of leading brands, then choose your tyres online or over the phone. A technician does the rest.
           </p>
-          <Link href="/tyres" className={buttonClassName({ variant: "green" })}>
+          <Link href="/tyres" className={buttonClassName({ variant: "green", className: "w-full sm:w-auto" })}>
             <SearchIcon className="h-5 w-5" />
             Search tyres
           </Link>

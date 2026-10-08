@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Montserrat } from "next/font/google";
 import { NavProgress } from "@/components/layout/nav-progress";
@@ -13,6 +13,14 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SITE_NAME } from "@/lib/site/config";
 import { SITE_URL } from "@/lib/site/url";
+
+export const viewport: Viewport = {
+  // Android Chrome address-bar colour: brand yellow.
+  themeColor: "#ffce00",
+  // Android Chrome: resize the layout (not just the visual viewport) when the on-screen keyboard opens, so bottom sheets and
+  // the checkout wizard's sticky footer sit above the keyboard. iOS Safari ignores this.
+  interactiveWidget: "resizes-content",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),

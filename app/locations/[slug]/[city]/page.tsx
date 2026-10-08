@@ -170,8 +170,8 @@ export default async function CityPage({ params }: { params: Params }) {
       <UspStrip />
 
       <HomeSection id="coverage" title={`How we cover ${city.name}`}>
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16">
-          <div className="flex flex-col gap-5">
+        <div className="grid grid-cols-[minmax(0,1fr)] gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16">
+          <div className="flex min-w-0 flex-col gap-5">
             {coverage.notes.length > 0 ? (
               <ul className="flex flex-col gap-2 text-lg text-muted">
                 {coverage.notes.map((note) => (

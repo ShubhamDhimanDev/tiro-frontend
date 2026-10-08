@@ -51,9 +51,11 @@ export function PdpGallery({ images, alt }: { images: string[]; alt: string }) {
           src={current.src}
           alt={alt}
           priority
-          sizes="(min-width: 1024px) 600px, 100vw"
-          ratioClassName="aspect-square"
-          className="rounded-card bg-gradient-to-b from-[#f4f4f4] to-[#e6e6e6]"
+          sizes="(min-width: 1024px) 600px, (min-width: 768px) 50vw, 100vw"
+          // Phones: a 4:3 strip capped at 240px so the title, price and quantity are on the first screen (a square was 280-390px tall and pushed them below the fold).
+          ratioClassName="aspect-[4/3] max-h-[240px] md:aspect-square md:max-h-none"
+          // w-full: with a max-height the aspect ratio would otherwise shrink the box's width too.
+          className="w-full rounded-card bg-gradient-to-b from-[#f4f4f4] to-[#e6e6e6]"
         />
       )}
       </m.div>

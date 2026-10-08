@@ -71,6 +71,7 @@ export function TyreResultsGrid({
             priority={allowPriority && index < 6}
             tier={tiers?.[group.model.slug]}
             position={position}
+            compact
           />
         </RevealItem>
       ))}

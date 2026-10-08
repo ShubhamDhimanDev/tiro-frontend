@@ -1,19 +1,38 @@
+import Image from "next/image";
 import { HERO_IMAGES } from "@/lib/site/images";
 
+/** 1x1 transparent GIF. The desktop `<img>` below uses it as its own `src` so phones never download the real photo. */
+const BLANK_PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+
 /**
- * Placeholder hero artwork: yellow chevron bars with a stylised van. Shared by
- * the home hero and `PageHero` as the graceful fallback while no photograph
- * exists. Replace with the generated image (docs/prompts/) via `lib/site/images.ts`.
- * Decorative and desktop-only (`lg`).
+ * Hero artwork. Shared by the home hero and `PageHero` as the fallback while a page has no image of its own.
+ *
+ * - Desktop (`lg`, 992px+): the wide van photo from `lib/site/images.ts`, or the chevron-and-van SVG while no photo exists.
+ * - Phones and small tablets: nothing by default, so the finder stays the first thing on screen. The home hero passes
+ *   `mobile` to show the square van photo as a banner below the finder instead.
+ *
+ * The desktop photo sits in a `<picture>` whose only real source is gated by `min-width: 992px`; the `<img>` itself is a
+ * blank pixel. A plain `<img src>` in a `hidden lg:block` wrapper is still fetched on phones, and because it is eager the
+ * home page's prefetched data also made every other page preload it (191KB on /cart, /login, ...).
  */
-export function HeroArt() {
+export function HeroArt({ mobile = false }: { mobile?: boolean }) {
   const photo = HERO_IMAGES.desktop;
+  const mobilePhoto = mobile ? HERO_IMAGES.mobile : null;
   if (photo) {
     return (
-      <div className="relative hidden h-full min-h-[420px] lg:block">
-        {/* eslint-disable-next-line @next/next/no-img-element -- static generated asset with known dimensions */}
-        <img src={photo.src} width={photo.width} height={photo.height} alt={photo.alt} className="absolute inset-0 h-full w-full rounded-sheet object-cover" />
-      </div>
+      <>
+        {mobilePhoto && (
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-sheet md:aspect-[2/1] lg:hidden">
+            <Image src={mobilePhoto.src} alt={mobilePhoto.alt} fill sizes="(min-width: 768px) 720px, 100vw" className="object-cover object-[50%_70%]" />
+          </div>
+        )}
+        <div className="relative hidden h-full min-h-[420px] lg:block">
+          <picture>
+            <source media="(min-width: 992px)" srcSet={photo.src} width={photo.width} height={photo.height} />
+            <img src={BLANK_PIXEL} width={photo.width} height={photo.height} alt={photo.alt} className="absolute inset-0 h-full w-full rounded-sheet object-cover" />
+          </picture>
+        </div>
+      </>
     );
   }
   return (

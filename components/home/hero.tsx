@@ -32,8 +32,9 @@ function UspLine() {
 }
 
 /**
- * Home hero. Mobile order: headline, finder card, USP line (no artwork above
- * the finder). Desktop: copy + finder on the left, chevrons and van art right.
+ * Home hero. Mobile order: headline, finder card, USP line, then the van photo
+ * (no artwork above the finder, so "Find tyres" stays on the first screen).
+ * Desktop: copy + finder on the left, chevrons and van art right.
  */
 export function Hero({ regoEnabled }: { regoEnabled: boolean }) {
   return (
@@ -51,7 +52,7 @@ export function Hero({ regoEnabled }: { regoEnabled: boolean }) {
           <HeroFinder regoEnabled={regoEnabled} />
           <UspLine />
         </div>
-        <HeroArt />
+        <HeroArt mobile />
       </div>
     </section>
   );

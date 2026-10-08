@@ -78,6 +78,13 @@ describe("FaqExplorer", () => {
     expect(screen.getByRole("button", { name: "Pricing Q1" })).toBeInTheDocument();
   });
 
+  it("shows the reserved \"pdp\" category as \"Tyres\", not the raw slug", () => {
+    render(<FaqExplorer groups={[groups[0], { category: "pdp", items: [{ id: 3, question: "Tyre Q1", answer: "A3" }] }]} />);
+    expect(screen.getByRole("heading", { level: 2, name: "Tyres" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Tyres" })).toBeInTheDocument();
+    expect(screen.queryByText("pdp")).not.toBeInTheDocument();
+  });
+
   it("hides the chip row when there is only one category", () => {
     render(<FaqExplorer groups={[groups[0]]} />);
     expect(screen.queryByRole("button", { name: "All" })).not.toBeInTheDocument();

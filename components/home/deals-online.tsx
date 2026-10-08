@@ -56,7 +56,8 @@ export function DealsOnline() {
   return (
     <section aria-labelledby="deals-heading" className="container-page pt-[50px] lg:pt-20">
       <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
-        <div className="order-2 lg:order-1">
+        {/* Decorative CSS mock-up: no information in it, so phones skip it (it added about 340px of scrolling). */}
+        <div className="order-2 max-md:hidden lg:order-1">
           <PhoneMock />
         </div>
         <div className="order-1 flex flex-col gap-4 lg:order-2">
@@ -67,7 +68,7 @@ export function DealsOnline() {
             Choose your tyres online or by phone, pick a time that suits you, and we bring the tyre shop to you.
           </p>
           <Accordion variant="icons" items={ITEMS} defaultOpenId="brands" />
-          <Link href="/tyres" className={buttonClassName({ variant: "green", className: "mt-2 w-fit" })}>
+          <Link href="/tyres" className={buttonClassName({ variant: "green", className: "mt-2 w-full sm:w-fit" })}>
             <CheckIcon className="h-5 w-5" />
             Shop tyres
           </Link>

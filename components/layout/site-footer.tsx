@@ -106,8 +106,9 @@ export async function SiteFooter() {
       {/* Contact bar */}
       <div className="bg-black text-white">
         <div className="container-page flex flex-col items-start gap-3 py-5 md:flex-row md:items-center md:justify-between">
-          <p className="text-lg font-bold tracking-[-0.5px]">Can&apos;t find your size? We&apos;ll find it for you.</p>
-          <div className="flex w-full flex-col gap-3 min-[420px]:flex-row md:w-auto">
+          <p className="text-balance text-lg font-bold tracking-[-0.5px]">Can&apos;t find your size? We&apos;ll find it for you.</p>
+          {/* Two buttons side by side on every width: stacked full-width buttons made this bar 216px tall on phones. */}
+          <div className="flex w-full gap-3 md:w-auto">
             <Link
               href="/contact"
               className="flex min-h-12 flex-1 items-center justify-center whitespace-nowrap rounded-control border-2 border-white px-5 text-[15px] font-bold text-white transition-colors duration-300 hover:bg-white hover:text-black md:flex-none"
@@ -126,7 +127,7 @@ export async function SiteFooter() {
       </div>
 
       <footer aria-label="Site footer" className="bg-footer text-white">
-        <div className="container-page flex flex-col gap-8 py-10">
+        <div className="container-page flex flex-col gap-6 py-8 md:gap-8 md:py-10">
           <Link href="/" aria-label={`${SITE_NAME} home`} className="self-start">
             <Logo tone="light" />
           </Link>

@@ -824,3 +824,32 @@ the two independently-built sides still agreed — they didn't, on one point.
   and `meta.summary.{average_rating,total_count}` nesting match
   `lib/reviews/types.ts` exactly, no other drift found beyond the
   nullability point above.
+
+## Mobile layout rules (2026-10-08 mobile audit)
+
+Full write-up, measurements and screenshots: `../docs/mobile-view-audit.md`. The rules below are the non-obvious ones
+that cost real time to find, so please keep them when editing:
+
+- **Never put an eager `<img>` in a `hidden`/`lg:block` wrapper.** It is still fetched on phones, and because Next
+  prefetches `/` from the header logo, the home page's image-preload hint made *every* page download it (191KB). The
+  desktop hero in `components/layout/hero-art.tsx` is a `<picture>` whose only real source is gated by
+  `(min-width: 992px)`; its `<img>` is a blank-pixel data URI. The phone hero photo is a separate `next/image` that
+  only the home hero asks for (`<HeroArt mobile />`).
+- **Form controls must be 16px or larger on phones** (iOS Safari zooms the page when a smaller one takes focus):
+  `<select>`s included. The finder selects (`components/catalog/tyre-search-form.tsx`) and the mobile Sort are 16px.
+- **Skeletons:** keep a skeleton's height within about 60px of every state that replaces it, and do not swap a
+  pulsing (`animate-pulse`) skeleton for a different element: Chrome scored that as a 250px layout shift on `/cart`
+  (CLS 0.288 -> 0 with a static skeleton inside a persistent `min-h` wrapper). The page is static, so the server
+  cannot know whether a visitor already has a location; see the comment on `PriceBlock` in
+  `components/catalog/pdp-buy-panel.tsx`.
+- **`Button` is no longer `whitespace-nowrap`**: long labels wrap on 320px phones instead of clipping. Grids that
+  contain buttons or forms should use `grid-cols-[minmax(0,1fr)]` on phones so content cannot widen the column.
+- **`TyreModelCard compact`** (results grid only) is a horizontal card below 576px and displays only its active face
+  on phones, so the tall quantity panel does not set the card height. Tier columns and related products keep the
+  stacked card.
+- **Location chip:** its visible text must equal its accessible name (`locationLabel()`); the phone field wraps to two
+  lines instead of truncating.
+- **Not added on purpose:** `viewportFit: "cover"` (needs safe-area padding on every container or content sits under
+  the landscape notch). `app/layout.tsx` sets `themeColor` and `interactiveWidget: "resizes-content"` only.
+- Measure with a production build (`npm run build && npx next start`), not `next dev`. Scripts:
+  `../docs/mobile-audit/scripts/` (see the report's appendix).

@@ -120,11 +120,13 @@ export function StepDetails({
       <HeldTimeCard hold={hold} onEdit={onEditDate} />
 
       <h3 className="text-base font-extrabold text-black">Your information</h3>
-      <div className="grid gap-4 md:grid-cols-2">
+      {/* Two columns from 380px so first/last name (and below, rego/state) share a row instead of stacking. */}
+      <div className="grid gap-4 min-[380px]:grid-cols-2">
         <Input label="First name" required autoComplete="given-name" value={details.firstName} onChange={(e) => set({ firstName: e.target.value })} error={errors.firstName} />
         <Input label="Last name" required autoComplete="family-name" value={details.lastName} onChange={(e) => set({ lastName: e.target.value })} error={errors.lastName} />
         <Input
           label="Mobile phone number"
+          fieldClassName="min-[380px]:col-span-2 md:col-span-1"
           required
           type="tel"
           inputMode="tel"
@@ -134,7 +136,7 @@ export function StepDetails({
           onChange={(e) => set({ mobile: e.target.value })}
           error={errors.mobile}
         />
-        <Input label="Email address" required type="email" autoComplete="email" value={details.email} onChange={(e) => set({ email: e.target.value })} error={errors.email} />
+        <Input label="Email address" fieldClassName="min-[380px]:col-span-2 md:col-span-1" required type="email" autoComplete="email" value={details.email} onChange={(e) => set({ email: e.target.value })} error={errors.email} />
       </div>
 
       <label className="flex min-h-11 cursor-pointer items-start gap-3 text-sm text-black">
@@ -224,7 +226,7 @@ export function StepTyres({
             ))}
           </Select>
         )}
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 min-[380px]:grid-cols-2">
           <Input label="Rego" autoCapitalize="characters" autoComplete="off" maxLength={20} value={vehicle.rego} onChange={(e) => set({ rego: e.target.value.toUpperCase() })} className="uppercase" />
           <Select label="State" value={vehicle.state} onChange={(e) => set({ state: e.target.value })}>
             <option value="">Select</option>
@@ -236,7 +238,7 @@ export function StepTyres({
           </Select>
           <Input label="Colour" value={vehicle.colour} onChange={(e) => set({ colour: e.target.value })} />
           <Input label="Make" value={vehicle.make} onChange={(e) => set({ make: e.target.value })} />
-          <Input label="Model" fieldClassName="md:col-span-2" value={vehicle.model} onChange={(e) => set({ model: e.target.value })} />
+          <Input label="Model" fieldClassName="min-[380px]:col-span-2" value={vehicle.model} onChange={(e) => set({ model: e.target.value })} />
         </div>
         <Textarea
           label="Special instructions (optional)"

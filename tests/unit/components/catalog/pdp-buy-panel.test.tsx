@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { PdpBuyPanel, PdpStickyBar } from "@/components/catalog/pdp-buy-panel";
 
 const push = vi.fn();
@@ -10,6 +11,8 @@ vi.mock("@/components/checkout/fitting-date-strip", () => ({
   useFittingSelection: () => [null, vi.fn()],
 }));
 vi.mock("@/components/location/location-capture-form", () => ({ LocationCaptureForm: () => null }));
+const openPicker = vi.fn();
+vi.mock("@/components/location/location-provider", () => ({ useLocation: () => ({ openPicker }) }));
 vi.mock("@/components/catalog/bnpl-lines", () => ({ BnplLines: () => null }));
 vi.mock("@/components/catalog/pdp-next-slot", () => ({ PdpNextSlot: () => null }));
 vi.mock("@/components/catalog/stock-badge", () => ({ StockBadge: () => null }));
@@ -35,6 +38,7 @@ function setContext(availability: unknown, extra: Record<string, unknown> = {}) 
 
 beforeEach(() => {
   push.mockReset();
+  openPicker.mockReset();
   vi.stubGlobal("IntersectionObserver", undefined);
 });
 
@@ -52,14 +56,32 @@ describe("PDP Add to cart without a location", () => {
     expect(screen.getByTestId("pdp-add")).toBeDisabled();
   });
 
-  it("disables the sticky bar's Add button without a location", () => {
+  it("swaps the sticky bar's Add button for a Set location button that opens the picker", async () => {
     setContext({ status: "no-zone" });
     render(<PdpStickyBar />);
-    expect(screen.getByRole("button", { name: /add/i })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: /add to cart/i })).not.toBeInTheDocument();
+    const setLocation = screen.getByRole("button", { name: /set location/i });
+    expect(setLocation).toBeEnabled();
+    await userEvent.click(setLocation);
+    expect(openPicker).toHaveBeenCalledTimes(1);
   });
 
-  it("keeps Express Checkout disabled without a location", () => {
+  it("keeps the sticky bar's Add button disabled while the saved zone is loading", () => {
+    setContext({ status: "zone-loading" });
+    render(<PdpStickyBar />);
+    expect(screen.getByRole("button", { name: /add to cart/i })).toBeDisabled();
+  });
+
+  it("hides the fitting-time section and Express Checkout until there is a location", () => {
     setContext({ status: "no-zone" });
+    const { unmount } = render(<PdpBuyPanel />);
+    expect(screen.queryByTestId("pdp-express")).not.toBeInTheDocument();
+    unmount();
+    setContext({ status: "zone-loading" });
+    const loading = render(<PdpBuyPanel />);
+    expect(screen.queryByTestId("pdp-express")).not.toBeInTheDocument();
+    loading.unmount();
+    setContext({ status: "ready", data: { currency: "AUD", stock_status: "in_stock" } }, { totalCents: 75600 });
     render(<PdpBuyPanel />);
     expect(screen.getByTestId("pdp-express")).toBeDisabled();
   });

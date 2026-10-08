@@ -41,7 +41,8 @@ export function SizeSelects({
   /** Finder style: 62px controls with a visible label above each. */
   large?: boolean;
 }) {
-  const selectClass = cx(inputClassName, "font-mono", large && "!min-h-[62px] !px-2.5 text-[15px] font-semibold md:!px-4 md:text-base");
+  // 16px minimum on phones: iOS Safari zooms the page when a control under 16px takes focus.
+  const selectClass = cx(inputClassName, "font-mono", large && "!min-h-[62px] !px-2.5 text-base font-semibold max-[359px]:!pl-1.5 md:!px-4");
   const wrap = (label: string, node: React.ReactNode) =>
     large ? (
       <div className="flex flex-col gap-1.5">
@@ -52,7 +53,8 @@ export function SizeSelects({
       node
     );
   return (
-    <div className="grid grid-cols-3 gap-2 md:gap-3">
+    // Below 360px the three equal columns are too narrow for the 16px placeholders ("Profile" is the longest), so give the columns uneven shares.
+    <div className="grid grid-cols-[1.33fr_1.63fr_1fr] gap-2 min-[360px]:grid-cols-3 md:gap-3">
       {wrap("Width", <select
         aria-label={`${prefix} width`}
         value={width}
