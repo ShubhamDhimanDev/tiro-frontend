@@ -33,6 +33,18 @@ export function formatOfferDate(iso: string): string {
 }
 
 /**
+ * The offer's feature image URL, or `null` when there is none. The admin media
+ * picker stores the uploaded file's absolute URL in `promotions.image_path`; a
+ * bare storage-relative value has no host the storefront can resolve, so it
+ * counts as "no image" and the card keeps its text layout.
+ */
+export function offerImageSrc(offer: Pick<Offer, "image_path">): string | null {
+  const value = offer.image_path?.trim();
+  if (!value) return null;
+  return /^https?:\/\//i.test(value) || value.startsWith("/") ? value : null;
+}
+
+/**
  * "Shop this offer" target. The offer's `shop_filters` go straight onto the
  * storefront listing; an empty object means the plain listing. Unknown keys
  * are ignored so a future API key cannot leak into the URL unreviewed.

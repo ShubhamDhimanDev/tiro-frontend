@@ -51,6 +51,17 @@ describe("home live data", () => {
     expect(link).toHaveTextContent("4 for 3");
   });
 
+  it("shows an offer's feature image as the whole tile, with the offer text kept for screen readers", () => {
+    const { container } = render(
+      <OffersCarousel offers={[offer({ image_path: "https://cdn.example.test/offer.webp", discount_description: "Fourth tyre free" })]} />,
+    );
+    expect(container.querySelector("img")).toHaveAttribute("src", "https://cdn.example.test/offer.webp");
+    const link = screen.getByRole("link", { name: /Buy 3, get the 4th free/ });
+    expect(link).toHaveAttribute("href", "/deals/four-for-three");
+    expect(link).toHaveTextContent("Fourth tyre free");
+    expect(screen.queryByText("4 for 3")).not.toBeInTheDocument();
+  });
+
   it("links brands to their brand page", () => {
     render(<BrandsBand brands={[{ name: "Michelin", slug: "michelin" }]} />);
     expect(screen.getByRole("link", { name: "Michelin" })).toHaveAttribute("href", "/brands/michelin");

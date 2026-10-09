@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { ArticleImage } from "@/components/content/article-image";
 import { Badge } from "@/components/ui/badge";
 import { buttonClassName } from "@/components/ui/button";
 import { cx } from "@/components/ui/cx";
-import { formatOfferEnd, offerShopHref } from "@/lib/offers/helpers";
+import { formatOfferEnd, offerImageSrc, offerShopHref } from "@/lib/offers/helpers";
 import type { Offer } from "@/lib/offers/types";
 
 export type OfferTone = "sticker" | "green" | "black" | "yellow";
@@ -24,8 +25,9 @@ export function offerTone(badge: string): OfferTone {
 }
 
 /**
- * One offer as real HTML (not a poster image): brand, what you get, end date,
- * the code when there is one, a terms disclosure and "Shop this offer".
+ * One offer as real HTML: brand, what you get, end date, the code when there
+ * is one, a terms disclosure and "Shop this offer". An offer with a feature
+ * image shows it in place of the coloured badge tile (the text below stays).
  *
  * Terms use a native `<details>` so they work without JavaScript and are
  * keyboard operable by default. Terms text is plain text from the API.
@@ -46,20 +48,31 @@ export function OfferCard({
 }) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
   const tone = offerTone(offer.badge_text);
+  const image = offerImageSrc(offer);
+  // Promo tile: the badge is real text, not baked into an image.
+  const promoTile = (
+    <div className={cx("relative flex min-h-[124px] flex-col justify-between gap-3 p-5", TONES[tone])}>
+      <span className="text-[34px] font-extrabold leading-none tracking-[-1.5px]">{offer.badge_text}</span>
+      <span className="flex flex-wrap items-center gap-2">
+        {endsSoon && <Badge tone="gold" className="ring-1 ring-black">Ends soon</Badge>}
+        {offer.brand && <span className="text-sm font-bold">{offer.brand.name}</span>}
+      </span>
+    </div>
+  );
   return (
     <article
       data-testid="offer-card"
       data-offer-slug={offer.slug}
       className={cx("flex h-full flex-col overflow-hidden rounded-card border border-line bg-surface shadow-rest", className)}
     >
-      {/* Promo tile: the badge is real text, not baked into an image. */}
-      <div className={cx("relative flex min-h-[124px] flex-col justify-between gap-3 p-5", TONES[tone])}>
-        <span className="text-[34px] font-extrabold leading-none tracking-[-1.5px]">{offer.badge_text}</span>
-        <span className="flex flex-wrap items-center gap-2">
-          {endsSoon && <Badge tone="gold" className="ring-1 ring-black">Ends soon</Badge>}
-          {offer.brand && <span className="text-sm font-bold">{offer.brand.name}</span>}
-        </span>
-      </div>
+      {image ? (
+        <div className="relative aspect-square w-full overflow-hidden bg-chip">
+          <ArticleImage src={image} className="h-full w-full object-cover" fallback={promoTile} />
+          {endsSoon && <Badge tone="gold" className="absolute left-3 top-3 ring-1 ring-black">Ends soon</Badge>}
+        </div>
+      ) : (
+        promoTile
+      )}
 
       <div className="flex grow flex-col gap-3 p-5">
         <div className="flex grow flex-col gap-1.5">
