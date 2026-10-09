@@ -8,6 +8,8 @@ const BLANK_PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAAL
  * Hero artwork. Shared by the home hero and `PageHero` as the fallback while a page has no image of its own.
  *
  * - Desktop (`lg`, 992px+): the wide van photo from `lib/site/images.ts`, or the chevron-and-van SVG while no photo exists.
+ *   The photo is wide (2:1) but its slot is closer to square, so it is cropped to the middle of the frame; the crop is
+ *   anchored 35% from the left so the van's nose stays in view instead of being clipped.
  * - Phones and small tablets: nothing by default, so the finder stays the first thing on screen. The home hero passes
  *   `mobile` to show the square van photo as a banner below the finder instead.
  *
@@ -29,7 +31,7 @@ export function HeroArt({ mobile = false }: { mobile?: boolean }) {
         <div className="relative hidden h-full min-h-[420px] lg:block">
           <picture>
             <source media="(min-width: 992px)" srcSet={photo.src} width={photo.width} height={photo.height} />
-            <img src={BLANK_PIXEL} width={photo.width} height={photo.height} alt={photo.alt} className="absolute inset-0 h-full w-full rounded-sheet object-cover" />
+            <img src={BLANK_PIXEL} width={photo.width} height={photo.height} alt={photo.alt} className="absolute inset-0 h-full w-full rounded-sheet object-cover object-[35%_50%]" />
           </picture>
         </div>
       </>
