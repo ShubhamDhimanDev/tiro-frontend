@@ -39,7 +39,7 @@ function UspLine() {
 export function Hero({ regoEnabled }: { regoEnabled: boolean }) {
   return (
     <section aria-labelledby="hero-heading" className="relative overflow-hidden bg-surface">
-      <div className="container-page grid grid-cols-[minmax(0,1fr)] gap-8 py-8 md:py-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:gap-6 lg:py-16">
+      <div className="container-page grid grid-cols-[minmax(0,1fr)] gap-8 py-8 md:py-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-6 lg:py-16">
         <div className="relative z-10 flex flex-col gap-6">
           <div className="flex flex-col gap-3">
             <h1 id="hero-heading" className="type-display !leading-[1.16] lg:!text-[clamp(44px,4.4vw,56px)]">

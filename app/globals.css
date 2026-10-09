@@ -70,7 +70,7 @@
   --motion-slow: 400ms;
   --ease-out-soft: cubic-bezier(0.2, 0, 0, 1);
 
-  --container-max: 1140px;
+  --container-max: 1400px;
   --gutter: 20px; /* phone; 24px >=768 */
   --section-pad: 50px; /* phone; 80px >=992 */
 
@@ -155,7 +155,7 @@
   --ease-soft: var(--ease-out-soft);
 }
 
-/* Layout helpers: 1140px container, 20/24px gutters; section padding 50/80. */
+/* Layout helpers: 1400px container, 20/24px gutters; section padding 50/80. */
 @utility container-page {
   width: 100%;
   max-width: var(--container-max);
