@@ -1,11 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useId, useState } from "react";
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
 import { TyreIcon } from "@/components/ui/icons";
 import { subscribeNewsletter } from "@/lib/newsletter/client-api";
+import { CONTENT_IMAGES } from "@/lib/site/content-images";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -16,6 +18,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * `website` field is inert, off-screen and always sent empty by people.
  */
 export function Newsletter() {
+  const photo = CONTENT_IMAGES["home-newsletter"];
   const uid = useId();
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
@@ -45,8 +48,13 @@ export function Newsletter() {
   return (
     <section aria-labelledby="newsletter-heading" className="container-page pt-[50px] lg:pt-20">
       <div className="grid overflow-hidden rounded-card bg-band md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-        <div aria-hidden="true" className="asphalt-texture flex min-h-[200px] items-center justify-center max-md:hidden md:min-h-[360px]">
-          <TyreIcon className="h-28 w-28 text-gold" strokeWidth={1.2} />
+        {/* Decorative side panel, desktop only: the photo when present, else the CSS placeholder. */}
+        <div aria-hidden="true" className="asphalt-texture relative flex min-h-[200px] items-center justify-center max-md:hidden md:min-h-[360px]">
+          {photo.src ? (
+            <Image src={photo.src} alt="" fill sizes="(min-width: 1024px) 42vw, 45vw" className="object-cover" />
+          ) : (
+            <TyreIcon className="h-28 w-28 text-gold" strokeWidth={1.2} />
+          )}
         </div>
         <div className="flex flex-col gap-4 p-6 md:p-10">
           <h2 id="newsletter-heading" className="type-h2">

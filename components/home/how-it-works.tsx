@@ -9,7 +9,7 @@ const ICONS = [SearchIcon, CalendarIcon, TruckIcon];
 
 /** "How it works": three numbered steps with yellow circle icons. */
 export function HowItWorks() {
-  const photo = CONTENT_IMAGES["how-3"];
+  const photo = CONTENT_IMAGES["home-how-it-works"];
   return (
     <section aria-labelledby="how-heading" className="container-page pt-[50px] lg:pt-20">
       <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16">
@@ -48,7 +48,7 @@ export function HowItWorks() {
 
         {photo.src ? (
           <div className="relative aspect-[4/3] overflow-hidden rounded-card">
-            <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover object-[50%_60%]" />
+            <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
           </div>
         ) : (
           // No photo yet: a decorative CSS placeholder, desktop only (on phones it was a 260px black box that said nothing).
