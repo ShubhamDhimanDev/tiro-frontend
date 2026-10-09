@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { NOT_FOUND_METADATA } from "@/lib/site/seo";
 import { notFound } from "next/navigation";
 import { catalogBackend } from "@/lib/catalog/backend";
-import { brandPageTag } from "@/lib/content/tags";
+import { brandListTag, brandPageTag } from "@/lib/content/tags";
 import { groupTyresByModel } from "@/lib/catalog/group-by-model";
 import { brandSeoCopy } from "@/lib/catalog/copy";
 import { BrowseListing } from "@/components/catalog/browse-listing";
@@ -51,7 +51,7 @@ async function loadBrand(slug: string): Promise<BrandSummary | BrandDetail | und
   const detail = await catalogBackend.brandDetail(slug, cacheInit);
   if (detail.status === 200) return (detail.body as BrandDetailResponse).data;
   if (detail.status === 404) return undefined;
-  const result = await catalogBackend.brands(cacheInit);
+  const result = await catalogBackend.brands({ next: { revalidate: 3600, tags: [brandPageTag(slug), brandListTag()] } });
   if (result.status !== 200) return undefined;
   return (result.body as BrandsResponse).data.find((b) => b.slug === slug);
 }
@@ -103,6 +103,7 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ sl
             : `Enter your size to see which ${brand.name} patterns fit your vehicle.`
         }
         brandSlug={brand.slug}
+        logoPath={brand.logo_path}
         tier={brand.tier ?? null}
         modelCount={"tyre_model_count" in brand ? brand.tyre_model_count : undefined}
       />

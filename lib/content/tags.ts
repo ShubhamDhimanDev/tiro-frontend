@@ -33,6 +33,15 @@ export function faqPageScopedTag(contentPageId: number): string {
   return `content:faq:page:${contentPageId}`;
 }
 
+/**
+ * Every fetch of the `GET /brands` list (home brands band, `/brands` index).
+ * Fired on brand create/update/delete, so a new brand or a freshly uploaded
+ * logo shows up there without waiting out the hourly timer.
+ */
+export function brandListTag(): string {
+  return "content:brand:list";
+}
+
 /** Retrofitted onto `app/brands/[slug]/page.tsx` — not otherwise part of this domain. */
 export function brandPageTag(slug: string): string {
   return `content:brand:${slug}`;

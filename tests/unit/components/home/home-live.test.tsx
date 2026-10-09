@@ -56,6 +56,24 @@ describe("home live data", () => {
     expect(screen.getByRole("link", { name: "Michelin" })).toHaveAttribute("href", "/brands/michelin");
   });
 
+  it("shows a brand's uploaded logo beside its name, and the name alone for brands without one", () => {
+    render(
+      <BrandsBand
+        brands={[
+          { name: "Accelera", slug: "accelera", logo: "http://localhost:8000/storage/media/accelera.webp" },
+          { name: "Michelin", slug: "michelin", logo: null },
+        ]}
+      />,
+    );
+    const accelera = screen.getByRole("link", { name: "Accelera" });
+    expect(accelera).toHaveAttribute("href", "/brands/accelera");
+    expect(accelera).toHaveTextContent("Accelera");
+    expect(accelera.querySelector("img")).toHaveAttribute("src", "http://localhost:8000/storage/media/accelera.webp");
+    const michelin = screen.getByRole("link", { name: "Michelin" });
+    expect(michelin).toHaveTextContent("Michelin");
+    expect(michelin.querySelector("img")).toBeNull();
+  });
+
   it("shows the API rating only when a summary exists", () => {
     const { rerender } = render(<UspStrip />);
     expect(screen.queryByText(/out of 5/)).not.toBeInTheDocument();

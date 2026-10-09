@@ -1,5 +1,6 @@
 import { catalogBackend } from "@/lib/catalog/backend";
 import type { BrandsResponse } from "@/lib/catalog/types";
+import { brandListTag } from "@/lib/content/tags";
 import { cityHref, loadLocationTree } from "@/lib/locations/helpers";
 import { loadOffers } from "@/lib/offers/load";
 import type { Offer } from "@/lib/offers/types";
@@ -12,7 +13,12 @@ import type { Review, ReviewsResponse, ReviewsSummary } from "@/lib/reviews/type
  * null) so the page renders with the API down and each section hides itself.
  */
 
-export type HomeBrand = { name: string; slug: string };
+export type HomeBrand = {
+  name: string;
+  slug: string;
+  /** Uploaded logo URL (`brands.logo_path`); the name is shown as text without one. */
+  logo?: string | null;
+};
 export type HomeCity = { name: string; href: string };
 
 export async function loadHomeOffers(limit = 8): Promise<Offer[]> {
@@ -20,11 +26,11 @@ export async function loadHomeOffers(limit = 8): Promise<Offer[]> {
 }
 
 export async function loadHomeBrands(limit = 14): Promise<HomeBrand[]> {
-  const result = await catalogBackend.brands({ next: { revalidate: 3600 } });
+  const result = await catalogBackend.brands({ next: { revalidate: 3600, tags: [brandListTag()] } });
   if (result.status !== 200) return [];
   const data = (result.body as BrandsResponse).data;
   if (!Array.isArray(data)) return [];
-  return data.slice(0, limit).map((b) => ({ name: b.name, slug: b.slug }));
+  return data.slice(0, limit).map((b) => ({ name: b.name, slug: b.slug, logo: b.logo_path }));
 }
 
 export async function loadHomeCities(): Promise<HomeCity[]> {
