@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { catalogBackend } from "@/lib/catalog/backend";
+import { brandListTag } from "@/lib/content/tags";
 import { getServiceZone } from "@/lib/location/cookies";
 import {
   normalizeSearchParams,
@@ -164,7 +165,7 @@ export default async function TyresPage({ searchParams }: { searchParams: RawSea
   const facetQuery = new URLSearchParams();
   for (const key of ["width", "profile", "rim_diameter"] as const) if (values[key]) facetQuery.set(key, values[key]);
   const [brandsResult, popularResult, facetsResult] = await Promise.all([
-    catalogBackend.brands({ next: { revalidate: 3600 } }),
+    catalogBackend.brands({ next: { revalidate: 3600, tags: [brandListTag()] } }),
     catalogBackend.popularSizes({ next: { revalidate: 3600 } }),
     staggered ? Promise.resolve(null) : catalogBackend.facets(facetQuery, { next: { revalidate: 60 } }),
   ]);

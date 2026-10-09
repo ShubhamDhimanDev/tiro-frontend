@@ -54,6 +54,24 @@ describe("OfferCard", () => {
   });
 });
 
+describe("OfferCard feature image", () => {
+  it("shows the feature image in place of the coloured badge tile, and keeps the text below it", () => {
+    const { container } = render(<OfferCard offer={offer({ image_path: "https://cdn.example.test/offer.webp" })} />);
+    expect(container.querySelector("img")).toHaveAttribute("src", "https://cdn.example.test/offer.webp");
+    expect(screen.getByRole("heading", { name: /4th free/ })).toBeInTheDocument();
+    expect(screen.queryByText("4 for 3")).not.toBeInTheDocument();
+  });
+
+  it("keeps the badge tile when there is no usable image (none, or a bare storage path with no host)", () => {
+    for (const image_path of [null, "", "offers/spring.webp"]) {
+      const { container, unmount } = render(<OfferCard offer={offer({ image_path })} />);
+      expect(container.querySelector("img")).toBeNull();
+      expect(screen.getByText("4 for 3")).toBeInTheDocument();
+      unmount();
+    }
+  });
+});
+
 describe("OffersHub", () => {
   const offers = [
     hub({ id: 1, slug: "a", title: "Bridgestone offer", endsSoon: true }),

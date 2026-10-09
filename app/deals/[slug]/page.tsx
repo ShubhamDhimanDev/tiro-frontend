@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArticleImage } from "@/components/content/article-image";
 import { HomeSection } from "@/components/home/home-section";
 import { offerTone, TONES } from "@/components/offers/offer-card";
 import { CtaBands } from "@/components/page/cta-bands";
@@ -8,7 +9,7 @@ import { PageHero } from "@/components/page/page-hero";
 import { Badge } from "@/components/ui/badge";
 import { buttonClassName } from "@/components/ui/button";
 import { cx } from "@/components/ui/cx";
-import { formatOfferDate, formatOfferEnd, isEndingSoon, offerShopHref } from "@/lib/offers/helpers";
+import { formatOfferDate, formatOfferEnd, isEndingSoon, offerImageSrc, offerShopHref } from "@/lib/offers/helpers";
 import { OfferJsonLd } from "@/components/seo/json-ld";
 import { NOT_FOUND_METADATA, pageMetadata } from "@/lib/site/seo";
 import { SITE_NAME } from "@/lib/site/config";
@@ -46,6 +47,7 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ sl
   const hit = await loadOfferOrSample(slug);
   if (!hit) notFound();
   const { offer, sample } = hit;
+  const image = offerImageSrc(offer);
 
   const crumbs = [
     { name: "Home", url: "/" },
@@ -85,22 +87,33 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ sl
           </>
         }
         aside={
-          <div
-            className={cx(
-              "mx-auto hidden aspect-[4/3] w-full max-w-[420px] flex-col justify-between rounded-card p-6 shadow-raised lg:flex",
-              TONES[offerTone(offer.badge_text)],
-            )}
-          >
-            <span className="text-[56px] font-extrabold leading-none tracking-[-2px]">{offer.badge_text}</span>
-            <span className="flex flex-wrap items-center gap-2 text-lg font-bold">
-              {isEndingSoon(offer) && <Badge tone="gold" className="ring-1 ring-black">Ends soon</Badge>}
-              {offer.brand?.name}
-            </span>
-          </div>
+          image ? (
+            <div className="mx-auto hidden aspect-square w-full max-w-[420px] overflow-hidden rounded-card shadow-raised lg:block">
+              <ArticleImage src={image} className="h-full w-full object-cover" fallback={<span className="block h-full w-full bg-chip" />} />
+            </div>
+          ) : (
+            <div
+              className={cx(
+                "mx-auto hidden aspect-[4/3] w-full max-w-[420px] flex-col justify-between rounded-card p-6 shadow-raised lg:flex",
+                TONES[offerTone(offer.badge_text)],
+              )}
+            >
+              <span className="text-[56px] font-extrabold leading-none tracking-[-2px]">{offer.badge_text}</span>
+              <span className="flex flex-wrap items-center gap-2 text-lg font-bold">
+                {isEndingSoon(offer) && <Badge tone="gold" className="ring-1 ring-black">Ends soon</Badge>}
+                {offer.brand?.name}
+              </span>
+            </div>
+          )
         }
       />
 
       <div className="container-page flex max-w-4xl flex-col gap-8 pt-[50px] lg:pt-20">
+        {image && (
+          <div className="aspect-square w-full max-w-[420px] overflow-hidden rounded-card shadow-rest lg:hidden">
+            <ArticleImage src={image} className="h-full w-full object-cover" fallback={<span className="block h-full w-full bg-chip" />} />
+          </div>
+        )}
         <div className="flex flex-wrap items-center gap-2 lg:hidden">
           <Badge tone="gold" className="uppercase tracking-wide">
             {offer.badge_text}

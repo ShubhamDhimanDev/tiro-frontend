@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { BrandMark } from "@/components/catalog/brand-mark";
 import { InlineSizeFinder } from "@/components/catalog/inline-size-finder";
 import { TierBadge } from "@/components/ui/badge";
 import type { ApiTier } from "@/lib/catalog/types";
@@ -8,13 +9,14 @@ import type { ApiTier } from "@/lib/catalog/types";
  * and an inline "find your size" row. No photography and no giant H1, so the
  * first tyres sit within the first screen on a phone.
  *
- * Brand logos are not shown: `logo_path` is a storage-relative path and the
- * image host is not configured yet (the name carries the page until it is).
+ * Brand pages show the uploaded logo (`logoPath`) beside the title when the
+ * brand has one; the name alone carries the page otherwise.
  */
 export function BrandHero({
   title,
   intro,
   brandSlug,
+  logoPath,
   tier,
   modelCount,
   children,
@@ -22,6 +24,8 @@ export function BrandHero({
   title: string;
   intro?: string;
   brandSlug?: string;
+  /** `brands.logo_path` of the brand being shown; nothing renders when null/absent. */
+  logoPath?: string | null;
   /** Curated tier from the API; no badge when absent or null. */
   tier?: ApiTier | null;
   /** Number of active patterns, when the brand detail endpoint supplied it. */
@@ -32,6 +36,7 @@ export function BrandHero({
     <section aria-label={`${title} overview`} className="border-b border-line bg-band">
       <div className="container-page flex flex-col gap-4 py-8 md:py-12 lg:flex-row lg:items-end lg:justify-between lg:gap-10">
         <div className="min-w-0 lg:max-w-xl">
+          <BrandMark logoPath={logoPath} name={title} decorative className="mb-3 h-16 w-40 border border-line" />
           <h1 className="type-h2">{title}</h1>
           {(tier || (modelCount ?? 0) > 0) && (
             <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted">

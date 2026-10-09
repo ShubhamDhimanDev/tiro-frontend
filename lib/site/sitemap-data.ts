@@ -1,7 +1,7 @@
 import { catalogBackend } from "@/lib/catalog/backend";
 import type { BrandsResponse, Paginator, TyreListItem } from "@/lib/catalog/types";
 import { contentBackend } from "@/lib/content/backend";
-import { contentTypeListingTag } from "@/lib/content/tags";
+import { brandListTag, contentTypeListingTag } from "@/lib/content/tags";
 import type { ContentPageSummary, ContentPagesResponse, ContentPageType } from "@/lib/content/types";
 import { cityHref, loadLocationTree } from "@/lib/locations/helpers";
 import { loadOffers } from "@/lib/offers/load";
@@ -60,7 +60,7 @@ async function tyreEntries(): Promise<SitemapEntry[]> {
 }
 
 async function brandEntries(): Promise<SitemapEntry[]> {
-  const result = await catalogBackend.brands({ next: { revalidate: 3600 } });
+  const result = await catalogBackend.brands({ next: { revalidate: 3600, tags: [brandListTag()] } });
   if (result.status !== 200) return [];
   return ((result.body as BrandsResponse).data ?? []).map((b) => ({ path: `/brands/${b.slug}`, priority: 0.7, changeFrequency: "weekly" as const }));
 }

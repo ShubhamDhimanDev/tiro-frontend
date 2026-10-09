@@ -2,10 +2,11 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import { ArticleImage } from "@/components/content/article-image";
 import { buttonClassName } from "@/components/ui/button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@/components/ui/icons";
 import { cx } from "@/components/ui/cx";
-import { formatOfferEnd } from "@/lib/offers/helpers";
+import { formatOfferEnd, offerImageSrc } from "@/lib/offers/helpers";
 import type { Offer } from "@/lib/offers/types";
 
 /** Tile colours rotate by position: the API carries no colour, so this is presentation only. */
@@ -19,7 +20,9 @@ const TONES = [
 /**
  * "Latest offers" carousel fed by `GET /offers`: native scroll-snap row (about
  * 1.3 tiles visible on a phone, 4 on desktop) with prev/next buttons. Offer
- * text is real HTML, not baked into images. Renders nothing when there are no
+ * text is real HTML by default. An offer with a feature image shows that
+ * image on its own as the whole tile (the artwork carries the headline), with
+ * the offer text kept for screen readers. Renders nothing when there are no
  * live offers (the page hides the whole section).
  */
 export function OffersCarousel({ offers }: { offers: Offer[] }) {
@@ -62,25 +65,50 @@ export function OffersCarousel({ offers }: { offers: Offer[] }) {
       >
         {offers.map((offer, i) => {
           const tone = TONES[i % TONES.length];
+          const image = offerImageSrc(offer);
+          const text = (
+            <>
+              <span className="text-4xl font-extrabold leading-none tracking-[-1.5px]">{offer.badge_text}</span>
+              <span className="flex flex-col gap-1">
+                <span className="text-lg font-bold leading-tight">{offer.title}</span>
+                {offer.summary && <span className="line-clamp-3 text-sm leading-snug opacity-90">{offer.summary}</span>}
+                <span className="text-xs font-medium opacity-80">{formatOfferEnd(offer.ends_at)}</span>
+                <span className={cx("mt-3 inline-flex min-h-11 w-fit items-center rounded-control px-4 text-[15px] font-bold", tone.cta)}>
+                  View offer
+                </span>
+              </span>
+            </>
+          );
           return (
             <li key={offer.slug} className="flex w-[74%] shrink-0 snap-start sm:w-[44%] md:w-[31%] lg:w-[calc((100%-48px)/4)]">
-              <Link
-                href={`/deals/${offer.slug}`}
-                className={cx(
-                  "flex min-h-[280px] w-full flex-col justify-between rounded-card p-5 shadow-rest transition-transform duration-300 hover:-translate-y-0.5",
-                  tone.bg,
-                )}
-              >
-                <span className="text-4xl font-extrabold leading-none tracking-[-1.5px]">{offer.badge_text}</span>
-                <span className="flex flex-col gap-1">
-                  <span className="text-lg font-bold leading-tight">{offer.title}</span>
-                  {offer.summary && <span className="line-clamp-3 text-sm leading-snug opacity-90">{offer.summary}</span>}
-                  <span className="text-xs font-medium opacity-80">{formatOfferEnd(offer.ends_at)}</span>
-                  <span className={cx("mt-3 inline-flex min-h-11 w-fit items-center rounded-control px-4 text-[15px] font-bold", tone.cta)}>
-                    View offer
+              {image ? (
+                <Link
+                  href={`/deals/${offer.slug}`}
+                  className={cx(
+                    "flex aspect-square w-full flex-col justify-between overflow-hidden rounded-card shadow-rest transition-transform duration-300 hover:-translate-y-0.5",
+                    tone.bg,
+                  )}
+                >
+                  <ArticleImage
+                    src={image}
+                    className="h-full w-full object-cover"
+                    fallback={<span className="flex h-full flex-col justify-between p-5">{text}</span>}
+                  />
+                  <span className="sr-only">
+                    {offer.title}. {offer.discount_description}. {formatOfferEnd(offer.ends_at)}. View offer
                   </span>
-                </span>
-              </Link>
+                </Link>
+              ) : (
+                <Link
+                  href={`/deals/${offer.slug}`}
+                  className={cx(
+                    "flex min-h-[280px] w-full flex-col justify-between rounded-card p-5 shadow-rest transition-transform duration-300 hover:-translate-y-0.5",
+                    tone.bg,
+                  )}
+                >
+                  {text}
+                </Link>
+              )}
             </li>
           );
         })}

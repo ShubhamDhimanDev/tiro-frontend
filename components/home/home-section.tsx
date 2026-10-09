@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { cx } from "@/components/ui/cx";
 
 /**
- * Home page section shell: 1140px container, 50px (phone) / 80px (desktop)
+ * Home page section shell: 1400px container, 50px (phone) / 80px (desktop)
  * space above every section, bold H2, optional right-hand action.
  */
 export function HomeSection({

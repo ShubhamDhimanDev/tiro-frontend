@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  brandListTag,
   brandPageTag,
   contentPageDetailTag,
   contentTypeListingTag,
@@ -42,6 +43,10 @@ describe("content ISR tag builders", () => {
 
   it("faqPageScopedTag", () => {
     expect(faqPageScopedTag(42)).toBe("content:faq:page:42");
+  });
+
+  it("brandListTag", () => {
+    expect(brandListTag()).toBe("content:brand:list");
   });
 
   it("brandPageTag", () => {

@@ -1,9 +1,11 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Accordion } from "@/components/ui/accordion";
 import { buttonClassName } from "@/components/ui/button";
 import { CheckIcon, PinIcon, ShieldIcon, TyreIcon } from "@/components/ui/icons";
+import { CONTENT_IMAGES } from "@/lib/site/content-images";
 
-/** CSS phone mock-up, placeholder for a real app/PDP screenshot. */
+/** CSS phone mock-up, the fallback while there is no photo for the slot. */
 function PhoneMock() {
   return (
     <div aria-hidden="true" className="mx-auto w-[220px] rounded-[34px] border-[8px] border-black bg-black shadow-raised md:w-[260px]">
@@ -53,12 +55,19 @@ const ITEMS = [
 
 /** "Get the best deals online" two-column block with the three SEO accordions. */
 export function DealsOnline() {
+  const photo = CONTENT_IMAGES["home-deals-online"];
   return (
     <section aria-labelledby="deals-heading" className="container-page pt-[50px] lg:pt-20">
       <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
-        {/* Decorative CSS mock-up: no information in it, so phones skip it (it added about 340px of scrolling). */}
-        <div className="order-2 max-md:hidden lg:order-1">
-          <PhoneMock />
+        {/* Decorative image: no information in it, so phones skip it (it added about 340px of scrolling). */}
+        <div aria-hidden="true" className="order-2 max-md:hidden lg:order-1">
+          {photo.src ? (
+            <div className="relative mx-auto aspect-square w-full max-w-[560px]">
+              <Image src={photo.src} alt="" fill sizes="(min-width: 1024px) 42vw, 560px" className="object-cover" />
+            </div>
+          ) : (
+            <PhoneMock />
+          )}
         </div>
         <div className="order-1 flex flex-col gap-4 lg:order-2">
           <h2 id="deals-heading" className="type-h2">

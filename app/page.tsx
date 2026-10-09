@@ -47,7 +47,7 @@ export default async function Home() {
   ]);
 
   return (
-    <div className="flex flex-col pb-[50px] lg:pb-20">
+    <div className="flex flex-col">
       <OrganizationJsonLd name={SITE_NAME} url={SITE_URL} telephone={PHONE_HREF.replace("tel:", "")} />
 
       <Hero regoEnabled={isRegoEnabled()} />

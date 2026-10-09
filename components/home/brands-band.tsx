@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { BrandMark } from "@/components/catalog/brand-mark";
 import { MotionPauseButton } from "@/components/ui/motion-pause-button";
 import type { HomeBrand } from "@/lib/home/load";
 
 /**
- * Yellow "Shop leading brands" band fed by `GET /brands`. Brand names are
- * typeset text (no third-party logos).
+ * Yellow "Shop leading brands" band fed by `GET /brands`. A brand shows its
+ * uploaded logo (on a white tile, decorative) beside its name, which is always
+ * typeset text so the link keeps its label if the image is missing or fails.
  *
  * Phones: a static, wrapped grid of chips (nothing clipped, nothing moving).
  * md+: a slow marquee with soft edge fades and a pause button (WCAG 2.2.2).
@@ -15,8 +17,9 @@ export function BrandsBand({ brands }: { brands: HomeBrand[] }) {
   if (brands.length === 0) return null;
   // One link list serves both layouts (a wrapped grid on phones, an inline row inside the marquee from md up), so there is a single set of links in the DOM.
   const chip =
-    "flex min-h-12 items-center justify-center rounded-control border-2 border-black/80 px-4 text-base font-extrabold italic tracking-[-0.5px] text-black transition-colors hover:bg-black hover:text-gold md:h-14 md:shrink-0 md:justify-start md:rounded-none md:border-0 md:px-9 md:text-[28px] md:tracking-[-1px] md:hover:bg-transparent md:hover:text-black";
-  const copyChip = "flex h-14 shrink-0 items-center px-9 text-[28px] font-extrabold italic tracking-[-1px] text-black";
+    "flex min-h-12 items-center justify-center gap-2.5 rounded-control border-2 border-black/80 px-4 text-base font-extrabold italic tracking-[-0.5px] text-black transition-colors hover:bg-black hover:text-gold md:h-14 md:shrink-0 md:justify-start md:rounded-none md:border-0 md:px-9 md:text-[28px] md:tracking-[-1px] md:hover:bg-transparent md:hover:text-black";
+  const copyChip = "flex h-14 shrink-0 items-center gap-3 px-9 text-[28px] font-extrabold italic tracking-[-1px] text-black";
+  const logoTile = "h-9 w-12 md:h-12 md:w-16";
   return (
     <section aria-labelledby="brands-heading" className="mt-[50px] bg-gold py-9 lg:mt-20 lg:py-12">
       <div className="container-page">
@@ -37,6 +40,7 @@ export function BrandsBand({ brands }: { brands: HomeBrand[] }) {
                 {brands.map((b) => (
                   <li key={b.slug} className="flex md:block">
                     <Link href={`/brands/${b.slug}`} className={`${chip} w-full md:w-auto`}>
+                      <BrandMark logoPath={b.logo} name={b.name} decorative className={logoTile} />
                       {b.name}
                     </Link>
                   </li>
@@ -45,6 +49,7 @@ export function BrandsBand({ brands }: { brands: HomeBrand[] }) {
               <ul className="hidden md:flex" aria-hidden="true">
                 {brands.map((b) => (
                   <li key={b.slug} className={copyChip}>
+                    <BrandMark logoPath={b.logo} name={b.name} decorative className={logoTile} />
                     {b.name}
                   </li>
                 ))}

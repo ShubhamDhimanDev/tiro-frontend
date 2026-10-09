@@ -51,9 +51,38 @@ describe("home live data", () => {
     expect(link).toHaveTextContent("4 for 3");
   });
 
+  it("shows an offer's feature image as the whole tile, with the offer text kept for screen readers", () => {
+    const { container } = render(
+      <OffersCarousel offers={[offer({ image_path: "https://cdn.example.test/offer.webp", discount_description: "Fourth tyre free" })]} />,
+    );
+    expect(container.querySelector("img")).toHaveAttribute("src", "https://cdn.example.test/offer.webp");
+    const link = screen.getByRole("link", { name: /Buy 3, get the 4th free/ });
+    expect(link).toHaveAttribute("href", "/deals/four-for-three");
+    expect(link).toHaveTextContent("Fourth tyre free");
+    expect(screen.queryByText("4 for 3")).not.toBeInTheDocument();
+  });
+
   it("links brands to their brand page", () => {
     render(<BrandsBand brands={[{ name: "Michelin", slug: "michelin" }]} />);
     expect(screen.getByRole("link", { name: "Michelin" })).toHaveAttribute("href", "/brands/michelin");
+  });
+
+  it("shows a brand's uploaded logo beside its name, and the name alone for brands without one", () => {
+    render(
+      <BrandsBand
+        brands={[
+          { name: "Accelera", slug: "accelera", logo: "http://localhost:8000/storage/media/accelera.webp" },
+          { name: "Michelin", slug: "michelin", logo: null },
+        ]}
+      />,
+    );
+    const accelera = screen.getByRole("link", { name: "Accelera" });
+    expect(accelera).toHaveAttribute("href", "/brands/accelera");
+    expect(accelera).toHaveTextContent("Accelera");
+    expect(accelera.querySelector("img")).toHaveAttribute("src", "http://localhost:8000/storage/media/accelera.webp");
+    const michelin = screen.getByRole("link", { name: "Michelin" });
+    expect(michelin).toHaveTextContent("Michelin");
+    expect(michelin.querySelector("img")).toBeNull();
   });
 
   it("shows the API rating only when a summary exists", () => {
