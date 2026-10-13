@@ -7,7 +7,7 @@ import { m } from "framer-motion";
 type Phase = "idle" | "loading" | "done";
 
 /**
- * Thin yellow progress bar at the top of the viewport: starts when an
+ * Thin red progress bar at the top of the viewport: starts when an
  * internal link is clicked, completes when the pathname changes. Decorative
  * (aria-hidden); route-level `loading.tsx` / `useLinkStatus` stay the primary
  * feedback. Gives up after 10s if the navigation never lands (same-path

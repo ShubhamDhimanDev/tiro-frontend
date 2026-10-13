@@ -40,7 +40,7 @@ export default function NotFound() {
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Link href="/tyres" className={buttonClassName({ variant: "green", className: "w-full sm:w-auto" })}>
+          <Link href="/tyres" className={buttonClassName({ variant: "action", className: "w-full sm:w-auto" })}>
             Search tyres
           </Link>
           <Link href="/booking" className={buttonClassName({ variant: "secondary", className: "w-full sm:w-auto" })}>
@@ -69,7 +69,7 @@ export default function NotFound() {
 
         <p className="text-muted">
           Need a hand? Call{" "}
-          <a href={PHONE_HREF} className="inline-block py-2 font-bold text-black underline decoration-gold decoration-[3px] underline-offset-4">
+          <a href={PHONE_HREF} className="inline-block py-2 font-bold text-black underline decoration-accent decoration-[3px] underline-offset-4">
             {PHONE_DISPLAY}
           </a>
           .

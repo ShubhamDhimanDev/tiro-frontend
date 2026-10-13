@@ -110,7 +110,7 @@ export function FinderLocation() {
       onClick={openPicker}
       className="flex min-h-12 w-full items-center gap-2 rounded-control border border-dashed border-field bg-band px-3.5 text-left text-sm text-black transition-colors duration-300 hover:border-black"
     >
-      <PinIcon className={cx("h-5 w-5 shrink-0", zone ? "text-green" : "text-black")} />
+      <PinIcon className={cx("h-5 w-5 shrink-0", zone ? "text-success" : "text-black")} />
       <span className="min-w-0 flex-1 truncate">
         {loading ? (
           " "

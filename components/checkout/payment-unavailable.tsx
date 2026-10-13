@@ -12,10 +12,10 @@ export function PaymentUnavailable({ orderNumber }: { orderNumber?: string }) {
     <div
       data-testid="payment-not-configured"
       role="status"
-      className="flex flex-col gap-4 rounded-card border-[3px] border-black bg-gold-soft p-4 md:p-6"
+      className="flex flex-col gap-4 rounded-card border-[3px] border-black bg-accent-soft p-4 md:p-6"
     >
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold text-black">
+        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-white">
           <AlertIcon className="h-5 w-5" />
         </span>
         <div>

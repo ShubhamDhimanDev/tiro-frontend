@@ -96,7 +96,7 @@ export function HeaderNav({ groups = NAV_GROUPS }: { groups?: NavGroup[] }) {
             const isOpen = openKey === group.key;
             const active = isGroupActive(pathname, group);
             const activeBar =
-              active && "after:absolute after:inset-x-2.5 after:bottom-0 after:h-[3px] after:rounded-full after:bg-gold";
+              active && "after:absolute after:inset-x-2.5 after:bottom-0 after:h-[3px] after:rounded-full after:bg-accent";
 
             if (group.links.length === 0) {
               return (
@@ -129,7 +129,7 @@ export function HeaderNav({ groups = NAV_GROUPS }: { groups?: NavGroup[] }) {
                     if (isOpen) close();
                     else open(group.key);
                   }}
-                  className={cx(triggerClass, (isOpen || active) && "after:absolute after:inset-x-2.5 after:bottom-0 after:h-[3px] after:rounded-full after:bg-gold")}
+                  className={cx(triggerClass, (isOpen || active) && "after:absolute after:inset-x-2.5 after:bottom-0 after:h-[3px] after:rounded-full after:bg-accent")}
                 >
                   {group.label}
                   <ChevronDownIcon className={cx("h-4 w-4 transition-transform duration-300", isOpen && "rotate-180")} />
@@ -168,7 +168,7 @@ export function HeaderNav({ groups = NAV_GROUPS }: { groups?: NavGroup[] }) {
                           <Link
                             href={group.aside.cta.href}
                             onClick={close}
-                            className={buttonClassName({ variant: "green", className: "mt-1" })}
+                            className={buttonClassName({ variant: "action", className: "mt-1" })}
                           >
                             {group.aside.cta.label}
                           </Link>
@@ -181,17 +181,17 @@ export function HeaderNav({ groups = NAV_GROUPS }: { groups?: NavGroup[] }) {
                           className="flex flex-col justify-between gap-4 rounded-card bg-black p-6 text-white transition-colors duration-300 hover:bg-[#222]"
                         >
                           <span>
-                            <span className="text-xs font-bold text-gold">{group.promo.eyebrow}</span>
+                            <span className="text-xs font-bold text-accent-light">{group.promo.eyebrow}</span>
                             <span className="mt-1 block text-3xl font-extrabold leading-none tracking-[-1px]">{group.promo.title}</span>
                             <span className="mt-2 block text-sm text-footer-muted">{group.promo.body}</span>
                           </span>
-                          <span className="text-sm font-bold text-gold">{group.promo.cta} &rarr;</span>
+                          <span className="text-sm font-bold text-accent-light">{group.promo.cta} &rarr;</span>
                         </Link>
                       ) : (
                         <Link
                           href="/deals"
                           onClick={close}
-                          className="flex flex-col justify-between gap-4 rounded-card bg-gold p-6 text-black transition-colors duration-300 hover:bg-[#e6b900]"
+                          className="flex flex-col justify-between gap-4 rounded-card bg-accent p-6 text-white transition-colors duration-300 hover:bg-accent-hover"
                         >
                           <span>
                             <span className="text-xs font-bold">Latest offers</span>

@@ -29,7 +29,7 @@ export function ReviewsPagination({ meta, buildHref }: { meta: ReviewsMeta; buil
   }
 
   const stepClass =
-    "flex min-h-11 items-center px-3 font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted";
+    "flex min-h-11 items-center px-3 font-semibold text-black underline decoration-accent decoration-[3px] underline-offset-4 hover:text-muted";
   const disabledStep = "flex min-h-11 items-center px-3 font-semibold text-disabled-text opacity-70";
   const numClass =
     "flex h-11 min-w-11 items-center justify-center rounded-control border-2 border-line px-2 font-semibold text-black hover:bg-chip";

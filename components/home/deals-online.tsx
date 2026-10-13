@@ -19,10 +19,10 @@ function PhoneMock() {
           <div className="h-3 w-32 rounded bg-black" />
           <div className="h-3 w-20 rounded bg-chip" />
           <div className="flex items-end justify-between">
-            <span className="h-6 w-16 rounded bg-green" />
-            <span className="h-6 w-14 rounded bg-gold" />
+            <span className="h-6 w-16 rounded bg-action" />
+            <span className="h-6 w-14 rounded bg-accent" />
           </div>
-          <div className="h-10 rounded-control bg-green" />
+          <div className="h-10 rounded-control bg-action" />
         </div>
       </div>
     </div>
@@ -77,7 +77,7 @@ export function DealsOnline() {
             Choose your tyres online or by phone, pick a time that suits you, and we bring the tyre shop to you.
           </p>
           <Accordion variant="icons" items={ITEMS} defaultOpenId="brands" />
-          <Link href="/tyres" className={buttonClassName({ variant: "green", className: "mt-2 w-full sm:w-fit" })}>
+          <Link href="/tyres" className={buttonClassName({ variant: "action", className: "mt-2 w-full sm:w-fit" })}>
             <CheckIcon className="h-5 w-5" />
             Shop tyres
           </Link>

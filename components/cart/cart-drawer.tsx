@@ -91,7 +91,7 @@ function OpenCartDrawer({ open, onClose }: { open: boolean; onClose: () => void 
                 {data ? formatMoney(data.grand_total, data.currency) : pricing.status === "loading" || zoneLoading ? "Pricing…" : "Set location"}
               </span>
             </div>
-            <Link href="/checkout" onClick={onClose} className={buttonClassName({ variant: "green", fullWidth: true })}>
+            <Link href="/checkout" onClick={onClose} className={buttonClassName({ variant: "action", fullWidth: true })}>
               Checkout
             </Link>
             <div className="grid grid-cols-2 gap-3">
@@ -109,7 +109,7 @@ function OpenCartDrawer({ open, onClose }: { open: boolean; onClose: () => void 
       {empty ? (
         <div className="flex flex-col items-start gap-4 py-6">
           <p className="text-base text-black">Your cart is currently empty.</p>
-          <Link href="/tyres" onClick={onClose} className={buttonClassName({ variant: "green" })}>
+          <Link href="/tyres" onClick={onClose} className={buttonClassName({ variant: "action" })}>
             Shop tyres now
           </Link>
         </div>
@@ -191,7 +191,7 @@ function OpenCartDrawer({ open, onClose }: { open: boolean; onClose: () => void 
             <ServiceError message={pricing.message} onRetry={pricing.retry} />
           )}
           {data && data.discount_lines && data.discount_lines.length > 0 && (
-            <ul aria-label="You saved" className="flex flex-col gap-1 rounded-card bg-gold-soft/60 px-3 py-2 text-sm text-black">
+            <ul aria-label="You saved" className="flex flex-col gap-1 rounded-card bg-accent-soft/60 px-3 py-2 text-sm text-black">
               {data.discount_lines.map((line, i) => (
                 <li key={`${line.type}-${i}`} className="flex justify-between gap-3">
                   <span>{line.label}</span>

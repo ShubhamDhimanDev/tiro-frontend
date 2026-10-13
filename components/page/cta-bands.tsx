@@ -10,7 +10,7 @@ import { buttonClassName } from "@/components/ui/button";
 export function CtaBands({ className }: { className?: string }) {
   return (
     <section aria-label="Next steps" className={className}>
-      <div className="bg-gold text-black">
+      <div className="bg-accent text-white">
         <div className="container-page flex flex-col items-start justify-between gap-4 py-6 sm:flex-row sm:items-center sm:py-8">
           <p className="text-balance text-2xl font-extrabold leading-tight tracking-[-0.5px]">Ready for new tyres? We come to you.</p>
           {/* Side by side from 360px (two short labels); stacked only on the smallest phones. */}
@@ -18,7 +18,7 @@ export function CtaBands({ className }: { className?: string }) {
             <Link href="/tyres" className={buttonClassName({ variant: "black", className: "w-full min-[360px]:flex-1 sm:w-auto sm:flex-none sm:min-w-[160px]" })}>
               Shop tyres
             </Link>
-            <Link href="/booking" className={buttonClassName({ variant: "secondary", className: "w-full min-[360px]:flex-1 sm:w-auto sm:flex-none sm:min-w-[160px]" })}>
+            <Link href="/booking" className={buttonClassName({ variant: "inverse", className: "w-full min-[360px]:flex-1 sm:w-auto sm:flex-none sm:min-w-[160px]" })}>
               Book a fitting
             </Link>
           </div>

@@ -50,7 +50,7 @@ export default async function BrandsPage() {
                   className="flex h-full min-h-40 flex-col items-center justify-center gap-2 rounded-card border border-line bg-surface p-4 text-center shadow-rest transition-shadow hover:shadow-raised"
                 >
                   <BrandMark logoPath={brand.logo_path} name={brand.name} className="h-14 w-32">
-                    <span aria-hidden="true" className="flex h-14 w-14 items-center justify-center rounded-full bg-black text-lg font-extrabold text-gold">
+                    <span aria-hidden="true" className="flex h-14 w-14 items-center justify-center rounded-full bg-black text-lg font-extrabold text-accent-light">
                       {initials(brand.name)}
                     </span>
                   </BrandMark>

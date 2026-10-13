@@ -112,7 +112,7 @@ export default async function LocationPage({ params }: { params: Promise<{ slug:
         <ul className="flex max-w-2xl flex-col gap-2 pt-1">
           {LOCATION_USPS.map((usp) => (
             <li key={usp} className="flex items-start gap-3">
-              <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold text-black">
+              <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-white">
                 <CheckIcon className="h-4 w-4" />
               </span>
               <span>{usp}</span>
@@ -204,7 +204,7 @@ function StatePage({ state, sample }: { state: TreeState; sample: boolean }) {
                 className="group flex h-full flex-col gap-2 rounded-card border border-line bg-surface p-5 shadow-rest transition-shadow hover:shadow-raised"
               >
                 <span className="flex items-center gap-3">
-                  <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-black">
+                  <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-white">
                     <PinIcon className="h-5 w-5" />
                   </span>
                   <span className="type-h3">{city.name}</span>

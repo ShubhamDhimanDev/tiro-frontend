@@ -159,7 +159,7 @@ export default async function CityPage({ params }: { params: Params }) {
         <ul aria-label={`Why choose us in ${city.name}`} className="flex max-w-xl flex-col gap-2 pt-1">
           {LOCATION_USPS.map((usp) => (
             <li key={usp} className="flex items-start gap-3">
-              <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold text-black">
+              <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-white">
                 <CheckIcon className="h-4 w-4" />
               </span>
               <span>{usp}</span>
@@ -176,7 +176,7 @@ export default async function CityPage({ params }: { params: Params }) {
               <ul className="flex flex-col gap-2 text-lg text-muted">
                 {coverage.notes.map((note) => (
                   <li key={note} className="flex gap-3">
-                    <span aria-hidden="true" className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+                    <span aria-hidden="true" className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
                     {note}
                   </li>
                 ))}

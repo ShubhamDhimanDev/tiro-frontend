@@ -11,7 +11,7 @@ export type PageHeroImage = { src: string; alt?: string };
  * Shared landing-page hero (same look as the home hero): h1, optional intro,
  * optional breadcrumbs and a children slot (finder card, check form) on the
  * left; on the right a fixed-aspect `next/image` (`priority`, it is the LCP
- * element) or, while no photograph exists, the yellow chevron-bars + van
+ * element) or, while no photograph exists, the red chevron-bars + van
  * fallback. The image is decorative (`alt=""`) unless `image.alt` is given.
  * Server component; renders exactly one h1. Distinct from the black
  * content-page band in `components/page/page-hero.tsx`.

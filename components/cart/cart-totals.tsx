@@ -75,7 +75,7 @@ export function CartTotalsSummary({
           <div>
             <dt className="sr-only">Discounts applied</dt>
             <dd>
-              <ul className="flex flex-col gap-1 rounded-control bg-gold-soft/60 px-3 py-2 text-xs text-ink">
+              <ul className="flex flex-col gap-1 rounded-control bg-accent-soft/60 px-3 py-2 text-xs text-ink">
                 {lines.map((line, index) => (
                   <li key={`${line.type}-${index}`} data-testid={line.type === "flexible" ? "flexible-discount-line" : undefined} className="flex items-center justify-between gap-3">
                     <span>{line.label}</span>

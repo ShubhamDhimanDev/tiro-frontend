@@ -93,7 +93,7 @@ export default async function FaqIndexPage() {
             </p>
           )}
 
-          <aside className="flex flex-col gap-3 rounded-card bg-gold p-5 text-black md:p-6">
+          <aside className="flex flex-col gap-3 rounded-card bg-accent p-5 text-white md:p-6">
             <p className="type-h3">Still need a hand?</p>
             <p>
               Call us on{" "}

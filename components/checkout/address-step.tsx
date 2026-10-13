@@ -214,7 +214,7 @@ export function AddressStep({
       )}
 
       {resolution?.status === "no_match" && (
-        <p role="alert" data-error-focus="true" tabIndex={-1} className="rounded-control border-[3px] border-black bg-gold-soft p-3 text-sm font-bold text-black">
+        <p role="alert" data-error-focus="true" tabIndex={-1} className="rounded-control border-[3px] border-black bg-accent-soft p-3 text-sm font-bold text-black">
           We couldn&apos;t match this address to a suburb we serve. Check the suburb and postcode above, or call us on{" "}
           <a href={PHONE_HREF} className="underline underline-offset-2">
             {PHONE_DISPLAY}
@@ -224,7 +224,7 @@ export function AddressStep({
       )}
 
       {resolution?.status === "ambiguous" && (
-        <p role="alert" data-error-focus="true" tabIndex={-1} className="rounded-control border-[3px] border-black bg-gold-soft p-3 text-sm font-bold text-black">
+        <p role="alert" data-error-focus="true" tabIndex={-1} className="rounded-control border-[3px] border-black bg-accent-soft p-3 text-sm font-bold text-black">
           That suburb matches more than one place in our system, so we can&apos;t tell them apart. Call us on{" "}
           <a href={PHONE_HREF} className="underline underline-offset-2">
             {PHONE_DISPLAY}
@@ -234,7 +234,7 @@ export function AddressStep({
       )}
 
       {resolution?.status === "lookup_failed" && (
-        <p role="alert" data-error-focus="true" tabIndex={-1} className="rounded-control border-[3px] border-black bg-gold-soft p-3 text-sm font-bold text-black">
+        <p role="alert" data-error-focus="true" tabIndex={-1} className="rounded-control border-[3px] border-black bg-accent-soft p-3 text-sm font-bold text-black">
           We couldn&apos;t look up this address just now. Try again in a moment, or call us on{" "}
           <a href={PHONE_HREF} className="underline underline-offset-2">
             {PHONE_DISPLAY}
@@ -244,7 +244,7 @@ export function AddressStep({
       )}
 
       {blockError && (
-        <p role="alert" data-error-focus="true" tabIndex={-1} className="rounded-control border-[3px] border-black bg-gold-soft p-3 text-sm font-bold text-black">
+        <p role="alert" data-error-focus="true" tabIndex={-1} className="rounded-control border-[3px] border-black bg-accent-soft p-3 text-sm font-bold text-black">
           {blockError}
         </p>
       )}

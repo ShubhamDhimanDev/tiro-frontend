@@ -5,18 +5,18 @@ import Link from "next/link";
  * markup and the structured data always agree. The last item is the current
  * page and is not a link.
  */
-export function Breadcrumbs({ items, tone = "light" }: { items: { name: string; url: string }[]; tone?: "light" | "dark" | "gold" }) {
+export function Breadcrumbs({ items, tone = "light" }: { items: { name: string; url: string }[]; tone?: "light" | "dark" | "accent" }) {
   const dark = tone === "dark";
-  const gold = tone === "gold";
+  const accent = tone === "accent";
   return (
-    <nav aria-label="Breadcrumb" className={`text-sm ${dark ? "text-footer-muted" : gold ? "text-black/80" : "text-muted"}`}>
+    <nav aria-label="Breadcrumb" className={`text-sm ${dark ? "text-footer-muted" : accent ? "text-white" : "text-muted"}`}>
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1">
         {items.map((item, i) => {
           const last = i === items.length - 1;
           return (
             <li key={item.url} className="flex min-w-0 items-center gap-2">
               {last ? (
-                <span aria-current="page" className={`truncate ${dark ? "text-white" : gold ? "font-bold text-black" : "text-ink"}`}>
+                <span aria-current="page" className={`truncate ${dark ? "text-white" : accent ? "font-bold text-white" : "text-ink"}`}>
                   {item.name}
                 </span>
               ) : (
@@ -25,7 +25,7 @@ export function Breadcrumbs({ items, tone = "light" }: { items: { name: string; 
                 </Link>
               )}
               {!last && (
-                <span aria-hidden="true" className={dark ? "text-footer-muted/60" : gold ? "text-black/40" : "text-line"}>
+                <span aria-hidden="true" className={dark ? "text-footer-muted/60" : accent ? "text-white/60" : "text-line"}>
                   /
                 </span>
               )}

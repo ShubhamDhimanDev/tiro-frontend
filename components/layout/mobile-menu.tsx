@@ -76,14 +76,14 @@ export function MobileMenu({ groups = NAV_GROUPS }: { groups?: NavGroup[] }) {
                 ))}
               </ul>
               {drilled.aside && (
-                <Link href={drilled.aside.cta.href} onClick={close} className={buttonClassName({ variant: "green", fullWidth: true, className: "mt-4" })}>
+                <Link href={drilled.aside.cta.href} onClick={close} className={buttonClassName({ variant: "action", fullWidth: true, className: "mt-4" })}>
                   {drilled.aside.cta.label}
                 </Link>
               )}
             </div>
           ) : (
             <>
-              <Link href={CTA.href} onClick={close} className={buttonClassName({ variant: "yellow", fullWidth: true })}>
+              <Link href={CTA.href} onClick={close} className={buttonClassName({ variant: "accent", fullWidth: true })}>
                 <SearchIcon className="h-5 w-5" />
                 {CTA.label}
               </Link>

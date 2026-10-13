@@ -6,19 +6,44 @@
  * (layout/palette/type modelled on the reference storefront, own brand + copy).
  * Source numbers: research/competitor-mts-au/01-design-tokens.md.
  *
- *   Yellow #FFCE00  brand: header CTA, brands band, footer headings, tab underline
- *   Green  #3C8425  (was #509E31; AA with white text) primary CTA ("Find tyres"), mid-range tier
- *   Black  #000     nav, premium tier, fills, prices, links; body text #212529
+ * THEME CHANGE (2026-10-13): the brand accent moved from yellow to red. The token was renamed
+ * gold -> accent so the name no longer lies about the colour; nothing yellow remains.
+ * COLOUR REVIEW (2026-10-13, docs/color-review/PLAN.md): the first red pass used the logo's pure
+ * #FF0000 for the UI with black text on it. Across 60 pages that was harsh (up to 21% of a page
+ * was flat neon red), so the UI red is now a warmer, deeper one and text on it is white. The logo
+ * files (public/brand/*.png, favicon) are the client's artwork and stay #FF0000.
+ *
+ *   Red    #DA291C  brand accent: header CTA, brands band, tab underline, focus halo, icon circles
+ *   Navy   #12355B  the PARTNER colour (token `action`): primary CTA ("Find tyres", "Add to cart"), "4 for 3" /
+ *                   savings tiles and badges, "from $" prices, mid-range tier, checkboxes. White on it 12.5:1.
+ *                   Chosen in docs/color-review/PARTNER-COLOURS.md: split-complement of the red, a very different
+ *                   lightness (2.6:1), and, unlike the green it replaced (olive #3C8425, then emerald #167A4B),
+ *                   clearly distinct from red for red-green colour-blind visitors (colour distance 90+ vs 17-18).
+ *   Green  #167A4B  STATUS only (token `success`): "In stock", location confirmed, flexible-booking dots, success
+ *                   text. Never a button or tile fill.
+ *   Black  #000     nav, premium tier, fills, links; body text #212529
  *   White + neutral greys for surfaces, lines and secondary text.
  *
- * PALETTE RULE (2026-10-01): ONLY yellow, white, black, green + neutral greys.
- * No red/orange/amber/blue/purple anywhere (guarded by tests/unit/palette.test.ts).
- *   prices -> black bold (green for "from"/discount emphasis)
- *   "4 for 3", discount badges, promo strips -> green fill + white text, or black fill + yellow text
- *   urgency -> yellow badge, black text
+ * CONTRAST RULES FOR THE ACCENT (numbers are pinned by tests/unit/palette.test.ts):
+ *   - Text on an accent fill is WHITE (4.87:1). Never black: black on #DA291C is only 4.3:1.
+ *   - Hover on an accent fill goes DARKER (--c-accent-hover #B8200F, white 6.46:1).
+ *   - Accent as text on white is 4.87:1, fine for body text; on the light grey band 4.58:1.
+ *     It is NOT enough on dark surfaces: 4.32:1 on black, 3.19:1 on the footer grey. Any red TEXT
+ *     on black or dark grey uses --c-accent-light (#FF6B5E: 7.5:1 on black, 5.6:1 on the footer).
+ *     Icons and borders may use plain accent on dark (3:1 is enough for graphics).
+ *   - Do not put translucent black on a red fill (text-black/80): it turns dark red on red.
+ *   - A bg-accent fill with no explicit text colour inherits #212529 (3.9:1), so give it text-white.
+ *   - Star ratings are ink, not red: red stars read as an error or "like", not a rating.
+ *
+ * PALETTE RULE (2026-10-13): ONLY red (the accent), navy (the partner), white, black, status green + neutral greys.
+ * No yellow/gold/amber/orange/purple anywhere, and no raw Tailwind red/blue/green families: use the tokens
+ * (guarded by tests/unit/palette.test.ts).
+ *   prices -> black bold (navy for "from"/discount emphasis)
+ *   "4 for 3", discount badges, promo strips -> navy fill + white text, or black fill + light red text
+ *   urgency -> red badge, white text
  *   errors -> danger text + thick danger left border + icon + aria-live (.msg-error); never colour alone
- *   success -> green; warnings -> yellow wash (#fff4bf) + black text; destructive buttons -> black
- *   links -> black underlined, yellow highlight on hover (light); yellow (dark surfaces)
+ *   success / in stock -> status green; warnings/notices -> red wash (--c-accent-soft) + black text; destructive buttons -> black
+ *   links -> black underlined (red underline), red highlight with white text on hover (light surfaces)
  *
  * Two deliberate departures from the reference: body/small text has 0
  * tracking (only headings get -1px), and every control gets a visible focus
@@ -28,17 +53,20 @@
  * resolve to palette colours only: asphalt/link/warning -> ink (black), steel -> line,
  * radius-xs..2xl. (red/teal/amber/caliper/signal aliases removed 2026-10-05, zero usages.)
  *
- * ERROR COLOUR (2026-10-05, WS-B): the one deliberate exception to the no-red rule is
- * --c-danger #b3261e (text-danger / border-danger / bg-danger-soft), used ONLY for
- * validation/error messages (.msg-error), paired with an icon and text, never colour alone.
+ * ERROR COLOUR (2026-10-05, WS-B): --c-danger #b3261e (text-danger / border-danger / bg-danger-soft)
+ * is the separate, darker semantic red for validation/error messages (.msg-error). Now that the
+ * brand is red too the two can look alike, so an error is NEVER colour alone: it always carries an
+ * icon, text and a thick left border (see .msg-error), and the accent must not be used for errors.
  */
 :root {
   --c-ink: #000000; /* nav text, black fills, premium tier */
   --c-text: #212529; /* default body text */
-  --c-gold: #ffce00; /* brand yellow */
-  --c-gold-soft: #fff4bf; /* yellow wash */
-  --c-green: #3c8425; /* primary CTA, mid tier. Darkened from #509E31 for AA: white on #3C8425 = 4.65:1 */
-  --c-green-hover: #2f6f1f;
+  --c-accent: #da291c; /* brand red (UI). Logo artwork stays #FF0000. White on it 4.87:1 */
+  --c-accent-hover: #b8200f; /* hover fill: darker, white keeps 6.46:1 */
+  --c-accent-soft: #fdecea; /* red wash: selected rows, notices, "you saved" lists. Black on it 18.4:1 */
+  --c-accent-light: #ff6b5e; /* red for small TEXT on black / dark greys: 7.5:1 on black, 5.6:1 on --c-footer */
+  --c-action: #12355b; /* deep navy, the partner colour: primary CTA, savings tiles, prices, mid tier. White on it 12.5:1 */
+  --c-action-hover: #0b2545; /* hover fill: darker, white 15.4:1 */
   --c-tarmac: #ffffff; /* page background */
   --c-surface: #ffffff; /* cards, inputs */
   --c-band: #f8f8f8; /* light section band */
@@ -46,19 +74,19 @@
   --c-line: #e5e5e5; /* dividers, card borders */
   --c-field: #9a9a9a; /* input borders */
   --c-muted: #4e535a; /* secondary text, ~7.6:1 on white, ~7:1 on --c-chip */
-  --c-link: #000000; /* links on light surfaces: black, underlined, yellow hover */
-  --c-success: #3f7f27; /* success TEXT (AA on white); brand green is --c-green */
+  --c-link: #000000; /* links on light surfaces: black, underlined, red hover */
+  --c-success: #167a4b; /* status green: in stock, location set, success TEXT (5.36:1 on white). Not a button colour */
   --c-danger: #b3261e; /* error TEXT/border/icon: 6.6:1 on white, 5.9:1 on --c-danger-soft. Never the only cue (keep icon + text). */
   --c-danger-soft: #fdeceb; /* error wash */
   --c-disabled-bg: #f1f1f1; /* disabled controls: light fill + 4.5:1 border + dark-grey text, so they read as disabled but not hidden */
   --c-disabled-border: #767676;
   --c-disabled-text: #4e535a;
-  --c-warning: #000000; /* warnings use .msg-warning (yellow wash + black text); alias only */
+  --c-warning: #000000; /* warnings use .msg-warning (red wash + black text); alias only */
   --c-footer: #242424;
   --c-footer-muted: #c4c4c4;
 
   --focus-ring: #000000;
-  --focus-halo: #ffce00;
+  --focus-halo: var(--c-accent);
 
   --sh-rest: 0 2px 4px rgb(0 0 0 / 0.25);
   --sh-raised: 0 8px 24px rgb(0 0 0 / 0.14);
@@ -92,11 +120,12 @@
 @theme inline {
   --color-ink: var(--c-ink);
   --color-text: var(--c-text);
-  --color-gold: var(--c-gold);
-  --color-yellow: var(--c-gold);
-  --color-gold-soft: var(--c-gold-soft);
-  --color-green: var(--c-green);
-  --color-green-hover: var(--c-green-hover);
+  --color-accent: var(--c-accent);
+  --color-accent-hover: var(--c-accent-hover);
+  --color-accent-soft: var(--c-accent-soft);
+  --color-accent-light: var(--c-accent-light);
+  --color-action: var(--c-action);
+  --color-action-hover: var(--c-action-hover);
   --color-tarmac: var(--c-tarmac);
   --color-surface: var(--c-surface);
   --color-band: var(--c-band);
@@ -115,10 +144,10 @@
   --color-footer: var(--c-footer);
   --color-footer-muted: var(--c-footer-muted);
   --color-scrim: var(--scrim);
-  /* Tier colours: premium black, mid-range green, budget yellow */
+  /* Tier colours: premium black, mid-range navy, budget red */
   --color-tier-premium: var(--c-ink);
-  --color-tier-mid: var(--c-green);
-  --color-tier-budget: var(--c-gold);
+  --color-tier-mid: var(--c-action);
+  --color-tier-budget: var(--c-accent);
 
   /* DEPRECATED aliases */
   --color-asphalt: var(--c-ink);
@@ -195,7 +224,7 @@
     letter-spacing: -1px;
   }
 
-  /* Focus: 3px black ring + yellow halo, visible on white, yellow and black. */
+  /* Focus: 3px black ring + red halo, visible on white, red and black. */
   :focus-visible {
     outline: 3px solid var(--focus-ring);
     outline-offset: 2px;
@@ -203,8 +232,8 @@
   }
 
   ::selection {
-    background: var(--c-gold);
-    color: #000;
+    background: var(--c-accent);
+    color: #fff;
   }
 }
 
@@ -270,10 +299,10 @@
   letter-spacing: 0.04em;
 }
 
-/* Yellow marker behind emphasised headline words (black text on yellow). */
+/* Red marker behind emphasised headline words (white text on red). */
 .brand-highlight {
-  background-color: var(--c-gold);
-  color: #000;
+  background-color: var(--c-accent);
+  color: #fff;
   padding: 0 0.25em;
   border-radius: 6px;
   box-decoration-break: clone;
@@ -285,8 +314,8 @@
   background-color: #111;
   background-image: repeating-linear-gradient(
     135deg,
-    rgba(255, 206, 0, 0.07) 0px,
-    rgba(255, 206, 0, 0.07) 2px,
+    rgba(218, 41, 28, 0.12) 0px,
+    rgba(218, 41, 28, 0.12) 2px,
     transparent 2px,
     transparent 18px
   );
@@ -492,7 +521,7 @@
   inset: 0 0 auto 0;
   z-index: 70;
   height: 3px;
-  background: var(--c-gold);
+  background: var(--c-accent);
   transform-origin: left;
   pointer-events: none;
 }
@@ -572,7 +601,7 @@
   padding-left: 0.25em;
 }
 .prose-tiro li::marker {
-  color: var(--c-green);
+  color: var(--c-action);
 }
 .prose-tiro :where(li > ul, li > ol) {
   margin-block: 0.4em;
@@ -584,13 +613,14 @@
   text-underline-offset: 3px;
 }
 .prose-tiro a:hover {
-  background: var(--c-gold);
+  background: var(--c-accent);
+  color: #fff;
 }
 .prose-tiro strong {
   font-weight: 700;
 }
 .prose-tiro blockquote {
-  border-left: 4px solid var(--c-gold);
+  border-left: 4px solid var(--c-accent);
   background: var(--c-chip);
   border-radius: 0 var(--radius-card) var(--radius-card) 0;
   padding: 1em 1.25em;
@@ -672,10 +702,10 @@
 
 /* Sheet/drawer entrance + exit motion lives in components/ui/sheet.tsx (framer-motion). */
 
-/* Links on light surfaces: black text, yellow highlight on hover. */
+/* Links on light surfaces: black text, red highlight with white text on hover. */
 .text-link:hover {
-  background-color: var(--c-gold);
-  color: #000;
+  background-color: var(--c-accent);
+  color: #fff;
 }
 
 /*
@@ -712,12 +742,13 @@
   background: var(--c-danger-soft);
   padding: 0.75rem 0.875rem;
 }
-/* Warning notice: yellow wash, black text, thick yellow left rule. */
+/* Warning notice: red wash, black text, thick red left rule. Unlike .msg-error it carries no
+   danger text colour: black text on the wash is what tells a notice from an error. */
 .msg-warning {
   border: 1px solid #000;
-  border-left: 6px solid var(--c-gold);
+  border-left: 6px solid var(--c-accent);
   border-radius: var(--radius-control);
-  background: var(--c-gold-soft);
+  background: var(--c-accent-soft);
   color: #000;
   padding: 0.75rem 0.875rem;
 }

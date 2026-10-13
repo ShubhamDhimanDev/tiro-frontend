@@ -52,7 +52,7 @@ export function FeatureBand({
             {icon && (
               <span
                 aria-hidden="true"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-control bg-gold text-black [&_svg]:h-6 [&_svg]:w-6"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-control bg-accent text-white [&_svg]:h-6 [&_svg]:w-6"
               >
                 {icon}
               </span>
