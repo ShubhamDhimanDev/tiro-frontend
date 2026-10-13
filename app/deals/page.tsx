@@ -55,10 +55,10 @@ export default async function DealsPage() {
         intro="What is on now, when it ends and the fine print. Pick an offer and we take you to the tyres it covers."
         actions={
           <>
-            <Link href="/tyres" className={buttonClassName({ variant: "green" })}>
+            <Link href="/tyres" className={buttonClassName({ variant: "action" })}>
               Shop tyres
             </Link>
-            <Link href="/price-guarantee" className={buttonClassName({ variant: "yellow" })}>
+            <Link href="/price-guarantee" className={buttonClassName({ variant: "accent" })}>
               Price guarantee
             </Link>
           </>

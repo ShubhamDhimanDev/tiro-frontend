@@ -195,7 +195,7 @@ export function EnquiryForm(props: EnquiryFormProps) {
             {sent.reference}
           </strong>
           . Quote it if you call us on{" "}
-          <a href={PHONE_HREF} className="font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4">
+          <a href={PHONE_HREF} className="font-semibold text-black underline decoration-accent decoration-[3px] underline-offset-4">
             {PHONE_DISPLAY}
           </a>
           .
@@ -400,7 +400,7 @@ export function EnquiryForm(props: EnquiryFormProps) {
         </Button>
         <p className="text-sm text-muted">
           We use your details only to answer this enquiry. Prefer to talk? Call{" "}
-          <a href={PHONE_HREF} className="font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4">
+          <a href={PHONE_HREF} className="font-semibold text-black underline decoration-accent decoration-[3px] underline-offset-4">
             {PHONE_DISPLAY}
           </a>
           .

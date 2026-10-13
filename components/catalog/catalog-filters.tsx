@@ -138,7 +138,7 @@ function FilterGroup({
       >
         <span className="flex-1">{title}</span>
         {count > 0 && (
-          <span aria-label={`${count} selected`} className="flex h-6 min-w-6 items-center justify-center rounded-full bg-gold px-1.5 text-xs font-extrabold text-black">
+          <span aria-label={`${count} selected`} className="flex h-6 min-w-6 items-center justify-center rounded-full bg-accent px-1.5 text-xs font-extrabold text-white">
             {count}
           </span>
         )}
@@ -490,7 +490,7 @@ export function FilterBar({ values, brands, patterns, facets }: CommonProps) {
             type="button"
             onClick={openSheet}
             aria-haspopup="dialog"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-control border-2 border-black bg-gold px-4 text-sm font-bold text-black transition-colors hover:bg-[#e6b900]"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-control border-2 border-black bg-accent px-4 text-sm font-bold text-white transition-colors hover:bg-accent-hover"
           >
             Filters ({applied})
           </button>
@@ -529,7 +529,7 @@ export function FilterBar({ values, brands, patterns, facets }: CommonProps) {
             >
               Clear filters
             </button>
-            <Button variant="yellow" onClick={applyDraft} fullWidth disabled={matchCount === 0} data-testid="filter-apply">
+            <Button variant="accent" onClick={applyDraft} fullWidth disabled={matchCount === 0} data-testid="filter-apply">
               {matchCount === null ? "Apply" : matchCount === 0 ? "No tyres match" : `Show ${matchCount} ${matchCount === 1 ? "tyre" : "tyres"}`}
             </Button>
           </div>

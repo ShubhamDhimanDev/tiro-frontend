@@ -90,7 +90,7 @@ export default async function LocationsPage() {
                           className="group flex h-full flex-col gap-2 rounded-card border border-line bg-surface p-5 shadow-rest transition-shadow hover:shadow-raised"
                         >
                           <span className="flex items-center gap-3">
-                            <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-black">
+                            <span aria-hidden="true" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-white">
                               <PinIcon className="h-5 w-5" />
                             </span>
                             <span className="type-h3">{city.name}</span>
@@ -138,7 +138,7 @@ export default async function LocationsPage() {
         >
           <p>
             Service areas are growing. Leave your email when you check a suburb we do not cover yet and we will tell you when we arrive, or call us on{" "}
-            <a href={PHONE_HREF} className="font-bold text-black underline decoration-gold decoration-[3px] underline-offset-4">
+            <a href={PHONE_HREF} className="font-bold text-black underline decoration-accent decoration-[3px] underline-offset-4">
               {PHONE_DISPLAY}
             </a>{" "}
             ({HOURS_LINE}).
@@ -147,7 +147,7 @@ export default async function LocationsPage() {
             <Link href="/contact" className={buttonClassName({ variant: "black" })}>
               Contact us
             </Link>
-            <Link href="/booking" className={buttonClassName({ variant: "green" })}>
+            <Link href="/booking" className={buttonClassName({ variant: "action" })}>
               Book a fitting
             </Link>
           </div>

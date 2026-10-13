@@ -46,7 +46,7 @@ export function CartExtrasPanel({
           id={idPrefix ? `${idPrefix}-flexible` : undefined}
           checked={flexible}
           onChange={(e) => setFlexible(e.target.checked)}
-          className="mt-0.5 h-5 w-5 shrink-0 accent-green"
+          className="mt-0.5 h-5 w-5 shrink-0 accent-action"
         />
         <span>
           <span className="font-bold">Flexible booking discount</span>

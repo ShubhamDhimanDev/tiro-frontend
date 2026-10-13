@@ -139,7 +139,7 @@ export function PdpBuyPanel() {
               className={cx(
                 "flex min-h-12 cursor-pointer items-center justify-center rounded-control border-2 text-base font-bold has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-black",
                 "relative",
-                quantity === q ? "border-black bg-gold text-black" : "border-ink/40 bg-surface text-black hover:border-black",
+                quantity === q ? "border-black bg-accent text-white" : "border-ink/40 bg-surface text-black hover:border-black",
               )}
             >
               {q === POPULAR_QUANTITY && (
@@ -228,7 +228,7 @@ export function PdpBuyPanel() {
           </h2>
           <FittingLocationStrip />
           <FittingDateStrip value={fitting} onChange={setFitting} idPrefix="pdp" items={[{ tyre_variant_id: tyreVariantId, quantity, position }]} />
-          <Button onClick={express} disabled={!canExpress} variant="yellow" fullWidth size="lg" data-testid="pdp-express">
+          <Button onClick={express} disabled={!canExpress} variant="accent" fullWidth size="lg" data-testid="pdp-express">
             Express Checkout ({quantity} {quantity === 1 ? "tyre" : "tyres"})
           </Button>
           {!canExpress && <p className="-mt-2 text-center text-sm text-muted">Choose a fitting date and time to check out in one step.</p>}

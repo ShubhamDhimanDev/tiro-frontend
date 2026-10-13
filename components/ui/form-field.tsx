@@ -8,7 +8,7 @@ import { cloneElement, isValidElement } from "react";
  * so existing auth imports keep working unchanged.
  *
  * Phase 0 (redesign): class strings now use the new tokens (line,
- * surface, ink). Inputs are 48px / 16px text; the global gold focus ring in
+ * surface, ink). Inputs are 48px / 16px text; the global red focus ring in
  * globals.css applies (no per-input focus overrides). New code should prefer
  * the primitives in this folder: button.tsx, field.tsx (Input/Select/Field).
  *
@@ -79,7 +79,7 @@ export const inputClassName =
 export const selectClassName = inputClassName;
 
 export const primaryButtonClassName =
-  "w-full min-h-12 rounded-control bg-green px-5 py-2.5 text-[15px] font-bold text-white transition-colors duration-300 hover:bg-green-hover disabled:cursor-not-allowed disabled:border-2 disabled:border-dashed disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text";
+  "w-full min-h-12 rounded-control bg-action px-5 py-2.5 text-[15px] font-bold text-white transition-colors duration-300 hover:bg-action-hover disabled:cursor-not-allowed disabled:border-2 disabled:border-dashed disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text";
 
 // Deliberately no `min-h-11` on the base string (unlike `primaryButtonClassName`
 // below) — every list-row call site (saved-vehicles/addresses, order rows)

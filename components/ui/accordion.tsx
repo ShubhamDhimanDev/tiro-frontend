@@ -9,7 +9,7 @@ export type AccordionItem = {
   title: string;
   /** Plain strings render as a paragraph; nodes render as-is. */
   content: ReactNode;
-  /** Optional leading icon, shown in a yellow circle when `variant="icons"`. */
+  /** Optional leading icon, shown in a red circle when `variant="icons"`. */
   icon?: ReactNode;
 };
 
@@ -20,7 +20,7 @@ export type AccordionItem = {
  * Headers are not headings on purpose (the FAQ page supplies its own h2 groups).
  *
  * Variants: `boxed` (bordered card, FAQ), `plain` (hairline rows), `icons`
- * (rows with a yellow icon circle, "Our core services").
+ * (rows with a red icon circle, "Our core services").
  */
 export function Accordion({
   items,
@@ -97,7 +97,7 @@ export function Accordion({
               {variant === "icons" && item.icon && (
                 <span
                   aria-hidden="true"
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-black md:h-[52px] md:w-[52px]"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-white md:h-[52px] md:w-[52px]"
                 >
                   {item.icon}
                 </span>

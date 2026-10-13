@@ -3,15 +3,15 @@ import { Breadcrumbs } from "@/components/content/breadcrumbs";
 import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { cx } from "@/components/ui/cx";
 
-/** Inline yellow marker for one or two words of a hero H1. */
+/** Inline red marker for one or two words of a hero H1. */
 export function Mark({ children }: { children: ReactNode }) {
   return <span className="brand-highlight">{children}</span>;
 }
 
 /**
  * Standard hero band for content pages (design v2): breadcrumb, one H1, an
- * optional lead and actions, optional right-hand aside (desktop) and a yellow
- * chevron accent. `tone="black"` is the default; `tone="yellow"` is used for
+ * optional lead and actions, optional right-hand aside (desktop) and a red
+ * chevron accent. `tone="black"` is the default; `tone="accent"` is used for
  * lighter info pages. Emits the BreadcrumbList JSON-LD from the same `crumbs`
  * it renders, so markup and structured data cannot drift apart.
  *
@@ -34,7 +34,7 @@ export function PageHero({
   crumbs: { name: string; url: string }[];
   lead?: ReactNode;
   eyebrow?: string;
-  tone?: "black" | "yellow";
+  tone?: "black" | "accent";
   actions?: ReactNode;
   aside?: ReactNode;
   children?: ReactNode;
@@ -45,7 +45,7 @@ export function PageHero({
   return (
     <section
       aria-labelledby={titleId ?? "page-title"}
-      className={cx("relative overflow-hidden", black ? "bg-ink text-white" : "bg-gold text-black", className)}
+      className={cx("relative overflow-hidden", black ? "bg-ink text-white" : "bg-accent text-white", className)}
     >
       <BreadcrumbJsonLd items={crumbs} />
       {black && (
@@ -53,7 +53,7 @@ export function PageHero({
           {[0, 1, 2].map((i) => (
             <span
               key={i}
-              className="absolute top-[-10%] h-[120%] -skew-x-[18deg] bg-gold"
+              className="absolute top-[-10%] h-[120%] -skew-x-[18deg] bg-accent"
               style={{ left: `${40 + i * 20}%`, width: `${12 - i * 3}%`, opacity: 1 - i * 0.25 }}
             />
           ))}
@@ -66,12 +66,12 @@ export function PageHero({
         )}
       >
         <div className="flex min-w-0 flex-col gap-3 md:gap-4">
-          <Breadcrumbs items={crumbs} tone={black ? "dark" : "gold"} />
-          {eyebrow && <p className={cx("type-eyebrow font-bold uppercase", black ? "text-gold" : "text-black")}>{eyebrow}</p>}
+          <Breadcrumbs items={crumbs} tone={black ? "dark" : "accent"} />
+          {eyebrow && <p className={cx("type-eyebrow font-bold uppercase", black ? "text-accent-light" : "text-white")}>{eyebrow}</p>}
           <h1 id={titleId ?? "page-title"} className="type-display max-w-3xl text-balance lg:!text-[clamp(40px,4.2vw,52px)]">
             {title}
           </h1>
-          {lead && <div className={cx("max-w-2xl text-base md:text-lg", black ? "text-white/85" : "text-black/80")}>{lead}</div>}
+          {lead && <div className={cx("max-w-2xl text-base md:text-lg", black ? "text-white/85" : "text-white")}>{lead}</div>}
           {actions && <div className="flex flex-wrap gap-3 pt-1">{actions}</div>}
           {children}
         </div>

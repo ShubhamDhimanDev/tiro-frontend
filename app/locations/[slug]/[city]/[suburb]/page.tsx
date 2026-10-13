@@ -104,10 +104,10 @@ export default async function SuburbPage({ params }: { params: Params }) {
         lead={`Choose your tyres online and our technician fits them at your home or work in ${suburb.name}, ${state.code}. Balancing, valves and old-tyre recycling included.`}
         actions={
           <>
-            <Link href="/tyres" className={buttonClassName({ variant: "green" })}>
+            <Link href="/tyres" className={buttonClassName({ variant: "action" })}>
               Search tyres
             </Link>
-            <Link href="/booking" className={buttonClassName({ variant: "yellow" })}>
+            <Link href="/booking" className={buttonClassName({ variant: "accent" })}>
               Book a fitting
             </Link>
           </>

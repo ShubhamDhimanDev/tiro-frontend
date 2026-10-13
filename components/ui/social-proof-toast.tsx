@@ -118,7 +118,7 @@ export function SocialProofToast() {
             onMouseLeave={() => setPaused(false)}
             onFocus={() => setPaused(true)}
             onBlur={() => setPaused(false)}
-            className="pointer-events-auto flex w-80 max-w-full items-start gap-3 rounded-card border border-line border-l-4 border-l-gold bg-surface py-3 pl-4 pr-2 text-sm text-black shadow-overlay"
+            className="pointer-events-auto flex w-80 max-w-full items-start gap-3 rounded-card border border-line border-l-4 border-l-accent bg-surface py-3 pl-4 pr-2 text-sm text-black shadow-overlay"
           >
             <div className="min-w-0 flex-1">
               <p className="font-semibold leading-snug">

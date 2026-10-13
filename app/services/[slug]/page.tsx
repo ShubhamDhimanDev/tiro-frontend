@@ -56,10 +56,10 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         lead={service.summary}
         actions={
           <>
-            <Link href={service.cta.href} className={buttonClassName({ variant: "green" })}>
+            <Link href={service.cta.href} className={buttonClassName({ variant: "action" })}>
               {service.cta.label}
             </Link>
-            <Link href="/contact" className={buttonClassName({ variant: "yellow" })}>
+            <Link href="/contact" className={buttonClassName({ variant: "accent" })}>
               Ask a question
             </Link>
           </>
@@ -73,7 +73,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
           <ul aria-label="What is included" className="flex flex-col gap-3">
             {service.points.map((p) => (
               <li key={p} className="flex items-start gap-3 rounded-card border border-line bg-surface p-4 shadow-rest">
-                <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold text-black">
+                <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-white">
                   <CheckIcon className="h-3.5 w-3.5" strokeWidth={3} />
                 </span>
                 <span className="font-medium text-black">{p}</span>
@@ -83,7 +83,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         </div>
       </HomeSection>
 
-      <section aria-labelledby="includes-heading" className="mt-[50px] bg-gold lg:mt-20">
+      <section aria-labelledby="includes-heading" className="mt-[50px] bg-accent text-white lg:mt-20">
         <div className="container-page grid gap-6 py-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,7fr)] lg:items-center lg:gap-12">
           <h2 id="includes-heading" className="type-h2">
             All our fitted prices include

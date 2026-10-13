@@ -51,7 +51,7 @@ export function BookingHoldPanel({
         <h2 id="booking-appointment-heading" className="type-h3">
           Your appointment
         </h2>
-        <span className="inline-flex items-center rounded-full bg-gold-soft px-3 py-1 text-xs font-semibold text-ink">
+        <span className="inline-flex items-center rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold text-ink">
           {isHeld ? "Held for you, not paid yet" : hold.status === "confirmed" ? "Confirmed" : hold.status}
         </span>
       </div>
@@ -72,7 +72,7 @@ export function BookingHoldPanel({
       </dl>
 
       {hold.flexible && hold.flexible_window && (
-        <p data-testid="flexible-note" className="rounded-control bg-gold-soft/60 px-3 py-2 text-sm text-ink">
+        <p data-testid="flexible-note" className="rounded-control bg-accent-soft/60 px-3 py-2 text-sm text-ink">
           <strong>Flexible arrival.</strong> You agreed to any time between {formatClock(hold.flexible_window.start)} and{" "}
           {formatClock(hold.flexible_window.end)}. The time above is the slot we have assigned. Changing the time keeps your flexible
           discount.

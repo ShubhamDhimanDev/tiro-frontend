@@ -43,7 +43,7 @@ export function PdpGallery({ images, alt }: { images: string[]; alt: string }) {
           aria-label={current.label}
           className="asphalt-texture flex aspect-square w-full flex-col items-center justify-center gap-3 rounded-card text-white"
         >
-          <current.icon className="h-14 w-14 text-gold" />
+          <current.icon className="h-14 w-14 text-accent" />
           <span className="px-6 text-center text-base font-bold">{current.label}</span>
         </div>
       ) : (
@@ -72,7 +72,7 @@ export function PdpGallery({ images, alt }: { images: string[]; alt: string }) {
               className={cx(
                 "flex aspect-square w-full items-center justify-center overflow-hidden rounded-control border-2 bg-chip",
                 i === index ? "border-black" : "border-line hover:border-muted",
-                t.slot && "asphalt-texture text-gold",
+                t.slot && "asphalt-texture text-accent",
               )}
             >
               {t.slot ? (

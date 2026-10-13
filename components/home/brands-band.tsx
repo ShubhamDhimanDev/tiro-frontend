@@ -4,7 +4,7 @@ import { MotionPauseButton } from "@/components/ui/motion-pause-button";
 import type { HomeBrand } from "@/lib/home/load";
 
 /**
- * Yellow "Shop leading brands" band fed by `GET /brands`. A brand shows its
+ * Red "Shop leading brands" band (white text) fed by `GET /brands`. A brand shows its
  * uploaded logo (on a white tile, decorative) beside its name, which is always
  * typeset text so the link keeps its label if the image is missing or fails.
  *
@@ -17,18 +17,18 @@ export function BrandsBand({ brands }: { brands: HomeBrand[] }) {
   if (brands.length === 0) return null;
   // One link list serves both layouts (a wrapped grid on phones, an inline row inside the marquee from md up), so there is a single set of links in the DOM.
   const chip =
-    "flex min-h-12 items-center justify-center gap-2.5 rounded-control border-2 border-black/80 px-4 text-base font-extrabold italic tracking-[-0.5px] text-black transition-colors hover:bg-black hover:text-gold md:h-14 md:shrink-0 md:justify-start md:rounded-none md:border-0 md:px-9 md:text-[28px] md:tracking-[-1px] md:hover:bg-transparent md:hover:text-black";
-  const copyChip = "flex h-14 shrink-0 items-center gap-3 px-9 text-[28px] font-extrabold italic tracking-[-1px] text-black";
+    "flex min-h-12 items-center justify-center gap-2.5 rounded-control border-2 border-white/80 px-4 text-base font-extrabold italic tracking-[-0.5px] text-white transition-colors hover:bg-black hover:text-accent-light md:h-14 md:shrink-0 md:justify-start md:rounded-none md:border-0 md:px-9 md:text-[28px] md:tracking-[-1px] md:hover:bg-transparent md:hover:text-white";
+  const copyChip = "flex h-14 shrink-0 items-center gap-3 px-9 text-[28px] font-extrabold italic tracking-[-1px] text-white";
   const logoTile = "h-9 w-12 md:h-12 md:w-16";
   return (
-    <section aria-labelledby="brands-heading" className="mt-[50px] bg-gold py-9 lg:mt-20 lg:py-12">
+    <section aria-labelledby="brands-heading" className="mt-[50px] bg-accent py-9 lg:mt-20 lg:py-12">
       <div className="container-page">
         <div className="mb-6 flex items-center gap-4">
-          <span aria-hidden="true" className="h-px flex-1 bg-black/30" />
-          <h2 id="brands-heading" className="text-xl font-bold tracking-[-0.5px] text-black md:text-[28px]">
+          <span aria-hidden="true" className="h-px flex-1 bg-white/40" />
+          <h2 id="brands-heading" className="text-xl font-bold tracking-[-0.5px] text-white md:text-[28px]">
             Shop leading brands
           </h2>
-          <span aria-hidden="true" className="h-px flex-1 bg-black/30" />
+          <span aria-hidden="true" className="h-px flex-1 bg-white/40" />
         </div>
       </div>
 
@@ -61,7 +61,7 @@ export function BrandsBand({ brands }: { brands: HomeBrand[] }) {
       </div>
 
       <div className="container-page mt-6 text-center">
-        <Link href="/brands" className="inline-flex min-h-11 items-center font-bold text-black underline underline-offset-4">
+        <Link href="/brands" className="inline-flex min-h-11 items-center font-bold text-white underline underline-offset-4">
           See all brands
         </Link>
       </div>

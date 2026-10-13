@@ -11,10 +11,11 @@ import type { Offer } from "@/lib/offers/types";
 
 /** Tile colours rotate by position: the API carries no colour, so this is presentation only. */
 const TONES = [
-  { bg: "bg-black text-white", cta: "bg-gold text-black" },
-  { bg: "bg-gold text-black", cta: "bg-black text-white" },
-  { bg: "bg-green text-white", cta: "bg-gold text-black" },
-  { bg: "bg-black text-gold", cta: "bg-gold text-black" },
+  { bg: "bg-black text-white", cta: "bg-accent text-white", fade: "opacity-90" },
+  // Red tile: solid white text, no opacity (translucent text on a saturated fill reads muddy).
+  { bg: "bg-accent text-white", cta: "bg-black text-white", fade: "" },
+  { bg: "bg-action text-white", cta: "bg-accent text-white", fade: "opacity-90" },
+  { bg: "bg-black text-accent-light", cta: "bg-accent text-white", fade: "opacity-90" },
 ] as const;
 
 /**
@@ -71,8 +72,8 @@ export function OffersCarousel({ offers }: { offers: Offer[] }) {
               <span className="text-4xl font-extrabold leading-none tracking-[-1.5px]">{offer.badge_text}</span>
               <span className="flex flex-col gap-1">
                 <span className="text-lg font-bold leading-tight">{offer.title}</span>
-                {offer.summary && <span className="line-clamp-3 text-sm leading-snug opacity-90">{offer.summary}</span>}
-                <span className="text-xs font-medium opacity-80">{formatOfferEnd(offer.ends_at)}</span>
+                {offer.summary && <span className={cx("line-clamp-3 text-sm leading-snug", tone.fade)}>{offer.summary}</span>}
+                <span className={cx("text-xs font-medium", tone.fade && "opacity-80")}>{formatOfferEnd(offer.ends_at)}</span>
                 <span className={cx("mt-3 inline-flex min-h-11 w-fit items-center rounded-control px-4 text-[15px] font-bold", tone.cta)}>
                   View offer
                 </span>

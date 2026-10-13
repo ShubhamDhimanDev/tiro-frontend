@@ -131,7 +131,7 @@ export function SuburbTypeahead({
                 e.preventDefault();
                 choose(o);
               }}
-              className={`flex min-h-11 cursor-pointer items-center justify-between gap-3 px-3.5 py-2 text-sm text-black ${i === active ? "bg-gold-soft" : "hover:bg-band"}`}
+              className={`flex min-h-11 cursor-pointer items-center justify-between gap-3 px-3.5 py-2 text-sm text-black ${i === active ? "bg-accent-soft" : "hover:bg-band"}`}
             >
               <span className="font-medium">{o.label}</span>
               {!o.serviceable && <span className="shrink-0 text-xs font-bold text-black">Outside our area</span>}

@@ -1,7 +1,7 @@
 import type { StockStatus } from "@/lib/catalog/types";
 
 /**
- * palette tokens: green dot for in-stock, yellow dot (black ring) for low/limited
+ * palette tokens: green dot for in-stock, red dot (black ring) for low/limited
  * stock (urgency), grey dot for
  * out-of-stock/unavailable. Labels are unchanged text (asserted verbatim by
  * `tests/e2e/catalog/pdp.spec.ts`/`search.spec.ts` — "In stock"/"Limited
@@ -9,8 +9,8 @@ import type { StockStatus } from "@/lib/catalog/types";
  * treatment (dot + text instead of a filled pill) changed.
  */
 const STOCK_META: Record<StockStatus, { label: string; dotClassName: string; textClassName: string }> = {
-  in_stock: { label: "In stock", dotClassName: "bg-green", textClassName: "text-green" },
-  limited: { label: "Limited stock", dotClassName: "bg-gold ring-1 ring-black", textClassName: "text-black" },
+  in_stock: { label: "In stock", dotClassName: "bg-success", textClassName: "text-success" },
+  limited: { label: "Limited stock", dotClassName: "bg-accent ring-1 ring-black", textClassName: "text-black" },
   out_of_stock: { label: "Out of stock", dotClassName: "bg-steel", textClassName: "text-muted" },
   unavailable_in_zone: { label: "Not available in your area", dotClassName: "bg-steel", textClassName: "text-muted" },
 };

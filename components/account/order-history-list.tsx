@@ -23,7 +23,7 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
   partially_refunded: "Partially refunded",
 };
 
-/** Semantic colours: green good, yellow wash waiting, black needs action, quiet for closed. */
+/** Semantic colours: green good (status), red wash waiting, black needs action, quiet for closed. */
 export const STATUS_TONE: Record<OrderStatus, BadgeTone> = {
   pending_payment: "warning",
   confirmed: "success",

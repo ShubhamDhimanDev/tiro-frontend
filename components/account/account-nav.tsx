@@ -15,7 +15,7 @@ const LINKS = [
 /**
  * Account sub-nav. Below 1024px: one horizontal, scrollable row of pills (edge
  * fades show when more is off-screen). From 1024px: a vertical list in the
- * left column. The current section is yellow with black text. UI-only, no
+ * left column. The current section is red with white text. UI-only, no
  * auth logic (each section gates on `useAuth()` independently).
  */
 export function AccountNav() {
@@ -33,7 +33,7 @@ export function AccountNav() {
               href={link.href}
               aria-current={active ? "page" : undefined}
               className={`flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-colors lg:rounded-control lg:py-2.5 ${
-                active ? "bg-gold text-black" : "bg-chip text-black hover:bg-line/60 lg:bg-transparent"
+                active ? "bg-accent text-white" : "bg-chip text-black hover:bg-line/60 lg:bg-transparent"
               }`}
             >
               {link.label}

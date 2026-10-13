@@ -27,7 +27,7 @@ export function ConfirmationView({ orderId }: { orderId: number | null }) {
         title="No order to show"
         actions={
           <>
-            <Link href="/tyres" className={buttonClassName({ variant: "green" })}>
+            <Link href="/tyres" className={buttonClassName({ variant: "action" })}>
               Shop tyres now
             </Link>
             <Link href="/account/orders" className={buttonClassName({ variant: "secondary" })}>
@@ -49,7 +49,7 @@ export function ConfirmationView({ orderId }: { orderId: number | null }) {
       </div>
       <OrderStatusView orderId={orderId} onOrderNumber={setOrderNumber} onOrder={onOrder} />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <Link href="/tyres" className={buttonClassName({ variant: "green" })}>
+        <Link href="/tyres" className={buttonClassName({ variant: "action" })}>
           Keep shopping
         </Link>
         <Link href="/account/orders" className={buttonClassName({ variant: "secondary" })}>

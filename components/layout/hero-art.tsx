@@ -43,7 +43,7 @@ export function HeroArt({ mobile = false }: { mobile?: boolean }) {
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className="hero-bar-in absolute top-[-10%] h-[120%] -skew-x-[18deg] bg-gold"
+            className="hero-bar-in absolute top-[-10%] h-[120%] -skew-x-[18deg] bg-accent"
             style={{ left: `${38 + i * 17}%`, width: `${14 - i * 3}%`, animationDelay: `${i * 90}ms` }}
           />
         ))}
@@ -53,8 +53,8 @@ export function HeroArt({ mobile = false }: { mobile?: boolean }) {
         <path d="M30 150V70a12 12 0 0 1 12-12h190a10 10 0 0 1 10 10v82z" fill="#111" />
         <path d="M242 82h46c9 0 16 4 21 11l30 40c4 5 6 9 6 17v10H242z" fill="#222" />
         <path d="M254 92h32c5 0 8 2 11 6l20 28h-63z" fill="#8a8f96" opacity="0.8" />
-        <rect x="30" y="112" width="212" height="12" fill="#ffce00" />
-        <text x="136" y="104" textAnchor="middle" fontSize="30" fontWeight="800" fontStyle="italic" fill="#ffce00" fontFamily="Montserrat, sans-serif">
+        <rect x="30" y="112" width="212" height="12" fill="#da291c" />
+        <text x="136" y="104" textAnchor="middle" fontSize="30" fontWeight="800" fontStyle="italic" fill="#da291c" fontFamily="Montserrat, sans-serif">
           TIRO
         </text>
         <rect x="30" y="150" width="293" height="16" rx="3" fill="#111" />

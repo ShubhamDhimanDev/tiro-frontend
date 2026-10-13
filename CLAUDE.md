@@ -825,6 +825,44 @@ the two independently-built sides still agreed — they didn't, on one point.
   `lib/reviews/types.ts` exactly, no other drift found beyond the
   nullability point above.
 
+## Theme: brand red (2026-10-13, replaces the yellow theme)
+
+The client moved the brand from yellow to red. First pass used the logo's pure `#FF0000` for the whole UI; a
+page-by-page colour review (`../docs/color-review/PLAN.md`, 60 routes, desktop + phone, evidence in that folder)
+found it harsh and changed the palette (red `#DA291C`, white text on red, navy partner colour). Full contrast reasoning is the comment at the top of `app/globals.css`;
+the numbers are pinned by `tests/unit/palette.test.ts`. The rules that cost time to work out:
+
+- **UI red is `#DA291C`, not the logo's `#FF0000`.** The token is `accent` (`bg-accent` / `text-accent` /
+  `border-accent`, plus `accent-hover` darker `#B8200F`, `accent-soft` wash `#FDECEA`, `accent-light` `#FF6B5E`).
+  `gold`/`yellow` are gone and the palette guard fails if they come back. Not named `brand`: that already means tyre
+  brand all over this codebase. The logo artwork, favicon and the apple-touch icon stay `#FF0000` (client files).
+- **Text on a red fill is WHITE (4.87:1). Never black (4.3:1).** A guard test fails on `bg-accent ... text-black`.
+  Hover on a red fill goes darker. A `bg-accent` fill with no explicit text colour inherits `#212529` (3.9:1), so give
+  it `text-white`. No translucent text on red (`text-black/80`, `opacity-90`): it turns muddy. On a red band use
+  `Button variant="inverse"` (white outline) instead of `secondary` (black outline).
+- **Red TEXT on a dark surface uses `accent-light`.** Plain accent is 4.3:1 on black and 3.2:1 on the footer grey.
+  Plain accent is fine as text on white (4.87:1), and for icons/borders on dark.
+- **Red is the brand, not an error, and not a rating.** Errors use the separate darker `danger` token and are never
+  colour alone (icon + text + thick left border). Star ratings are ink (black). Link underlines stay red.
+- **Partner colour is deep navy `#12355B`** (token `action`, hover `#0B2545`, white 12.5:1), chosen in
+  `../docs/color-review/PARTNER-COLOURS.md`. It replaced green because green (olive, then emerald) was nearly
+  indistinguishable from the red for red-green colour-blind visitors (colour distance 17-18 vs 90+ for navy) and had the
+  same lightness as red. `action` = primary buttons (`Button variant="action"`, `primary` is the alias), "4 for 3" /
+  savings tiles and badges, "from $" prices, mid-range tier, checkbox `accent-color`, Stripe's `colorPrimary`.
+  **Green survives only as a status colour**, the `success` token `#167A4B`: "In stock", location-confirmed pin,
+  the flexible-booking dots (the cart copy says "marked with a green dot") and success text. Never a button or tile.
+  The palette guard fails on any `bg-green` / `text-green` / `--c-green`.
+- **Logo:** `public/brand/tmt-logo.png` (red + black, light surfaces) and `tmt-logo-light.png` (red + white, dark
+  surfaces) are the client's transparent PNGs; `<Logo tone="light">` no longer needs a white plate. The favicon is the
+  icon on a white rounded plate (black lettering would vanish on dark browser tabs); the admin panel's
+  `backend/public/` icons were regenerated the same way.
+- **Photography:** 45 images in `public/images/` had the yellow van/backgrounds baked in. They were recoloured, not
+  regenerated, then re-graded to `#DA291C`: see `../docs/prompts/README.md` and `recolor-yellow-to-red.py` there. Two
+  stay as they were on purpose (`banners/type-banner-ev` night lights, natural sunset in `brand-banner-midrange`).
+- **Deploy gotcha:** `next/image` caches optimised files on disk by URL, and these assets kept their URLs, so older
+  versions keep being served until the cache is cleared. Delete `.next/cache/images` (and `.next/dev/cache/images`
+  in dev) before restarting after pulling this change; browsers may need a hard refresh once.
+
 ## Mobile layout rules (2026-10-08 mobile audit)
 
 Full write-up, measurements and screenshots: `../docs/mobile-view-audit.md`. The rules below are the non-obvious ones

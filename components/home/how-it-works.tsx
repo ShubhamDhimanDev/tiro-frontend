@@ -7,7 +7,7 @@ import { CONTENT_IMAGES } from "@/lib/site/content-images";
 
 const ICONS = [SearchIcon, CalendarIcon, TruckIcon];
 
-/** "How it works": three numbered steps with yellow circle icons. */
+/** "How it works": three numbered steps with red circle icons. */
 export function HowItWorks() {
   const photo = CONTENT_IMAGES["home-how-it-works"];
   return (
@@ -25,7 +25,7 @@ export function HowItWorks() {
                 <li key={step.title} className="flex gap-4">
                   <span
                     aria-hidden="true"
-                    className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-full bg-gold text-black"
+                    className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-full bg-accent text-white"
                   >
                     <Icon className="h-6 w-6" />
                   </span>
@@ -40,7 +40,7 @@ export function HowItWorks() {
               );
             })}
           </ol>
-          <Link href="/tyres" className={buttonClassName({ variant: "green", className: "w-full sm:w-fit" })}>
+          <Link href="/tyres" className={buttonClassName({ variant: "action", className: "w-full sm:w-fit" })}>
             <SearchIcon className="h-5 w-5" />
             Search tyres
           </Link>
@@ -56,8 +56,8 @@ export function HowItWorks() {
             aria-hidden="true"
             className="asphalt-texture relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-card max-md:hidden"
           >
-            <span className="absolute -left-6 top-0 h-full w-16 -skew-x-[18deg] bg-gold opacity-90" />
-            <span className="absolute left-14 top-0 h-full w-6 -skew-x-[18deg] bg-gold opacity-90" />
+            <span className="absolute -left-6 top-0 h-full w-16 -skew-x-[18deg] bg-accent opacity-90" />
+            <span className="absolute left-14 top-0 h-full w-6 -skew-x-[18deg] bg-accent opacity-90" />
             <TruckIcon className="h-28 w-28 text-white" strokeWidth={1.2} />
           </div>
         )}

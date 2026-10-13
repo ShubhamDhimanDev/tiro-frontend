@@ -4,7 +4,7 @@ import type { HomeReviews } from "@/lib/home/load";
 
 function Stars({ rating }: { rating: number }) {
   return (
-    <span role="img" aria-label={`${rating} out of 5 stars`} className="flex gap-0.5 text-gold">
+    <span role="img" aria-label={`${rating} out of 5 stars`} className="flex gap-0.5 text-ink">
       {Array.from({ length: 5 }, (_, i) => (
         <StarIcon key={i} className={i < rating ? "h-4 w-4 fill-current" : "h-4 w-4 text-line"} />
       ))}

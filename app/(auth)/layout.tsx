@@ -19,7 +19,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           {[0, 1].map((i) => (
             <span
               key={i}
-              className="absolute -right-6 top-[-10%] h-[120%] -skew-x-[18deg] bg-gold"
+              className="absolute -right-6 top-[-10%] h-[120%] -skew-x-[18deg] bg-accent"
               style={{ width: `${5 - i * 2}%`, right: `${i * 6}%` }}
             />
           ))}
@@ -29,7 +29,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <ul className="flex flex-col gap-2 text-[15px] text-white/85">
               {PERKS.map((p) => (
                 <li key={p} className="flex items-start gap-3">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold text-black">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent text-white">
                     <CheckIcon className="h-3 w-3" strokeWidth={3} />
                   </span>
                   {p}

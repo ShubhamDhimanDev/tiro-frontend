@@ -79,7 +79,7 @@ describe("TyreModelCard", () => {
     expect(screen.getAllByText(/205\/55 R16 · 91V/).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("From")).toBeInTheDocument();
     // First match is the front-face price strip (the back face repeats it in the 4-tyre row).
-    expect(screen.getAllByText("$189ea")[0]).toHaveClass("text-green");
+    expect(screen.getAllByText("$189ea")[0]).toHaveClass("text-action");
     expect(screen.getByText("In stock")).toBeInTheDocument();
     expect(screen.getByText("Premium")).toBeInTheDocument();
     // The back face (quantity table + Add) is hidden until the card is flipped.
@@ -157,7 +157,7 @@ describe("TyreModelCard", () => {
         <TyreModelCard group={group} />
       </CartProvider>,
     );
-    expect(screen.getAllByText("$189ea")[0]).toHaveClass("text-green");
+    expect(screen.getAllByText("$189ea")[0]).toHaveClass("text-action");
     await user.click(screen.getByRole("button", { name: /Select quantity for/ }));
     await waitFor(() => expect(screen.getByText(/Quantity prices could not be loaded/)).toBeInTheDocument());
     expect(screen.getByRole("radio", { name: /1 Tyre/ })).toBeInTheDocument();

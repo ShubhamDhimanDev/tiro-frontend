@@ -5,7 +5,7 @@ import { CONTENT_IMAGES, type ContentImageKey } from "@/lib/site/content-images"
 /**
  * A demo/placeholder image that holds its place. Looks up `slot` in
  * `lib/site/content-images.ts`; while `src` is null it draws a token-based
- * placeholder (dark tread texture, yellow chevron bars, optional glyph) at the
+ * placeholder (dark tread texture, red chevron bars, optional glyph) at the
  * slot's aspect ratio, so the layout is final before the photo exists. Once the
  * file is added and `src` is set, the same component renders the real `<img>`.
  *
@@ -64,7 +64,7 @@ export function ImageSlot({
       {[0, 1].map((i) => (
         <span
           key={i}
-          className="absolute top-[-10%] h-[120%] -skew-x-[18deg] bg-gold opacity-90"
+          className="absolute top-[-10%] h-[120%] -skew-x-[18deg] bg-accent opacity-90"
           style={{ left: `${-4 + i * 11}%`, width: `${8 - i * 3}%` }}
         />
       ))}

@@ -28,7 +28,7 @@ export function HoldBar({
       data-testid="hold-bar"
       className="sticky top-16 z-20 flex items-center gap-3 rounded-card border border-line bg-surface px-3 py-2 shadow-raised md:top-[72px] lg:top-20"
     >
-      <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold text-[#14110b]">
+      <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-white">
         <CalendarIcon className="h-5 w-5" />
       </span>
       <div className="min-w-0 flex-1 leading-tight">

@@ -54,7 +54,7 @@ export function LocationChip({
         className,
       )}
     >
-      <PinIcon className={cx("h-5 w-5 shrink-0", zone ? "text-green" : "text-black")} />
+      <PinIcon className={cx("h-5 w-5 shrink-0", zone ? "text-success" : "text-black")} />
       {/* Visible text equals the accessible name (WCAG 2.5.3, voice control). The phone field wraps to two lines instead of truncating, so a long zone name stays readable. */}
       <span aria-hidden="true" className={cx("min-w-0 flex-1", variant === "field" ? "line-clamp-2 leading-tight" : "truncate")}>
         {locationLabel(zone)}

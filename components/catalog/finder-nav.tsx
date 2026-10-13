@@ -27,7 +27,7 @@ export function FinderNav({ active, rego = false }: { active: FinderKey; rego?: 
               aria-current={i.key === active ? "page" : undefined}
               className={cx(
                 "inline-flex min-h-12 items-center border-b-[3px] text-sm font-bold md:text-[15px]",
-                i.key === active ? "border-gold text-black" : "border-transparent text-muted hover:text-black",
+                i.key === active ? "border-accent text-black" : "border-transparent text-muted hover:text-black",
               )}
             >
               {i.label}

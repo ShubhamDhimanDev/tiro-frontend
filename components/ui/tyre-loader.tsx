@@ -3,7 +3,7 @@ import { cx } from "./cx";
 const SIZES = { sm: 24, md: 48, lg: 88 } as const;
 
 /**
- * Brand loader: a spinning tyre (black tread blocks, yellow rim, spokes)
+ * Brand loader: a spinning tyre (black tread blocks, red rim, spokes)
  * rolling along a dashed road line. Pure SVG + CSS keyframes (`.tyre-loader-*`
  * in globals.css), so it is a server component and works inside `loading.tsx`
  * before any JS has hydrated. Reduced motion freezes it via the global override.
@@ -30,7 +30,7 @@ export function TyreLoader({
         <circle cx="50" cy="50" r="46" fill="#000" />
         {/* Tread blocks: dashes on a ring, so the spin reads as rolling. */}
         <circle cx="50" cy="50" r="42" fill="none" stroke="#3a3a3a" strokeWidth="7" strokeDasharray="9 7.1" />
-        <circle cx="50" cy="50" r="30" fill="#ffce00" />
+        <circle cx="50" cy="50" r="30" fill="#da291c" />
         <circle cx="50" cy="50" r="30" fill="none" stroke="#000" strokeWidth="2" opacity="0.2" />
         {[0, 72, 144, 216, 288].map((deg) => (
           <rect key={deg} x="47.5" y="24" width="5" height="21" rx="2.5" fill="#000" transform={`rotate(${deg} 50 50)`} />

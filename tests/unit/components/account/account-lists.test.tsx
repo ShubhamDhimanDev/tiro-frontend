@@ -85,7 +85,7 @@ describe("order cards", () => {
     expect(within(rows[0]).getAllByRole("link")).toHaveLength(1);
     expect(within(rows[0]).getByRole("link")).toHaveAttribute("href", "/orders/5");
     expect(within(rows[0]).getByText("Confirmed")).toHaveClass("bg-success");
-    expect(within(rows[1]).getAllByText("Payment failed")[0]).toHaveClass("bg-black", "text-gold");
+    expect(within(rows[1]).getAllByText("Payment failed")[0]).toHaveClass("bg-black", "text-accent-light");
     expect(within(rows[0]).getByText("View")).toBeInTheDocument();
   });
 });
