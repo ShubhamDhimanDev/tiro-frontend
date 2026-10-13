@@ -863,6 +863,26 @@ the numbers are pinned by `tests/unit/palette.test.ts`. The rules that cost time
   versions keep being served until the cache is cleared. Delete `.next/cache/images` (and `.next/dev/cache/images`
   in dev) before restarting after pulling this change; browsers may need a hard refresh once.
 
+## Location wording follows the admin (2026-10-13)
+
+The service area is whatever the admin panel serves (`GET /api/v1/locations`: states switched on, cities from active
+zones). **No component names a place.** Do not add "Melbourne", "Richmond", "Australia" or "nationwide" to copy, hints
+or SEO markup; derive it instead:
+
+- `lib/locations/coverage.ts` (`summariseCoverage(tree)`) boils the tree into served state codes, city names and one real
+  example suburb, plus the wording helpers: `coverageHeading`, `trustedTitle`, `suburbHint`, `postcodeHint`,
+  `addressStateOptions`. With nothing served they return neutral wording ("Do we come to you?"), never a default place.
+- Server components call `loadLocationTree()` (ISR, `locations` tag, already used by the footer and mega menu).
+  Client components read `useCoverage()` from `components/location/coverage-provider.tsx`; the root layout fills it via
+  `<CoverageData>` (no cookies or headers read, so pages stay static).
+- Wired so far: home coverage heading and postcode hint, the "Trusted in ..." point, the shared "suburb or postcode" example,
+  the delivery-address state list (served states only, falls back to all while the API is empty), `ServiceJsonLd`
+  `areaServed` (served cities, omitted when none), and the city photo (the admin's featured image first, then the bundled
+  per-city photo, then the shared one).
+- Registration-state selects (vehicle rego, enquiry form) stay national on purpose: a car can be registered in any state.
+- `lib/locations/sample.ts` (only with `SAMPLE_CONTENT=on`) and the `*-stub.ts` / `fixtures.ts` files are test doubles, not
+  the service area.
+
 ## Mobile layout rules (2026-10-08 mobile audit)
 
 Full write-up, measurements and screenshots: `../docs/mobile-view-audit.md`. The rules below are the non-obvious ones

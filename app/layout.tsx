@@ -6,6 +6,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { LocationProvider } from "@/components/location/location-provider";
+import { CoverageData } from "@/components/location/coverage-data";
 import { CartProvider } from "@/components/cart/cart-provider";
 import { CartDrawerProvider } from "@/components/cart/cart-drawer";
 import { SocialProofToast } from "@/components/ui/social-proof-toast";
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <MotionProvider>
         <NavProgress />
         <ToastProvider>
+        <CoverageData>
         <LocationProvider>
           <AuthProvider>
             <CartProvider>
@@ -78,6 +80,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </CartProvider>
           </AuthProvider>
         </LocationProvider>
+        </CoverageData>
         </ToastProvider>
         </MotionProvider>
       </body>

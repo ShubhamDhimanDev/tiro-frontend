@@ -3,12 +3,14 @@
 import { useId, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
+import { useCoverage } from "@/components/location/coverage-provider";
 import { useLocation } from "@/components/location/location-provider";
 import { OutOfAreaCapture } from "@/components/forms/out-of-area-capture";
 import { Button, buttonClassName } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
 import { PinIcon } from "@/components/ui/icons";
 import { locationApi } from "@/lib/location/client-api";
+import { coverageHeading, postcodeHint } from "@/lib/locations/coverage";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/site/config";
 
 const AU_POSTCODE = /^\d{4}$/;
@@ -26,6 +28,7 @@ type Result =
  */
 export function CoverageChecker({ cities = [] }: { cities?: { name: string; href: string }[] }) {
   const { setZone } = useLocation();
+  const coverage = useCoverage();
   const id = useId();
   const [value, setValue] = useState("");
   const [inputError, setInputError] = useState<string | undefined>();
@@ -64,7 +67,7 @@ export function CoverageChecker({ cities = [] }: { cities?: { name: string; href
   return (
     <div className="flex flex-col items-center gap-6 text-center">
       <h2 id="coverage-heading" className="type-h2 text-white">
-        Nationwide, we come to you
+        {coverageHeading(coverage)}
       </h2>
 
       <div className="flex w-full max-w-[640px] flex-col gap-4 rounded-card bg-surface p-5 text-left shadow-raised md:p-8">
@@ -73,7 +76,7 @@ export function CoverageChecker({ cities = [] }: { cities?: { name: string; href
         <Input
           id={`${id}-area`}
           label="Your suburb"
-          hint="Or a 4-digit postcode, like 3121."
+          hint={postcodeHint(coverage)}
           className="!min-h-[62px]"
           name="area"
           autoComplete="postal-code"

@@ -3,9 +3,11 @@
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { SuburbTypeahead } from "@/components/checkout/suburb-typeahead";
+import { useCoverage } from "@/components/location/coverage-provider";
 import { Input, Select } from "@/components/ui/field";
 import { AU_STATES } from "@/lib/checkout/au-states";
 import type { PlacesAddress } from "@/lib/checkout/address";
+import { addressStateOptions } from "@/lib/locations/coverage";
 
 /**
  * Google Places Autocomplete for the checkout address step
@@ -208,6 +210,8 @@ function ManualAddressFields({
   const [suburb, setSuburb] = useState("");
   const [state, setState] = useState("");
   const [postcode, setPostcode] = useState("");
+  // Delivery address: only the states the admin serves (all of them while the API gives us nothing).
+  const stateOptions = addressStateOptions(useCoverage(), AU_STATES, state);
 
   // Effect-driven commit, not a per-field `onBlur`/inline-`onChange`-then-
   // `commit()` pattern: that older approach read the closed-over field values
@@ -294,7 +298,7 @@ function ManualAddressFields({
           onChange={(e) => setState(e.target.value)}
         >
           <option value="">Select</option>
-          {AU_STATES.map((s) => (
+          {stateOptions.map((s) => (
             <option key={s} value={s}>
               {s}
             </option>

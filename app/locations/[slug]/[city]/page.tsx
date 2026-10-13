@@ -197,7 +197,7 @@ export default async function CityPage({ params }: { params: Params }) {
             )}
             <CityAreaButton cityName={city.name} postcode={cityPostcode} />
           </div>
-          <CityPhoto citySlug={city.slug} cityName={city.name} className="lg:min-h-[320px]" />
+          <CityPhoto citySlug={city.slug} cityName={city.name} imageSrc={content?.featured_image_path} className="lg:min-h-[320px]" />
         </div>
       </HomeSection>
 

@@ -192,11 +192,14 @@ export function ServiceJsonLd({
   description,
   url,
   provider,
+  areaServed = [],
 }: {
   name: string;
   description: string;
   url: string;
   provider: string;
+  /** City names the admin currently serves; omitted from the markup when there are none. */
+  areaServed?: string[];
 }) {
   return (
     <JsonLd
@@ -207,7 +210,7 @@ export function ServiceJsonLd({
         description,
         url: absoluteUrl(url),
         provider: { "@type": "LocalBusiness", name: provider },
-        areaServed: "Australia",
+        ...(areaServed.length > 0 ? { areaServed: areaServed.map((city) => ({ "@type": "City", name: city })) } : {}),
       }}
     />
   );

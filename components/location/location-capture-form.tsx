@@ -2,7 +2,9 @@
 
 import { useId, useState } from "react";
 import { locationApi } from "@/lib/location/client-api";
+import { useCoverage } from "@/components/location/coverage-provider";
 import { useLocation } from "@/components/location/location-provider";
+import { suburbHint } from "@/lib/locations/coverage";
 import { OutOfAreaCapture } from "@/components/forms/out-of-area-capture";
 import { ServiceError } from "@/components/ui/service-error";
 import { FormField, FormError, FormNotice, inputClassName, primaryButtonClassName } from "@/components/ui/form-field";
@@ -20,6 +22,7 @@ const AU_POSTCODE = /^\d{4}$/;
  */
 export function LocationCaptureForm({ onResolved }: { onResolved?: () => void }) {
   const { setZone } = useLocation();
+  const coverage = useCoverage();
   const inputId = useId();
 
   const [value, setValue] = useState("");
@@ -90,7 +93,7 @@ export function LocationCaptureForm({ onResolved }: { onResolved?: () => void })
         />
       )}
 
-      <FormField label="Suburb or postcode" htmlFor={inputId} hint="e.g. Richmond or 3121">
+      <FormField label="Suburb or postcode" htmlFor={inputId} hint={suburbHint(coverage)}>
         <div className="flex gap-2">
           <input
             id={inputId}

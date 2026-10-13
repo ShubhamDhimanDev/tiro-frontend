@@ -1,16 +1,41 @@
+import { ArticleImage } from "@/components/content/article-image";
 import { PinIcon } from "@/components/ui/icons";
 import { cx } from "@/components/ui/cx";
+import { adminImageUrl } from "@/lib/locations/format";
 import { locationImage } from "@/lib/site/images";
 
 /**
- * City photo slot. Reads `lib/site/images.ts` (per-city, then the shared
+ * City photo slot. Order: the image the admin attached to the city's location
+ * page (`imageSrc`), then `lib/site/images.ts` (per-city, then the shared
  * location image). Until a photo exists it draws a token-based fallback: the
  * ink tread texture with the city name. Fixed aspect ratios (a 200px strip on
  * phones, a tall rounded panel from 1024px) so nothing shifts when the photo
- * arrives.
+ * arrives. A broken admin image URL falls back to the next option instead of
+ * showing a broken-image icon.
  */
-export function CityPhoto({ citySlug, cityName, className }: { citySlug: string; cityName: string; className?: string }) {
+export function CityPhoto({
+  citySlug,
+  cityName,
+  imageSrc,
+  className,
+}: {
+  citySlug: string;
+  cityName: string;
+  /** `content.featured_image_path` from the city API payload (admin-managed), if any. */
+  imageSrc?: string | null;
+  className?: string;
+}) {
   const image = locationImage(citySlug);
+  const adminSrc = adminImageUrl(imageSrc);
+  const fallback = image ? (
+    // eslint-disable-next-line @next/next/no-img-element -- static generated asset with known dimensions
+    <img src={image.src} width={image.width} height={image.height} alt={image.alt} className="absolute inset-0 h-full w-full object-cover" />
+  ) : (
+    <div aria-hidden="true" className="absolute inset-0 flex flex-col items-start justify-end gap-2 p-5 lg:p-8">
+      <PinIcon className="h-8 w-8 text-accent lg:h-10 lg:w-10" />
+      <p className="font-display max-w-full break-words text-4xl font-black uppercase leading-none tracking-tight lg:text-5xl">{cityName}</p>
+    </div>
+  );
   return (
     <div
       data-testid="city-photo"
@@ -19,14 +44,10 @@ export function CityPhoto({ citySlug, cityName, className }: { citySlug: string;
         className,
       )}
     >
-      {image ? (
-        // eslint-disable-next-line @next/next/no-img-element -- static generated asset with known dimensions
-        <img src={image.src} width={image.width} height={image.height} alt={image.alt} className="absolute inset-0 h-full w-full object-cover" />
+      {adminSrc ? (
+        <ArticleImage src={adminSrc} alt={cityName} className="absolute inset-0 h-full w-full object-cover" fallback={fallback} />
       ) : (
-        <div aria-hidden="true" className="absolute inset-0 flex flex-col items-start justify-end gap-2 p-5 lg:p-8">
-          <PinIcon className="h-8 w-8 text-accent lg:h-10 lg:w-10" />
-          <p className="font-display max-w-full break-words text-4xl font-black uppercase leading-none tracking-tight lg:text-5xl">{cityName}</p>
-        </div>
+        fallback
       )}
     </div>
   );
