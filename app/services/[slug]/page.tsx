@@ -12,6 +12,8 @@ import { PageHero } from "@/components/page/page-hero";
 import { ServiceJsonLd } from "@/components/seo/json-ld";
 import { buttonClassName } from "@/components/ui/button";
 import { CheckIcon } from "@/components/ui/icons";
+import { summariseCoverage } from "@/lib/locations/coverage";
+import { loadLocationTree } from "@/lib/locations/helpers";
 import { FITTING_INCLUSIONS } from "@/lib/site/inclusions";
 import { SITE_NAME } from "@/lib/site/config";
 import { SERVICE_VISUALS, serviceHref } from "@/lib/site/service-visuals";
@@ -39,6 +41,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
   if (slug === "fleet") permanentRedirect("/fleet");
 
   const visual = SERVICE_VISUALS[service.slug];
+  const { cityNames } = summariseCoverage(await loadLocationTree());
   const others = SERVICE_CONTENT.filter((s) => s.slug !== service.slug);
   const crumbs = [
     { name: "Home", url: "/" },
@@ -48,7 +51,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
   return (
     <>
-      <ServiceJsonLd name={service.title} description={service.summary} url={`/services/${service.slug}`} provider={SITE_NAME} />
+      <ServiceJsonLd name={service.title} description={service.summary} url={`/services/${service.slug}`} provider={SITE_NAME} areaServed={cityNames} />
       <PageHero
         crumbs={crumbs}
         eyebrow="Mobile services"

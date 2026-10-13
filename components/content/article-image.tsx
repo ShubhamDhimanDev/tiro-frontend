@@ -12,7 +12,7 @@ import type { ReactNode } from "react";
  * `error` event has already fired and `onError` never runs. The mount effect
  * covers that by checking the already-settled image state.
  */
-export function ArticleImage({ src, className, fallback }: { src: string; className?: string; fallback: ReactNode }) {
+export function ArticleImage({ src, alt = "", className, fallback }: { src: string; alt?: string; className?: string; fallback: ReactNode }) {
   const [failed, setFailed] = useState(false);
   const ref = useRef<HTMLImageElement>(null);
   useEffect(() => {
@@ -22,6 +22,6 @@ export function ArticleImage({ src, className, fallback }: { src: string; classN
   if (failed) return <>{fallback}</>;
   return (
     // eslint-disable-next-line @next/next/no-img-element -- image host isn't known/configured yet, same posture as the PDP's own image
-    <img ref={ref} src={src} alt="" className={className} onError={() => setFailed(true)} />
+    <img ref={ref} src={src} alt={alt} className={className} onError={() => setFailed(true)} />
   );
 }

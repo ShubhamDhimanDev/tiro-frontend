@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Accordion } from "@/components/ui/accordion";
 import { buttonClassName } from "@/components/ui/button";
 import { CheckIcon, PinIcon, ShieldIcon, TyreIcon } from "@/components/ui/icons";
+import { summariseCoverage, trustedTitle } from "@/lib/locations/coverage";
+import { loadLocationTree } from "@/lib/locations/helpers";
 import { CONTENT_IMAGES } from "@/lib/site/content-images";
 
 /** CSS phone mock-up, the fallback while there is no photo for the slot. */
@@ -29,7 +31,8 @@ function PhoneMock() {
   );
 }
 
-const ITEMS = [
+/** The three accordion points; the third one names where we are from the admin's served area. */
+const buildItems = (trusted: string) => [
   {
     id: "brands",
     title: "Best brands, best prices",
@@ -46,7 +49,7 @@ const ITEMS = [
   },
   {
     id: "trusted",
-    title: "Trusted across Australia",
+    title: trusted,
     icon: <ShieldIcon className="h-6 w-6" />,
     content:
       "Fitting, balancing, new valves and old-tyre recycling are part of the price you see. If you find the same tyre fitted for less, tell us and we will look at it.",
@@ -54,8 +57,9 @@ const ITEMS = [
 ];
 
 /** "Get the best deals online" two-column block with the three SEO accordions. */
-export function DealsOnline() {
+export async function DealsOnline() {
   const photo = CONTENT_IMAGES["home-deals-online"];
+  const items = buildItems(trustedTitle(summariseCoverage(await loadLocationTree())));
   return (
     <section aria-labelledby="deals-heading" className="container-page pt-[50px] lg:pt-20">
       <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
@@ -76,7 +80,7 @@ export function DealsOnline() {
           <p className="max-w-xl text-lg text-muted">
             Choose your tyres online or by phone, pick a time that suits you, and we bring the tyre shop to you.
           </p>
-          <Accordion variant="icons" items={ITEMS} defaultOpenId="brands" />
+          <Accordion variant="icons" items={items} defaultOpenId="brands" />
           <Link href="/tyres" className={buttonClassName({ variant: "action", className: "mt-2 w-full sm:w-fit" })}>
             <CheckIcon className="h-5 w-5" />
             Shop tyres

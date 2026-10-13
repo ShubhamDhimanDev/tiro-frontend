@@ -12,6 +12,18 @@ export function suburbMatches(suburb: { name: string; postcode: string }, query:
   );
 }
 
+/**
+ * The image URL for an admin-managed location image, or `null` when there is
+ * nothing usable. The media picker stores an absolute URL; a bare
+ * storage-relative value has no host the storefront can resolve, so it counts
+ * as "no image" (same rule as brand logos and offer images).
+ */
+export function adminImageUrl(path: string | null | undefined): string | null {
+  const value = path?.trim();
+  if (!value) return null;
+  return /^https?:\/\//i.test(value) || value.startsWith("/") ? value : null;
+}
+
 const DAY_LABELS: [keyof OperatingHours, string][] = [
   ["mon", "Mon"],
   ["tue", "Tue"],
