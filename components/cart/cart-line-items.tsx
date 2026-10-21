@@ -105,7 +105,7 @@ export function CartLineItems({ editable, lines }: { editable: boolean; lines?: 
                     {price?.applied_promotion && (
                       <span
                         data-testid="line-promo-badge"
-                        className="mt-0.5 inline-flex w-fit items-center rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold text-ink"
+                        className="mt-0.5 inline-flex w-fit items-center rounded-full bg-gold-soft px-2.5 py-0.5 text-xs font-semibold text-ink"
                       >
                         {price.applied_promotion.name}
                       </span>
@@ -156,7 +156,7 @@ export function CartLineItems({ editable, lines }: { editable: boolean; lines?: 
               type="checkbox"
               checked={state.addons.includes(addon)}
               onChange={() => toggleAddonKey(addon)}
-              className="h-5 w-5 shrink-0 rounded-sm border-line accent-action"
+              className="h-5 w-5 shrink-0 rounded-sm border-line accent-green"
             />
             {ADDON_LABEL[addon]}
           </label>

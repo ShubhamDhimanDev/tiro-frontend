@@ -73,7 +73,7 @@ export function PromoCodeForm({
 
   if (accepted) {
     return (
-      <div data-testid="promo-applied" className="flex items-center justify-between gap-3 rounded-control border border-success/40 bg-accent-soft/50 px-3 py-2">
+      <div data-testid="promo-applied" className="flex items-center justify-between gap-3 rounded-control border border-success/40 bg-gold-soft/50 px-3 py-2">
         <p className="flex min-w-0 items-center gap-2 text-sm">
           <span aria-hidden="true" className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success text-white">
             <CheckIcon className="h-3.5 w-3.5" />

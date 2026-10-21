@@ -6,7 +6,7 @@ import { brandLogoSrc } from "@/lib/catalog/brand-logo";
 
 /**
  * A brand's uploaded logo on a white tile (official artwork is never
- * recoloured, so it needs a neutral ground on the red band and grey hero).
+ * recoloured, so it needs a neutral ground on the yellow band and grey hero).
  * Renders `children` instead when the brand has no usable logo or the image
  * fails to load, so callers keep their existing typeset-name / initials look.
  *

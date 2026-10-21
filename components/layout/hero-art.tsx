@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { cx } from "@/components/ui/cx";
 import { HERO_IMAGES } from "@/lib/site/images";
 
 /** 1x1 transparent GIF. The desktop `<img>` below uses it as its own `src` so phones never download the real photo. */
@@ -14,15 +13,11 @@ const BLANK_PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAAL
  * - Phones and small tablets: nothing by default, so the finder stays the first thing on screen. The home hero passes
  *   `mobile` to show the square van photo as a banner below the finder instead.
  *
- * - `bleed` (home hero only): on desktop the photo is not a rounded card in the grid but fills the right of the section edge to
- *   edge, with a white fade on its left side so the headline stays readable over any photo. The parent section must be
- *   `relative overflow-hidden`. Ignored while there is no photo (the SVG fallback has no bleed form). `PageHero` never sets it.
- *
  * The desktop photo sits in a `<picture>` whose only real source is gated by `min-width: 992px`; the `<img>` itself is a
  * blank pixel. A plain `<img src>` in a `hidden lg:block` wrapper is still fetched on phones, and because it is eager the
  * home page's prefetched data also made every other page preload it (191KB on /cart, /login, ...).
  */
-export function HeroArt({ mobile = false, bleed = false }: { mobile?: boolean; bleed?: boolean }) {
+export function HeroArt({ mobile = false }: { mobile?: boolean }) {
   const photo = HERO_IMAGES.desktop;
   const mobilePhoto = mobile ? HERO_IMAGES.mobile : null;
   if (photo) {
@@ -33,18 +28,11 @@ export function HeroArt({ mobile = false, bleed = false }: { mobile?: boolean; b
             <Image src={mobilePhoto.src} alt={mobilePhoto.alt} fill sizes="(min-width: 768px) 720px, 100vw" className="object-cover object-[50%_70%]" />
           </div>
         )}
-        <div className={bleed ? "absolute inset-y-0 right-0 hidden w-[56%] lg:block" : "relative hidden h-full min-h-[420px] lg:block"}>
+        <div className="relative hidden h-full min-h-[420px] lg:block">
           <picture>
             <source media="(min-width: 992px)" srcSet={photo.src} width={photo.width} height={photo.height} />
-            <img
-              src={BLANK_PIXEL}
-              width={photo.width}
-              height={photo.height}
-              alt={photo.alt}
-              className={cx("absolute inset-0 h-full w-full object-cover object-[35%_50%]", !bleed && "rounded-sheet")}
-            />
+            <img src={BLANK_PIXEL} width={photo.width} height={photo.height} alt={photo.alt} className="absolute inset-0 h-full w-full rounded-sheet object-cover object-[35%_50%]" />
           </picture>
-          {bleed && <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-r from-surface from-0% via-surface/60 via-25% to-transparent to-55%" />}
         </div>
       </>
     );
@@ -55,7 +43,7 @@ export function HeroArt({ mobile = false, bleed = false }: { mobile?: boolean; b
         {[0, 1, 2].map((i) => (
           <span
             key={i}
-            className="hero-bar-in absolute top-[-10%] h-[120%] -skew-x-[18deg] bg-accent"
+            className="hero-bar-in absolute top-[-10%] h-[120%] -skew-x-[18deg] bg-gold"
             style={{ left: `${38 + i * 17}%`, width: `${14 - i * 3}%`, animationDelay: `${i * 90}ms` }}
           />
         ))}
@@ -65,8 +53,8 @@ export function HeroArt({ mobile = false, bleed = false }: { mobile?: boolean; b
         <path d="M30 150V70a12 12 0 0 1 12-12h190a10 10 0 0 1 10 10v82z" fill="#111" />
         <path d="M242 82h46c9 0 16 4 21 11l30 40c4 5 6 9 6 17v10H242z" fill="#222" />
         <path d="M254 92h32c5 0 8 2 11 6l20 28h-63z" fill="#8a8f96" opacity="0.8" />
-        <rect x="30" y="112" width="212" height="12" fill="#da291c" />
-        <text x="136" y="104" textAnchor="middle" fontSize="30" fontWeight="800" fontStyle="italic" fill="#da291c" fontFamily="Montserrat, sans-serif">
+        <rect x="30" y="112" width="212" height="12" fill="#ffce00" />
+        <text x="136" y="104" textAnchor="middle" fontSize="30" fontWeight="800" fontStyle="italic" fill="#ffce00" fontFamily="Montserrat, sans-serif">
           TIRO
         </text>
         <rect x="30" y="150" width="293" height="16" rx="3" fill="#111" />

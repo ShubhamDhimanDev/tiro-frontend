@@ -78,10 +78,10 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ sl
         }
         actions={
           <>
-            <Link href={offerShopHref(offer)} className={buttonClassName({ variant: "action" })}>
+            <Link href={offerShopHref(offer)} className={buttonClassName({ variant: "green" })}>
               Shop this offer
             </Link>
-            <Link href="/deals" className={buttonClassName({ variant: "accent" })}>
+            <Link href="/deals" className={buttonClassName({ variant: "yellow" })}>
               All offers
             </Link>
           </>
@@ -100,7 +100,7 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ sl
             >
               <span className="text-[56px] font-extrabold leading-none tracking-[-2px]">{offer.badge_text}</span>
               <span className="flex flex-wrap items-center gap-2 text-lg font-bold">
-                {isEndingSoon(offer) && <Badge tone="accent" className="ring-1 ring-black">Ends soon</Badge>}
+                {isEndingSoon(offer) && <Badge tone="gold" className="ring-1 ring-black">Ends soon</Badge>}
                 {offer.brand?.name}
               </span>
             </div>
@@ -115,10 +115,10 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ sl
           </div>
         )}
         <div className="flex flex-wrap items-center gap-2 lg:hidden">
-          <Badge tone="accent" className="uppercase tracking-wide">
+          <Badge tone="gold" className="uppercase tracking-wide">
             {offer.badge_text}
           </Badge>
-          {isEndingSoon(offer) && <Badge tone="accent" className="ring-1 ring-black">Ends soon</Badge>}
+          {isEndingSoon(offer) && <Badge tone="gold" className="ring-1 ring-black">Ends soon</Badge>}
           {offer.brand && <span className="text-sm font-bold text-muted">{offer.brand.name}</span>}
         </div>
 
@@ -137,7 +137,7 @@ export default async function OfferDetailPage({ params }: { params: Promise<{ sl
             <div className="sm:col-span-2">
               <dt className="type-eyebrow font-bold uppercase text-muted">Your code</dt>
               <dd className="mt-1 flex flex-wrap items-center gap-3">
-                <span data-testid="offer-code" className="rounded-control bg-accent px-3 py-1 font-mono text-lg font-bold text-white">
+                <span data-testid="offer-code" className="rounded-control bg-gold px-3 py-1 font-mono text-lg font-bold text-black">
                   {offer.code}
                 </span>
                 <span className="text-sm text-muted">Add your tyres to the cart, then enter the code there.</span>

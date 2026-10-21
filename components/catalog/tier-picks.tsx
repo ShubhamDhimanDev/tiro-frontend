@@ -6,13 +6,13 @@ import type { TierPick } from "@/lib/catalog/tiers";
 
 const TIER_HEAD: Record<Tier, { label: string; className: string; icon: React.ReactNode }> = {
   premium: { label: "Premium", className: "bg-black text-white", icon: <StarIcon className="h-5 w-5" /> },
-  mid: { label: "Mid-range", className: "bg-action text-white", icon: <TagIcon className="h-5 w-5" /> },
-  budget: { label: "Budget", className: "bg-accent text-white", icon: <span aria-hidden="true" className="text-lg font-extrabold leading-none">$</span> },
+  mid: { label: "Mid-range", className: "bg-green text-white", icon: <TagIcon className="h-5 w-5" /> },
+  budget: { label: "Budget", className: "bg-gold text-black", icon: <span aria-hidden="true" className="text-lg font-extrabold leading-none">$</span> },
 };
 
 /**
- * "Top picks for <size>" (or "Recommended for your vehicle" when `vehicleContext`): Premium (black) / Mid-range (navy) / Budget
- * (red) columns, each a coloured header over a flip card (see
+ * "Top picks for <size>" (or "Recommended for your vehicle" when `vehicleContext`): Premium (black) / Mid-range (green) / Budget
+ * (yellow) columns, each a coloured header over a flip card (see
  * `lib/catalog/tiers.ts` for how the picks are derived). Phones show a
  * snap-scrolling row so three tall cards do not push the grid off screen;
  * from 768px the three columns sit side by side.

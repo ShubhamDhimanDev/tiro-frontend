@@ -102,7 +102,7 @@ export function SavedVehiclesList() {
             <li key={vehicle.id} className="flex flex-col gap-3 rounded-card border border-line bg-surface p-4 shadow-rest md:p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-lg font-bold text-ink">{customerVehicleDisplayLabel(vehicle)}</span>
-                {vehicle.is_default && <Badge tone="accent">Default</Badge>}
+                {vehicle.is_default && <Badge tone="gold">Default</Badge>}
               </div>
               <div className="flex flex-col gap-0.5 text-sm text-muted">
                 <p>{savedFitmentSummary(vehicle.saved_fitment)}</p>
@@ -120,7 +120,7 @@ export function SavedVehiclesList() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="min-h-11 font-bold text-black hover:bg-accent-soft"
+                  className="min-h-11 font-bold text-black hover:bg-gold-soft"
                   disabled={busyId === vehicle.id}
                   onClick={() => setPendingDelete(vehicle)}
                 >

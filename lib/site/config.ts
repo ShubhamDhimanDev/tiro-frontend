@@ -37,4 +37,4 @@ export function whatsappHref(number: string = PHONE_DISPLAY): string {
   return `https://wa.me/${digits.startsWith("0") ? `61${digits.slice(1)}` : digits}`;
 }
 
-export const TAGLINE ="Mobile tyre fitting. We come to you.";
+export const TAGLINE = "Mobile tyre fitting. We come to you.";

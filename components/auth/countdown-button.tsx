@@ -74,7 +74,7 @@ export function CountdownButton({
       type={type}
       onClick={onClick}
       disabled={disabled || isCountingDown}
-      className="inline-flex min-h-11 items-center px-1 text-sm font-semibold text-black underline decoration-accent decoration-[3px] underline-offset-4 hover:text-muted disabled:cursor-not-allowed disabled:text-muted disabled:no-underline"
+      className="inline-flex min-h-11 items-center px-1 text-sm font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted disabled:cursor-not-allowed disabled:text-muted disabled:no-underline"
     >
       {text}
     </button>

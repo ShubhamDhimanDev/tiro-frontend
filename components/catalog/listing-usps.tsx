@@ -15,7 +15,7 @@ export function ListingUsps() {
       <ul className="hidden gap-2 text-sm font-medium text-black sm:flex sm:flex-row sm:flex-wrap sm:gap-x-6">
       {ITEMS.map(({ icon: Icon, text }) => (
         <li key={text} className="flex items-center gap-2">
-          <span aria-hidden="true" className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+          <span aria-hidden="true" className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold">
             <Icon className="h-4 w-4" />
           </span>
           {text}

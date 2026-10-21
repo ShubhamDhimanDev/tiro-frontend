@@ -313,7 +313,7 @@ export function BookingFlow() {
         <div
           role="alert"
           data-testid="hold-expired"
-          className="flex flex-col items-start gap-4 rounded-card border-[3px] border-black bg-accent-soft p-4 shadow-rest md:p-6"
+          className="flex flex-col items-start gap-4 rounded-card border-[3px] border-black bg-gold-soft p-4 shadow-rest md:p-6"
         >
           <div>
             <h2 className="type-h3">Your held time ran out</h2>

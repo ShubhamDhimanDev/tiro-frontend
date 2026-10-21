@@ -112,7 +112,7 @@ export function TyreSearchForm({
   finder = false,
 }: {
   initial: TyreSearchFormValues;
-  /** Home/landing finder style: large controls, navy "Find tyres" button. */
+  /** Home/landing finder style: large controls, green "Find tyres" button. */
   finder?: boolean;
 }) {
   const router = useRouter();
@@ -194,7 +194,7 @@ export function TyreSearchForm({
           type="checkbox"
           checked={staggered}
           onChange={(e) => setStaggered(e.target.checked)}
-          className="h-5 w-5 shrink-0 rounded-xs border-steel accent-action"
+          className="h-5 w-5 shrink-0 rounded-xs border-steel accent-green"
         />
         Different front and rear sizes? (staggered fitment)
       </label>

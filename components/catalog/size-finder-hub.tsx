@@ -27,7 +27,7 @@ export function SizeFinderHub({ values, popular }: { values: TyreSearchFormValue
             <FinderNav active="size" rego={isRegoEnabled()} />
           </div>
           <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] lg:items-start">
-            <div className="rounded-card border border-line border-t-4 border-t-accent bg-surface p-4 shadow-raised md:p-6">
+            <div className="rounded-card border border-line border-t-4 border-t-gold bg-surface p-4 shadow-raised md:p-6">
               <TyreSearchForm initial={values} finder />
             </div>
             <aside aria-labelledby="hub-help-heading" className="rounded-card border border-line bg-surface p-4 shadow-rest md:p-6">
@@ -83,7 +83,7 @@ export function SizeFinderHub({ values, popular }: { values: TyreSearchFormValue
             aria-hidden="true"
             className="asphalt-texture flex aspect-[16/9] items-center justify-center rounded-card md:aspect-[4/3]"
           >
-            <span className="rounded-full border-[14px] border-[#2a2a2a] px-8 py-10 text-center text-3xl font-extrabold tracking-normal text-accent-light">
+            <span className="rounded-full border-[14px] border-[#2a2a2a] px-8 py-10 text-center text-3xl font-extrabold tracking-normal text-gold">
               205/55 R16
               <span className="block text-base font-bold text-white/70">91V</span>
             </span>

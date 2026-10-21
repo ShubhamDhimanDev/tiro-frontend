@@ -21,26 +21,6 @@ describe("HeroArt", () => {
     expect(container.querySelector(".lg\\:hidden")).toBeNull();
   });
 
-  it("`bleed` keeps the picture/blank-pixel pattern but fills the section edge to edge with a left fade and no rounded card", () => {
-    const { container } = render(<HeroArt mobile bleed />);
-    const source = container.querySelector("picture source");
-    expect(source?.getAttribute("media")).toBe("(min-width: 992px)");
-    const img = container.querySelector("picture img");
-    expect(img?.getAttribute("src")).toMatch(/^data:image\/gif/);
-    expect(img).not.toHaveClass("rounded-sheet");
-    const wrap = img!.closest("picture")!.parentElement!;
-    expect(wrap).toHaveClass("absolute", "right-0", "hidden", "lg:block");
-    expect(wrap.querySelector("[aria-hidden='true'].bg-gradient-to-r")).not.toBeNull();
-  });
-
-  it("default (PageHero) layout is unchanged by `bleed`: a rounded card in the grid, no fade overlay", () => {
-    const { container } = render(<HeroArt />);
-    const img = container.querySelector("picture img");
-    expect(img).toHaveClass("rounded-sheet");
-    expect(img!.closest("picture")!.parentElement).toHaveClass("relative", "min-h-[420px]");
-    expect(container.querySelector(".bg-gradient-to-r")).toBeNull();
-  });
-
   it("shows the square van photo as a phone-only banner when `mobile` is set", () => {
     const { container } = render(<HeroArt mobile />);
     const banner = container.querySelector("img[src*='hero-van-mobile']");

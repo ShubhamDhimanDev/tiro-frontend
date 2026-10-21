@@ -64,12 +64,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               transition={{ duration: 0.25, ease: [0.2, 0, 0, 1] }}
               className="pointer-events-auto flex max-w-md items-center gap-3 rounded-control bg-black py-2.5 pl-3 pr-2 text-sm font-semibold text-white shadow-overlay"
             >
-              <span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+              <span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold text-black">
                 <CheckIcon className="h-3.5 w-3.5" strokeWidth={3} />
               </span>
               <span className="min-w-0">{toast.message}</span>
               {toast.actionHref && (
-                <Link href={toast.actionHref} onClick={dismiss} className="shrink-0 rounded-control px-2 py-1 font-bold text-accent-light underline underline-offset-2">
+                <Link href={toast.actionHref} onClick={dismiss} className="shrink-0 rounded-control px-2 py-1 font-bold text-gold underline underline-offset-2">
                   {toast.actionLabel ?? "View"}
                 </Link>
               )}

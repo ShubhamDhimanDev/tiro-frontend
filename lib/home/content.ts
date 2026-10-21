@@ -7,22 +7,19 @@ export const HOME_STEPS = [
   { title: "We come to you", body: "Our technician arrives in a fully equipped van and fits your new tyres on the spot." },
 ];
 
-/** The three ticks under the hero finder. Static: nothing rotates, so there is nothing to pause. */
-export const HERO_TICKS = ["At home, work or roadside", "Balancing included", "Old tyres recycled"];
-
 /**
  * Trust strip under the hero. `label: null` marks the point that names the service area: the component fills it from
  * the admin's served cities (`trustedTitle()` in lib/locations/coverage.ts), so no place is written here.
  */
 export const HOME_TRUST_POINTS = [
-  { id: "trusted", label: null, note: "Local mobile tyre service" },
+  { id: "trusted", label: null, note: "Fitted by local technicians" },
   { id: "delivery", label: "Delivery included", note: "Straight to where we fit" },
   { id: "prices", label: "Competitive prices", note: "Top brands available" },
   { id: "recycling", label: "Old tyres recycled", note: "Included in the service" },
 ] as const;
 
 /**
- * Value cards under the brands strip. Each point is backed by the page it links to (lib/site/info-pages.ts) and is chosen
+ * Value cards under the hero trust strip. Each point is backed by the page it links to (lib/site/info-pages.ts) and is chosen
  * so it does not repeat the trust strip or "How it works". The icon is picked in the component.
  */
 export const HOME_VALUE_CARDS = [

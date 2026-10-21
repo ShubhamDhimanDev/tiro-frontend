@@ -6,7 +6,7 @@ import { HOME_VALUE_CARDS } from "@/lib/home/content";
 const ICONS = { "price-match": TagIcon, payments: CardIcon, warranties: ShieldIcon, fleet: BuildingIcon };
 
 /**
- * Four linked cards under the brands strip: price match, payment options, warranties and returns, fleet. Each links to
+ * Four linked cards under the trust strip: price match, payment options, warranties and returns, fleet. Each links to
  * its info page and says only what that page backs up (copy lives in `lib/home/content.ts`). Static; no data fetching.
  */
 export function ValueCards() {

@@ -38,16 +38,7 @@ test.describe("home size finder", () => {
   });
 });
 
-test.describe("home layout (2026-10-21 refresh)", () => {
-  test("hero: finder has a Need help link and no suburb chip, with three static ticks", async ({ page }) => {
-    await page.goto("/");
-    const finder = page.getByTestId("hero-finder");
-    await expect(finder.getByRole("link", { name: "Need help?" })).toHaveAttribute("href", "/help");
-    await expect(finder.getByRole("button", { name: /add your suburb/i })).toHaveCount(0);
-    const ticks = page.getByRole("list", { name: "Included with every fitting" }).getByRole("listitem");
-    await expect(ticks).toHaveText(["At home, work or roadside", "Balancing included", "Old tyres recycled"]);
-  });
-
+test.describe("home layout (2026-10-21)", () => {
   test("trust strip shows four points and replaces same-day fitting with delivery included", async ({ page }) => {
     await page.goto("/");
     const strip = page.getByRole("region", { name: "Why customers choose us" });
@@ -77,15 +68,26 @@ test.describe("home layout (2026-10-21 refresh)", () => {
     await expect(page).toHaveURL(/\/tyres\?category=suv/);
   });
 
-  test("the top bar shows the hours and phone on desktop and scrolls away while the header stays", async ({ page }) => {
+  test("the top bar shows the area, hours and a WhatsApp link (no phone number) and scrolls away while the header stays", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/");
     const bar = page.getByTestId("top-bar");
     await expect(bar).toBeVisible();
-    await expect(bar.getByRole("link", { name: /^0\d{3} / })).toBeVisible();
+    await expect(bar.getByText(/\d{1,2}(am|pm)/)).toBeVisible();
+    await expect(bar.getByRole("link", { name: /Book via WhatsApp/ })).toHaveAttribute("href", /^https:\/\/wa\.me\/\d+$/);
+    await expect(bar.locator('a[href^="tel:"]')).toHaveCount(0);
+    expect((await bar.boundingBox())?.height).toBe(36);
     await page.mouse.wheel(0, 800);
     await expect(bar).not.toBeInViewport();
     await expect(page.getByRole("banner", { name: "Site header" })).toBeInViewport();
+  });
+
+  test("on a phone the top bar is just the WhatsApp button", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    const bar = page.getByTestId("top-bar");
+    await expect(bar.getByRole("link", { name: /Book via WhatsApp/ })).toBeVisible();
+    await expect(bar.getByText(/\d{1,2}(am|pm)/)).toBeHidden();
   });
 });
 

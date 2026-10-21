@@ -32,4 +32,4 @@ export function HomeSection({
 }
 
 export const textLinkClassName =
-  "inline-flex min-h-11 items-center gap-1 font-bold text-black underline decoration-accent decoration-[3px] underline-offset-4 hover:text-muted";
+  "inline-flex min-h-11 items-center gap-1 font-bold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted";

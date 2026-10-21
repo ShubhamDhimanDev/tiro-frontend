@@ -81,7 +81,7 @@ export function LoginForm({ initialEmail = "", next = "/" }: { initialEmail?: st
 
       <p className="text-center text-sm text-muted">
         New here?{" "}
-        <Link href="/register" className="inline-flex min-h-11 items-center font-semibold text-black underline decoration-accent decoration-[3px] underline-offset-4 hover:text-muted">
+        <Link href="/register" className="inline-flex min-h-11 items-center font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted">
           Create an account
         </Link>
       </p>
@@ -167,7 +167,7 @@ function PasswordLogin({
       <div className="-mt-2 flex justify-end">
         <Link
           href="/password-reset"
-          className="inline-flex min-h-11 items-center text-sm font-semibold text-black underline decoration-accent decoration-[3px] underline-offset-4 hover:text-muted"
+          className="inline-flex min-h-11 items-center text-sm font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted"
         >
           Forgot password?
         </Link>

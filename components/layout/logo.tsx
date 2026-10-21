@@ -2,24 +2,31 @@ import Image from "next/image";
 import { cx } from "@/components/ui/cx";
 
 /**
- * TMT brand logo, supplied by the client as transparent PNGs (.design-reference/), so no white plate is needed behind
- * the lettering. Two artworks, each in two tones:
+ * TMT brand logo. Two artworks:
  *
- * - the round mark alone (`tmt-logo*.png`), the default, and
- * - the wide lockup, mark plus "TIRO MOBILE TYRES" (`wide`, `tmt-logo-wide*.png`), used in the header.
- *
- * `tone="dark"` is the red-and-black artwork for light surfaces. `tone="light"` is the red-and-white artwork for dark
- * surfaces: its lettering is white, so it is invisible on a white background and must only sit on black or dark grey.
+ * - the round mark alone (`tmt-logo.png`, transparent PNG with black lettering), the default. On dark surfaces
+ *   (`tone="light"`) the black "TMT" would vanish, so the mark sits on a white rounded plate.
+ * - the wide lockup, mark plus "TIRO MOBILE TYRES" (`wide`, used in the header). `tone="dark"` is the black-and-yellow
+ *   artwork for light surfaces; `tone="light"` is the white-and-yellow artwork for dark surfaces and needs no plate.
+ *   Both wide files are derived from the client's red-and-black / red-and-white artwork (the red recoloured to the
+ *   brand yellow with Pillow, "MOBILE TYRES" set neutral to match the mockup) until the client supplies official
+ *   yellow artwork; replace the two PNGs in public/brand/ when they do.
  */
 const ART = {
-  mark: { dark: "/brand/tmt-logo.png", light: "/brand/tmt-logo-light.png", width: 634, height: 492 },
+  mark: { dark: "/brand/tmt-logo.png", light: "/brand/tmt-logo.png", width: 640, height: 500 },
   wide: { dark: "/brand/tmt-logo-wide.png", light: "/brand/tmt-logo-wide-light.png", width: 856, height: 248 },
 };
 
 export function Logo({ tone = "dark", wide = false, className }: { tone?: "dark" | "light"; wide?: boolean; className?: string }) {
   const art = wide ? ART.wide : ART.mark;
   return (
-    <span className={cx("inline-flex items-center leading-none", className)}>
+    <span
+      className={cx(
+        "inline-flex items-center leading-none",
+        tone === "light" && !wide && "rounded-control bg-white px-2 py-1",
+        className,
+      )}
+    >
       <Image
         src={art[tone]}
         alt="Tiro Mobile Tyres"

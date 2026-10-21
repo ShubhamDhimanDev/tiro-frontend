@@ -825,48 +825,6 @@ the two independently-built sides still agreed — they didn't, on one point.
   `lib/reviews/types.ts` exactly, no other drift found beyond the
   nullability point above.
 
-## Theme: brand red (2026-10-13, replaces the yellow theme)
-
-The client moved the brand from yellow to red. First pass used the logo's pure `#FF0000` for the whole UI; a
-page-by-page colour review (`../docs/color-review/PLAN.md`, 60 routes, desktop + phone, evidence in that folder)
-found it harsh and changed the palette (red `#DA291C`, white text on red, navy partner colour). Full contrast reasoning is the comment at the top of `app/globals.css`;
-the numbers are pinned by `tests/unit/palette.test.ts`. The rules that cost time to work out:
-
-- **UI red is `#DA291C`, not the logo's `#FF0000`.** The token is `accent` (`bg-accent` / `text-accent` /
-  `border-accent`, plus `accent-hover` darker `#B8200F`, `accent-soft` wash `#FDECEA`, `accent-light` `#FF6B5E`).
-  `gold`/`yellow` are gone and the palette guard fails if they come back. Not named `brand`: that already means tyre
-  brand all over this codebase. The logo artwork, favicon and the apple-touch icon stay `#FF0000` (client files).
-- **Text on a red fill is WHITE (4.87:1). Never black (4.3:1).** A guard test fails on `bg-accent ... text-black`.
-  Hover on a red fill goes darker. A `bg-accent` fill with no explicit text colour inherits `#212529` (3.9:1), so give
-  it `text-white`. No translucent text on red (`text-black/80`, `opacity-90`): it turns muddy. On a red band use
-  `Button variant="inverse"` (white outline) instead of `secondary` (black outline).
-- **Red TEXT on a dark surface uses `accent-light`.** Plain accent is 4.3:1 on black and 3.2:1 on the footer grey.
-  Plain accent is fine as text on white (4.87:1), and for icons/borders on dark.
-- **Red is the brand, not an error, and not a rating.** Errors use the separate darker `danger` token and are never
-  colour alone (icon + text + thick left border). Star ratings are ink (black). Link underlines stay red.
-- **Partner colour is deep navy `#12355B`** (token `action`, hover `#0B2545`, white 12.5:1), chosen in
-  `../docs/color-review/PARTNER-COLOURS.md`. It replaced green because green (olive, then emerald) was nearly
-  indistinguishable from the red for red-green colour-blind visitors (colour distance 17-18 vs 90+ for navy) and had the
-  same lightness as red. `action` = primary buttons (`Button variant="action"`, `primary` is the alias), "4 for 3" /
-  savings tiles and badges, "from $" prices, mid-range tier, checkbox `accent-color`, Stripe's `colorPrimary`.
-  **Green survives only as a status colour**, the `success` token `#167A4B`: "In stock", location-confirmed pin,
-  the flexible-booking dots (the cart copy says "marked with a green dot") and success text. Never a button or tile.
-  The palette guard fails on any `bg-green` / `text-green` / `--c-green`.
-  **One exception (2026-10-21, product owner): the top bar's "Book via WhatsApp" button is green**, through its own
-  named token `whatsapp` (`#167A4B`, hover `#0F6A3E`, white 5.36:1 / higher), not `bg-green` and not `success`.
-  `components/layout/top-bar.tsx` is the only file allowed to use it (pinned by `tests/unit/palette.test.ts`); the
-  button always carries the WhatsApp glyph and text, so it is never colour alone. Every other button stays navy.
-- **Logo:** `public/brand/tmt-logo.png` (red + black, light surfaces) and `tmt-logo-light.png` (red + white, dark
-  surfaces) are the client's transparent PNGs; `<Logo tone="light">` no longer needs a white plate. The favicon is the
-  icon on a white rounded plate (black lettering would vanish on dark browser tabs); the admin panel's
-  `backend/public/` icons were regenerated the same way.
-- **Photography:** 45 images in `public/images/` had the yellow van/backgrounds baked in. They were recoloured, not
-  regenerated, then re-graded to `#DA291C`: see `../docs/prompts/README.md` and `recolor-yellow-to-red.py` there. Two
-  stay as they were on purpose (`banners/type-banner-ev` night lights, natural sunset in `brand-banner-midrange`).
-- **Deploy gotcha:** `next/image` caches optimised files on disk by URL, and these assets kept their URLs, so older
-  versions keep being served until the cache is cleared. Delete `.next/cache/images` (and `.next/dev/cache/images`
-  in dev) before restarting after pulling this change; browsers may need a hard refresh once.
-
 ## Location wording follows the admin (2026-10-13)
 
 The service area is whatever the admin panel serves (`GET /api/v1/locations`: states switched on, cities from active
@@ -916,29 +874,31 @@ that cost real time to find, so please keep them when editing:
 - Measure with a production build (`npm run build && npx next start`), not `next dev`. Scripts:
   `../docs/mobile-audit/scripts/` (see the report's appendix).
 
-## Homepage layout refresh (2026-10-21)
+## Homepage layout (2026-10-21)
 
-Plan: `../docs/plan/06-homepage-layout-refresh.md`. Mockup layout and content, current red/navy palette. Order in
-`app/page.tsx`: `Hero` -> `UspStrip` -> `BrandsBand` -> `ValueCards` -> `VehicleBand` -> the older sections unchanged. `/` is
-still static (`○`); `components/layout/top-bar.tsx` is mounted in the root layout and reads no cookies or headers.
+Mockup layout on the yellow theme. Order in `app/page.tsx`: `Hero` -> `UspStrip` -> `ValueCards` -> `VehicleBand` -> the older
+sections exactly as before (offers, reviews, trust badges, brands band, deals, how it works, services, newsletter, flexible
+banner, coverage). `/` stays static (`○`); nothing new reads cookies or headers.
 
-- **Static copy lives in `lib/home/content.ts`** (hero ticks, trust points, value cards, vehicle types). The first trust point
-  and the top bar's "Serving ..." text come from `summariseCoverage` / `trustedTitle` / `areaPhrase`; no component names a place.
-- **Top bar:** 36px, not sticky (below `lg` the strip is the WhatsApp button only). The WhatsApp button uses the same number as
-  the call button (`whatsappHref()` defaults to `PHONE_DISPLAY`), so there is no WhatsApp env var. Phone and hours stay
-  env-driven (`lib/site/config.ts`).
-- **Hero:** `HeroArt bleed` makes the desktop photo fill the right of the section with a white left fade; `PageHero` does not
-  pass it. The `<picture>` + blank-pixel pattern is kept, so phones still never fetch the desktop photo. The finder's suburb
-  chip is off on home (`showLocation={false}`), on for city pages. `Tabs` gained a `trailing` slot ("Need help?").
-- **Vehicle band** keeps only the four types `/tyres?category=` can filter (Cars, SUVs, 4WD & Utes, Light Trucks). Vans, EV &
-  Runflat and Trailers wait for catalogue filters. Its road photo is gated by `AVAILABLE_FILES` in `lib/site/content-images.ts`;
-  without the file the band is a CSS dark gradient.
-- **Brands strip** is a static scroll-snap logo row (no marquee, no pause button). `components/ui/motion-pause-button.tsx` is no
-  longer used anywhere.
-- **Home photos (2026-10-21):** the desktop hero is `public/images/hero/hero-van-city-desktop.webp` (1600x800) and the
-  "How it works" photo is `public/images/home/how-it-works-technician-driveway.webp` (1200x896). Both came from the client's
-  WhatsApp photos (yellow livery), recoloured to the UI red with `../docs/prompts/recolor-yellow-to-red.py` (the Ford grille badge in
-  the hero photo is left as shot, by the client's decision); new filenames, so no `next/image` cache clearing. The older `hero-van-desktop.webp` and
-  `how-it-works-van-driveway.webp` are now unused. The phone hero is still `hero-van-mobile.webp`.
-- **Image still to drop in** (Gemini, `../docs/prompts/`): `public/images/banners/vehicle-band-road.webp` -> uncomment its line
-  in `AVAILABLE_FILES` (`lib/site/content-images.ts`).
+- **Static copy lives in `lib/home/content.ts`** (trust points, value cards, vehicle types). The first trust point
+  ("Trusted in ...") and the top bar's "Serving ..." come from `trustedTitle` / `areaPhrase`; no component names a place.
+- **`UspStrip` is a client component** (reads `useCoverage()`), because the location, services and info pages render it
+  inside tests and pages that cannot await an async child. It has no props and no rating tile.
+- **Top bar** (`components/layout/top-bar.tsx`, root layout): 36px, not sticky, "Serving <area>" + hours on the left, green
+  "Book via WhatsApp" on the right (`bg-green`, white text). No phone number here; the header has the call button. Below `lg`
+  only the WhatsApp button shows. WhatsApp uses the call number (`whatsappHref()` defaults to `PHONE_DISPLAY`), no env var.
+- **Hero** is unchanged except the desktop photo: `public/images/hero/hero-van-city-desktop.webp` (the client's original
+  1600x800 shot, Ford badge as shot). New filename, so no `next/image` cache clearing.
+- **Vehicle band** has only the four types `/tyres?category=` can filter (Cars, SUVs, 4WD & Utes, Light Trucks). Vans, EV &
+  Runflat and Trailers wait for catalogue filters. Its road photo is gated by `AVAILABLE_FILES` in
+  `lib/site/content-images.ts` (uncomment its line once `banners/vehicle-band-road.webp` exists); until then a CSS gradient.
+- **Header logo** is the wide lockup (`<Logo wide />`, `public/brand/tmt-logo-wide.png` and `-light.png`). Those two files are
+  DERIVED: the client's red wide artwork recoloured to `--c-gold` with Pillow (alpha kept), "MOBILE TYRES" set to black (white
+  on the light file) to match the mockup. Replace them with official yellow artwork when the client supplies it. Footer and
+  sign-in keep the round mark on a white plate.
+- **First-visit location popup** (`components/location/location-auto-prompt.tsx`, mounted in the root layout): home page
+  only, when no zone is saved, once a week per browser (`localStorage` key `mts_location_prompt_at`), 1.2s after load, and it
+  opens the normal `LocationSheet`. `playwright.config.ts` pre-sets that key so the other e2e specs are not covered by it;
+  `tests/e2e/location/first-visit-prompt.spec.ts` clears it.
+- **`BrandMark`** also checks on mount for an image that already failed before hydration (`complete && naturalWidth === 0`),
+  because `onError` never fires for it.

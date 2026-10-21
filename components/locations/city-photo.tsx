@@ -32,7 +32,7 @@ export function CityPhoto({
     <img src={image.src} width={image.width} height={image.height} alt={image.alt} className="absolute inset-0 h-full w-full object-cover" />
   ) : (
     <div aria-hidden="true" className="absolute inset-0 flex flex-col items-start justify-end gap-2 p-5 lg:p-8">
-      <PinIcon className="h-8 w-8 text-accent lg:h-10 lg:w-10" />
+      <PinIcon className="h-8 w-8 text-gold lg:h-10 lg:w-10" />
       <p className="font-display max-w-full break-words text-4xl font-black uppercase leading-none tracking-tight lg:text-5xl">{cityName}</p>
     </div>
   );

@@ -24,7 +24,7 @@ export default function AccountPage() {
               href={href}
               className="group flex h-full items-start gap-4 rounded-card border border-line bg-surface p-5 shadow-rest transition-shadow hover:shadow-raised"
             >
-              <span aria-hidden="true" className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-full bg-accent text-white">
+              <span aria-hidden="true" className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-full bg-gold text-black">
                 <Icon className="h-6 w-6" />
               </span>
               <span className="flex min-w-0 flex-col gap-0.5">
@@ -43,10 +43,10 @@ export default function AccountPage() {
         </h2>
         <p className="max-w-xl text-white/80">Your saved vehicle and address are ready to use at checkout.</p>
         <div className="flex flex-wrap gap-3">
-          <Link href="/tyres" className={buttonClassName({ variant: "action" })}>
+          <Link href="/tyres" className={buttonClassName({ variant: "green" })}>
             Search tyres
           </Link>
-          <Link href="/booking" className={buttonClassName({ variant: "accent" })}>
+          <Link href="/booking" className={buttonClassName({ variant: "yellow" })}>
             Book a fitting
           </Link>
         </div>

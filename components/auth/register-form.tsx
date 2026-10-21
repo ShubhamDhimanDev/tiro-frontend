@@ -201,7 +201,7 @@ export function RegisterForm({ initialEmail = "" }: { initialEmail?: string }) {
 
       <p className="text-center text-sm text-muted">
         Already have an account?{" "}
-        <Link href="/login" className="inline-flex min-h-11 items-center font-semibold text-black underline decoration-accent decoration-[3px] underline-offset-4 hover:text-muted">
+        <Link href="/login" className="inline-flex min-h-11 items-center font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted">
           Log in
         </Link>
       </p>

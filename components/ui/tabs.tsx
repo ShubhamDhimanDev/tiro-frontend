@@ -10,9 +10,8 @@ export type TabItem = { key: string; label: string; panel: ReactNode };
 
 /**
  * Underline tabs (finder, product tabs): inactive grey, active black with a
- * 3px red underline, on a 1px rule. WAI-ARIA tabs: roving tabindex,
- * Arrow/Home/End keys. Only the active panel is mounted. `trailing` puts an extra
- * control (e.g. a "Need help?" link) at the right end of the tab row, on the same rule.
+ * 3px yellow underline, on a 1px rule. WAI-ARIA tabs: roving tabindex,
+ * Arrow/Home/End keys. Only the active panel is mounted.
  */
 export function Tabs({
   tabs,
@@ -22,7 +21,6 @@ export function Tabs({
   defaultKey,
   activeKey,
   onChange,
-  trailing,
 }: {
   tabs: TabItem[];
   /** Accessible name of the tablist. */
@@ -33,8 +31,6 @@ export function Tabs({
   /** Controlled mode: the active tab key. Pair with `onChange`. */
   activeKey?: string;
   onChange?: (key: string) => void;
-  /** Rendered at the right end of the tab row. Not part of the tablist, so it stays out of the arrow-key cycle. */
-  trailing?: ReactNode;
 }) {
   const baseId = useId();
   const [inner, setActive] = useState(defaultKey ?? tabs[0]?.key);
@@ -64,8 +60,7 @@ export function Tabs({
   return (
     <div className={className}>
       <LayoutGroup id={baseId}>
-      <div className={trailing ? "flex items-stretch border-b border-line md:gap-4" : undefined}>
-      <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className={trailing ? "flex min-w-0 flex-1" : "flex border-b border-line"}>
+      <div role="tablist" aria-label={label} onKeyDown={onKeyDown} className="flex border-b border-line">
         {tabs.map((t) => {
           const selected = t.key === current.key;
           return (
@@ -91,15 +86,13 @@ export function Tabs({
                 <m.span
                   layoutId="tab-underline"
                   aria-hidden="true"
-                  className="absolute inset-x-0 -bottom-[3px] h-[3px] bg-accent"
+                  className="absolute inset-x-0 -bottom-[3px] h-[3px] bg-gold"
                   transition={{ type: "spring", stiffness: 500, damping: 40 }}
                 />
               )}
             </button>
           );
         })}
-      </div>
-      {trailing && <div className="flex shrink-0 items-center">{trailing}</div>}
       </div>
       </LayoutGroup>
       <m.div

@@ -1,15 +1,15 @@
 import type { HTMLAttributes } from "react";
 import { cx } from "./cx";
 
-export type BadgeTone = "neutral" | "accent" | "success" | "action" | "warning" | "danger" | "ink";
+export type BadgeTone = "neutral" | "gold" | "success" | "green" | "warning" | "danger" | "ink";
 
 const tones: Record<BadgeTone, string> = {
   neutral: "bg-chip text-text",
-  accent: "bg-accent text-white",
+  gold: "bg-gold text-black",
   success: "bg-success text-white",
-  action: "bg-action text-white",
-  warning: "bg-accent-soft text-black ring-1 ring-inset ring-accent",
-  danger: "bg-black text-accent-light",
+  green: "bg-green text-white",
+  warning: "bg-gold-soft text-black ring-1 ring-inset ring-gold",
+  danger: "bg-black text-gold",
   ink: "bg-ink text-white",
 };
 
@@ -34,11 +34,11 @@ export type Tier = "premium" | "mid" | "budget";
 
 const tierMeta: Record<Tier, { label: string; tone: BadgeTone }> = {
   premium: { label: "Premium", tone: "ink" },
-  mid: { label: "Mid-range", tone: "action" },
-  budget: { label: "Budget", tone: "accent" },
+  mid: { label: "Mid-range", tone: "green" },
+  budget: { label: "Budget", tone: "gold" },
 };
 
-/** Tyre tier badge: premium = ink, mid = navy, budget = accent. */
+/** Tyre tier badge: premium = ink, mid = green, budget = gold. */
 export function TierBadge({ tier, className }: { tier: Tier; className?: string }) {
   const { label, tone } = tierMeta[tier];
   return (

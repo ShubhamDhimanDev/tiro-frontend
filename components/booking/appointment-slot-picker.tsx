@@ -24,10 +24,10 @@ const NO_DAYS: BookingDay[] = [];
 
 /**
  * Focus ring for a visually hidden radio: the ring is drawn on the card that
- * follows it (`peer` sibling), matching the global red + ink focus ring.
+ * follows it (`peer` sibling), matching the global gold + ink focus ring.
  */
 const PEER_FOCUS =
-  "peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent peer-focus-visible:shadow-[0_0_0_2px_var(--c-ink)]";
+  "peer-focus-visible:outline peer-focus-visible:outline-[3px] peer-focus-visible:outline-offset-2 peer-focus-visible:outline-gold peer-focus-visible:shadow-[0_0_0_2px_var(--c-ink)]";
 
 /**
  * `GET /api/v1/booking-slots`-backed picker, used for the initial "choose a
@@ -276,7 +276,7 @@ export function AppointmentSlotPicker({
                       className="peer sr-only"
                     />
                     <span
-                      className={`flex cursor-pointer flex-col gap-1 rounded-card border-2 border-line bg-surface px-4 py-3 transition-colors hover:border-muted peer-checked:border-ink peer-checked:bg-accent-soft ${PEER_FOCUS}`}
+                      className={`flex cursor-pointer flex-col gap-1 rounded-card border-2 border-line bg-surface px-4 py-3 transition-colors hover:border-muted peer-checked:border-ink peer-checked:bg-gold-soft ${PEER_FOCUS}`}
                     >
                       <span className="flex flex-wrap items-center gap-2">
                         <span className="font-bold text-ink">Flexible arrival</span>
@@ -312,7 +312,7 @@ export function AppointmentSlotPicker({
                               className="peer sr-only"
                             />
                             <span
-                              className={`flex min-h-16 cursor-pointer flex-col justify-center rounded-card border-2 border-line bg-surface px-3 py-2 transition-colors hover:border-muted peer-checked:border-ink peer-checked:bg-accent-soft peer-disabled:cursor-not-allowed peer-disabled:opacity-60 ${PEER_FOCUS}`}
+                              className={`flex min-h-16 cursor-pointer flex-col justify-center rounded-card border-2 border-line bg-surface px-3 py-2 transition-colors hover:border-muted peer-checked:border-ink peer-checked:bg-gold-soft peer-disabled:cursor-not-allowed peer-disabled:opacity-60 ${PEER_FOCUS}`}
                             >
                               <span className="whitespace-nowrap text-[15px] font-bold tabular-nums text-ink">{formatWindow(slot.start, slot.end)}</span>
                               <span className="text-sm text-muted">about {formatDuration(state.durationMinutes)}</span>

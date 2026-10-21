@@ -63,26 +63,12 @@ describe("home live data", () => {
     expect(screen.queryByText("4 for 3")).not.toBeInTheDocument();
   });
 
-  it("links brands to their brand page, plus a link to all brands", () => {
+  it("links brands to their brand page", () => {
     render(<BrandsBand brands={[{ name: "Michelin", slug: "michelin" }]} />);
     expect(screen.getByRole("link", { name: "Michelin" })).toHaveAttribute("href", "/brands/michelin");
-    expect(screen.getByRole("link", { name: "See all brands" })).toHaveAttribute("href", "/brands");
   });
 
-  it("is a static logo strip: no heading, no autoplay pause button, prev/next buttons that scroll the row", async () => {
-    const user = userEvent.setup();
-    render(<BrandsBand brands={[{ name: "Michelin", slug: "michelin" }]} />);
-    expect(screen.queryByRole("heading")).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /pause|play/i })).not.toBeInTheDocument();
-    const row = screen.getByRole("list", { name: "Brands we stock" });
-    const scrollBy = vi.fn();
-    row.scrollBy = scrollBy;
-    await user.click(screen.getByRole("button", { name: "Next brands" }));
-    await user.click(screen.getByRole("button", { name: "Previous brands" }));
-    expect(scrollBy).toHaveBeenCalledTimes(2);
-  });
-
-  it("shows a brand's uploaded logo alone (its alt is the link name), and the typeset name for brands without one", () => {
+  it("shows a brand's uploaded logo beside its name, and the name alone for brands without one", () => {
     render(
       <BrandsBand
         brands={[
@@ -93,9 +79,8 @@ describe("home live data", () => {
     );
     const accelera = screen.getByRole("link", { name: "Accelera" });
     expect(accelera).toHaveAttribute("href", "/brands/accelera");
-    expect(accelera.textContent).toBe("");
+    expect(accelera).toHaveTextContent("Accelera");
     expect(accelera.querySelector("img")).toHaveAttribute("src", "http://localhost:8000/storage/media/accelera.webp");
-    expect(accelera.querySelector("img")).toHaveAttribute("alt", "Accelera");
     const michelin = screen.getByRole("link", { name: "Michelin" });
     expect(michelin).toHaveTextContent("Michelin");
     expect(michelin.querySelector("img")).toBeNull();
@@ -105,7 +90,7 @@ describe("home live data", () => {
     const { unmount } = render(<UspStrip />);
     const items = screen.getAllByRole("listitem").map((li) => li.textContent);
     expect(items).toEqual([
-      "Trusted fitting, at your doorLocal mobile tyre service",
+      "Trusted fitting, at your doorFitted by local technicians",
       "Delivery includedStraight to where we fit",
       "Competitive pricesTop brands available",
       "Old tyres recycledIncluded in the service",

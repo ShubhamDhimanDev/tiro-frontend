@@ -117,7 +117,7 @@ export function SavedAddressesList() {
             <li key={address.id} className="flex flex-col gap-3 rounded-card border border-line bg-surface p-4 shadow-rest md:p-5">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="text-lg font-bold text-ink">{customerAddressDisplayLabel(address)}</span>
-                {address.is_default && <Badge tone="accent">Default</Badge>}
+                {address.is_default && <Badge tone="gold">Default</Badge>}
               </div>
               <p className="text-sm text-muted">
                 {address.line1}
@@ -143,7 +143,7 @@ export function SavedAddressesList() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="min-h-11 font-bold text-black hover:bg-accent-soft"
+                    className="min-h-11 font-bold text-black hover:bg-gold-soft"
                     disabled={busyId === address.id}
                     onClick={() => setPendingDelete(address)}
                   >

@@ -228,7 +228,7 @@ export const UteIcon = (p: SVGProps<SVGSVGElement>) => (
     <circle cx="17.2" cy="16.8" r="2.2" />
   </Icon>
 );
-export const MinusIcon =(p: SVGProps<SVGSVGElement>) => (
+export const MinusIcon = (p: SVGProps<SVGSVGElement>) => (
   <Icon {...p}>
     <path d="M5 12h14" />
   </Icon>

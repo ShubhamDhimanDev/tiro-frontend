@@ -29,14 +29,13 @@ afterEach(() => {
 });
 
 describe("TopBar", () => {
-  it("shows a green WhatsApp link to the call number that opens in a new tab, and stays visible on phones", async () => {
+  it("shows a green WhatsApp link to the call number that opens in a new tab", async () => {
     await renderTopBar();
     const link = screen.getByRole("link", { name: /Book via WhatsApp/ });
     expect(link).toHaveAttribute("href", PHONE_HREF.replace("tel:+", "https://wa.me/"));
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
-    expect(link).toHaveClass("bg-whatsapp");
-    expect(screen.getByTestId("top-bar")).not.toHaveClass("max-lg:hidden");
+    expect(link).toHaveClass("bg-green", "text-white", "h-9");
   });
 
   it("names the served area from the admin's tree, never a literal place", async () => {
@@ -51,9 +50,16 @@ describe("TopBar", () => {
     expect(screen.queryByText(/Serving/)).not.toBeInTheDocument();
   });
 
-  it("shows the opening hours and a tel: phone link from the site config", async () => {
+  it("shows the opening hours but no phone number or call link (the header carries the phone)", async () => {
     await renderTopBar();
     expect(screen.getByText(HOURS_LINE)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: PHONE_DISPLAY })).toHaveAttribute("href", PHONE_HREF);
+    expect(screen.queryByText(PHONE_DISPLAY)).not.toBeInTheDocument();
+    expect(document.querySelector('a[href^="tel:"]')).toBeNull();
+  });
+
+  it("hides the place and hours below lg so phones see only the WhatsApp button", async () => {
+    tree.current = served(["Sampleton"]);
+    await renderTopBar();
+    expect(screen.getByText(HOURS_LINE).closest("div")).toHaveClass("hidden", "lg:flex");
   });
 });

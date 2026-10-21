@@ -67,7 +67,7 @@ export function ReviewCard({ review, className, compact = false }: { review: Rev
           href={review.review_url}
           target="_blank"
           rel="noopener noreferrer nofollow"
-          className="mt-auto inline-flex min-h-11 w-fit items-center text-sm font-semibold text-black underline decoration-accent decoration-[3px] underline-offset-4 hover:text-muted"
+          className="mt-auto inline-flex min-h-11 w-fit items-center text-sm font-semibold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted"
         >
           View on Google
         </a>

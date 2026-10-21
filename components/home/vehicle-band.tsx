@@ -11,7 +11,7 @@ const ICONS: Record<TyreCategory, ComponentType<SVGProps<SVGSVGElement>>> = { ca
 /**
  * Dark "Mobile tyre fitting for every vehicle" band: one tile per catalogue category, each linking to /tyres filtered by it.
  * The road photo (a decorative background, faded to near-black on the right) is shown from md up; until its file exists
- * (see `lib/site/content-images.ts`) and on phones the band is a plain dark gradient, so white labels and red icons keep
+ * (see `lib/site/content-images.ts`) and on phones the band is a plain dark gradient, so white labels and yellow icons keep
  * their contrast either way. Static; no data fetching.
  */
 export function VehicleBand() {
@@ -40,7 +40,7 @@ export function VehicleBand() {
                   href={href}
                   className="flex min-h-[7.5rem] w-full flex-col items-center justify-center gap-3 rounded-card border border-white/25 bg-black/40 px-3 py-5 text-center text-base font-bold text-white transition-colors duration-300 hover:border-white hover:bg-black/70"
                 >
-                  <Icon className="h-12 w-12 text-accent" />
+                  <Icon className="h-12 w-12 text-gold" />
                   {label}
                 </Link>
               </li>

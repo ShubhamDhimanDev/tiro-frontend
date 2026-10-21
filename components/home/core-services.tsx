@@ -24,7 +24,7 @@ export function CoreServices() {
     content: (
       <div className="flex flex-col items-start gap-2">
         <p className="max-w-[60ch]">{s.summary}</p>
-        <Link href={`/services/${s.slug}`} className="inline-flex min-h-11 items-center font-bold text-black underline decoration-accent decoration-[3px] underline-offset-4">
+        <Link href={`/services/${s.slug}`} className="inline-flex min-h-11 items-center font-bold text-black underline decoration-gold decoration-[3px] underline-offset-4">
           Learn more<span className="sr-only"> about {s.title}</span>
         </Link>
       </div>
@@ -41,7 +41,7 @@ export function CoreServices() {
           <p className="max-w-md text-lg text-muted">
             Search our range of leading brands, then choose your tyres online or over the phone. A technician does the rest.
           </p>
-          <Link href="/tyres" className={buttonClassName({ variant: "action", className: "w-full sm:w-auto" })}>
+          <Link href="/tyres" className={buttonClassName({ variant: "green", className: "w-full sm:w-auto" })}>
             <SearchIcon className="h-5 w-5" />
             Search tyres
           </Link>
