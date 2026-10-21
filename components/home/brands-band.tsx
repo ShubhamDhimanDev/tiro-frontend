@@ -1,54 +1,67 @@
-"use client";
-
-import { useRef } from "react";
 import Link from "next/link";
 import { BrandMark } from "@/components/catalog/brand-mark";
-import { ChevronLeftIcon, ChevronRightIcon } from "@/components/ui/icons";
+import { MotionPauseButton } from "@/components/ui/motion-pause-button";
 import type { HomeBrand } from "@/lib/home/load";
 
-const arrow =
-  "hidden h-11 w-11 shrink-0 items-center justify-center rounded-full border border-field bg-surface text-black transition-colors duration-300 hover:bg-black hover:text-white md:flex";
-
 /**
- * Light brand-logo strip directly under the trust strip, fed by `GET /brands`. No heading, no red band and nothing moving:
- * a native scroll-snap row (swipe on phones, prev/next buttons from md up, same as the offers carousel) plus "See all
- * brands". A brand with an uploaded logo shows the logo alone (its `alt` is the link name); a brand without one, or whose
- * image fails to load, shows its name as text so the link never goes blank. Renders nothing when the API returns no brands.
+ * Red "Shop leading brands" band (white text) fed by `GET /brands`. A brand shows its
+ * uploaded logo (on a white tile, decorative) beside its name, which is always
+ * typeset text so the link keeps its label if the image is missing or fails.
+ *
+ * Phones: a static, wrapped grid of chips (nothing clipped, nothing moving).
+ * md+: a slow marquee with soft edge fades and a pause button (WCAG 2.2.2).
+ * The marquee's second copy only closes the loop and is aria-hidden.
+ * Frozen under reduced motion. Renders nothing when the API returns no brands.
  */
 export function BrandsBand({ brands }: { brands: HomeBrand[] }) {
-  const rowRef = useRef<HTMLUListElement>(null);
-
   if (brands.length === 0) return null;
-
-  function scrollRow(dir: 1 | -1) {
-    const row = rowRef.current;
-    if (!row) return;
-    row.scrollBy({ left: dir * row.clientWidth * 0.8, behavior: "smooth" });
-  }
-
+  // One link list serves both layouts (a wrapped grid on phones, an inline row inside the marquee from md up), so there is a single set of links in the DOM.
+  const chip =
+    "flex min-h-12 items-center justify-center gap-2.5 rounded-control border-2 border-white/80 px-4 text-base font-extrabold italic tracking-[-0.5px] text-white transition-colors hover:bg-black hover:text-accent-light md:h-14 md:shrink-0 md:justify-start md:rounded-none md:border-0 md:px-9 md:text-[28px] md:tracking-[-1px] md:hover:bg-transparent md:hover:text-white";
+  const copyChip = "flex h-14 shrink-0 items-center gap-3 px-9 text-[28px] font-extrabold italic tracking-[-1px] text-white";
+  const logoTile = "h-9 w-12 md:h-12 md:w-16";
   return (
-    <section aria-label="Brands we stock" className="border-b border-line bg-surface">
-      <div className="container-page flex flex-col gap-1 py-4 md:flex-row md:items-center md:gap-4">
-        <div className="flex min-w-0 flex-1 items-center gap-2">
-          <button type="button" aria-label="Previous brands" onClick={() => scrollRow(-1)} className={arrow}>
-            <ChevronLeftIcon className="h-5 w-5" />
-          </button>
-          <ul ref={rowRef} tabIndex={0} aria-label="Brands we stock" className="no-scrollbar flex min-w-0 flex-1 snap-x snap-mandatory items-center gap-2 overflow-x-auto">
-            {brands.map((b) => (
-              <li key={b.slug} className="shrink-0 snap-start">
-                <Link href={`/brands/${b.slug}`} className="flex min-h-14 items-center justify-center rounded-control px-2 transition-colors duration-300 hover:bg-chip">
-                  <BrandMark logoPath={b.logo} name={b.name} className="h-11 w-28">
-                    <span className="px-2 text-lg font-extrabold italic tracking-[-0.5px] text-black">{b.name}</span>
-                  </BrandMark>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <button type="button" aria-label="Next brands" onClick={() => scrollRow(1)} className={arrow}>
-            <ChevronRightIcon className="h-5 w-5" />
-          </button>
+    <section aria-labelledby="brands-heading" className="mt-[50px] bg-accent py-9 lg:mt-20 lg:py-12">
+      <div className="container-page">
+        <div className="mb-6 flex items-center gap-4">
+          <span aria-hidden="true" className="h-px flex-1 bg-white/40" />
+          <h2 id="brands-heading" className="text-xl font-bold tracking-[-0.5px] text-white md:text-[28px]">
+            Shop leading brands
+          </h2>
+          <span aria-hidden="true" className="h-px flex-1 bg-white/40" />
         </div>
-        <Link href="/brands" className="inline-flex min-h-11 shrink-0 items-center justify-center font-bold text-black underline decoration-accent underline-offset-4 hover:bg-accent hover:text-white md:px-2">
+      </div>
+
+      <div className="container-page md:max-w-none md:p-0">
+        <div className="flex items-center gap-2">
+          <div id="brands-marquee" className="marquee-fade min-w-0 flex-1 md:overflow-hidden">
+            <div className="marquee-track md:flex">
+              <ul className="grid grid-cols-2 gap-2.5 min-[420px]:grid-cols-3 md:flex md:gap-0" aria-label="Brands we stock">
+                {brands.map((b) => (
+                  <li key={b.slug} className="flex md:block">
+                    <Link href={`/brands/${b.slug}`} className={`${chip} w-full md:w-auto`}>
+                      <BrandMark logoPath={b.logo} name={b.name} decorative className={logoTile} />
+                      {b.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <ul className="hidden md:flex" aria-hidden="true">
+                {brands.map((b) => (
+                  <li key={b.slug} className={copyChip}>
+                    <BrandMark logoPath={b.logo} name={b.name} decorative className={logoTile} />
+                    {b.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <MotionPauseButton targetId="brands-marquee" label="brands scrolling" className="mr-[var(--gutter)] hidden md:flex" />
+        </div>
+      </div>
+
+      <div className="container-page mt-6 text-center">
+        <Link href="/brands" className="inline-flex min-h-11 items-center font-bold text-white underline underline-offset-4">
           See all brands
         </Link>
       </div>

@@ -50,12 +50,9 @@ const AVAILABLE_FILES = new Set<string>([
   "/images/banners/brand-banner-premium.webp",
   "/images/banners/brand-banner-midrange.webp",
   "/images/banners/brand-banner-budget.webp",
-  "/images/home/how-it-works-technician-driveway.webp",
+  "/images/home/how-it-works-van-driveway.webp",
   "/images/home/newsletter-tyre.webp",
   "/images/home/deals-online-phones.webp",
-  // Vehicle band background (Gemini, docs/prompts/vehicle-band-road.md). Not saved yet: after adding the file to
-  // frontend/public/images/banners/, uncomment this line and the band shows the photo instead of its dark gradient.
-  // "/images/banners/vehicle-band-road.webp",
 ]);
 
 const img = (file: string, width: number, height: number, alt: string): ContentImage => ({
@@ -68,10 +65,9 @@ const img = (file: string, width: number, height: number, alt: string): ContentI
 
 export const CONTENT_IMAGES = {
   // Homepage sections
-  "home-how-it-works": img("/images/home/how-it-works-technician-driveway.webp", 1200, 896, "A Tiro technician kneeling on a customer's driveway fitting a wheel, with the van's side door open behind him"),
+  "home-how-it-works": img("/images/home/how-it-works-van-driveway.webp", 1200, 896, "A Tiro technician fitting a new tyre on a customer's driveway beside the van"),
   "home-deals-online": img("/images/home/deals-online-phones.webp", 1024, 1024, "Two smartphones showing a tyre product page and the 4 for 3 quantity picker"),
   "home-newsletter": img("/images/home/newsletter-tyre.webp", 1024, 1024, "A new tyre lit with a red rim glow on a dark background"),
-  "home-vehicle-band": img("/images/banners/vehicle-band-road.webp", 1920, 480, "A quiet suburban road at dusk with a van and a hatchback driving away"),
   // Offers hub bands (4:3)
   "offers-latest": img("/images/offers/offers-latest.webp", 1200, 900, "A set of four new tyres with a blank promotional tag"),
   "offers-price-guarantee": img("/images/offers/offers-price-guarantee.webp", 1200, 900, "A technician giving a thumbs up beside a tyre"),

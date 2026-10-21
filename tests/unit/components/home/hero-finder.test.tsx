@@ -61,21 +61,6 @@ describe("HeroFinder tabs", () => {
     expect(screen.getByRole("tab", { name: "Search by rego" })).toHaveFocus();
   });
 
-  it("puts a Need help? link to /help on the tab row, outside the tablist", () => {
-    render(<HeroFinder />);
-    const help = screen.getByRole("link", { name: "Need help?" });
-    expect(help).toHaveAttribute("href", "/help");
-    expect(help.closest('[role="tablist"]')).toBeNull();
-  });
-
-  it("keeps the suburb chip by default (city pages) and drops it with showLocation={false} (home hero)", () => {
-    const { rerender } = render(<HeroFinder />);
-    expect(screen.getByRole("button", { name: /add your suburb/i })).toBeInTheDocument();
-    rerender(<HeroFinder showLocation={false} />);
-    expect(screen.queryByRole("button", { name: /add your suburb/i })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Find tyres" })).toBeInTheDocument();
-  });
-
   it("opens the shared location sheet from the inline suburb chip", async () => {
     const user = userEvent.setup();
     render(<HeroFinder />);

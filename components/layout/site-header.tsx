@@ -39,7 +39,7 @@ export async function SiteHeader() {
           <MobileMenu groups={groups} />
 
           <Link href="/" aria-label={`${SITE_NAME} home`} className="shrink-0 rounded-control">
-            <Logo wide />
+            <Logo />
           </Link>
 
           <div className="ml-auto flex items-center gap-2 lg:gap-3">

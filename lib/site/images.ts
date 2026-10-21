@@ -6,7 +6,7 @@
 export type SiteImage = { src: string; width: number; height: number; alt: string };
 
 export const HERO_IMAGES: { desktop: SiteImage | null; mobile: SiteImage | null } = {
-  desktop: { src: "/images/hero/hero-van-city-desktop.webp", width: 1600, height: 800, alt: "A Tiro mobile tyre van parked on a sunny street with its side door open while a technician fits a wheel to a car" },
+  desktop: { src: "/images/hero/hero-van-desktop.webp", width: 1920, height: 960, alt: "A Tiro mobile tyre van parked outside a home while a technician fits a wheel" },
   mobile: { src: "/images/hero/hero-van-mobile.webp", width: 1080, height: 1080, alt: "A Tiro mobile tyre van in a driveway with a technician holding a wheel" },
 };
 
