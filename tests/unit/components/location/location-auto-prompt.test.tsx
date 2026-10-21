@@ -10,17 +10,15 @@ let pathname = "/";
 vi.mock("@/components/location/location-provider", () => ({ useLocation: () => ctx }));
 vi.mock("next/navigation", () => ({ usePathname: () => pathname }));
 
-import {
-  LOCATION_PROMPT_DELAY_MS,
-  LOCATION_PROMPT_KEY,
-  LOCATION_PROMPT_SNOOZE_MS,
-  LocationAutoPrompt,
-} from "@/components/location/location-auto-prompt";
+/** The component remembers "already shown" at module level, so load a fresh copy to simulate a new page load. */
+async function freshPrompt() {
+  vi.resetModules();
+  return import("@/components/location/location-auto-prompt");
+}
 
-function mount() {
-  render(<LocationAutoPrompt />);
+function wait(ms: number) {
   act(() => {
-    vi.advanceTimersByTime(LOCATION_PROMPT_DELAY_MS + 50);
+    vi.advanceTimersByTime(ms);
   });
 }
 
@@ -37,54 +35,75 @@ describe("LocationAutoPrompt", () => {
     vi.useRealTimers();
   });
 
-  it("opens the picker on the home page after a short delay when no location is saved", () => {
+  it("opens the picker on the home page after a short delay when no location is saved", async () => {
+    const { LocationAutoPrompt, LOCATION_PROMPT_DELAY_MS } = await freshPrompt();
     render(<LocationAutoPrompt />);
     expect(ctx.openPicker).not.toHaveBeenCalled();
-    act(() => {
-      vi.advanceTimersByTime(LOCATION_PROMPT_DELAY_MS + 50);
-    });
+    wait(LOCATION_PROMPT_DELAY_MS + 50);
     expect(ctx.openPicker).toHaveBeenCalledTimes(1);
-    expect(Number(window.localStorage.getItem(LOCATION_PROMPT_KEY))).toBeGreaterThan(0);
   });
 
-  it("does nothing when a location is already saved", () => {
+  it("asks again on every new page load until a location is saved", async () => {
+    for (let visit = 1; visit <= 3; visit++) {
+      const { LocationAutoPrompt, LOCATION_PROMPT_DELAY_MS } = await freshPrompt();
+      const { unmount } = render(<LocationAutoPrompt />);
+      wait(LOCATION_PROMPT_DELAY_MS + 50);
+      expect(ctx.openPicker).toHaveBeenCalledTimes(visit);
+      unmount();
+    }
+  });
+
+  it("does not re-open within the same page load", async () => {
+    const { LocationAutoPrompt, LOCATION_PROMPT_DELAY_MS } = await freshPrompt();
+    const first = render(<LocationAutoPrompt />);
+    wait(LOCATION_PROMPT_DELAY_MS + 50);
+    first.unmount();
+    // Back on the home page after browsing elsewhere in the same visit.
+    render(<LocationAutoPrompt />);
+    wait(LOCATION_PROMPT_DELAY_MS + 50);
+    expect(ctx.openPicker).toHaveBeenCalledTimes(1);
+  });
+
+  it("does nothing when a location is already saved", async () => {
     ctx.zone = { zoneId: "3", label: "Melbourne Metro" };
-    mount();
+    const { LocationAutoPrompt, LOCATION_PROMPT_DELAY_MS } = await freshPrompt();
+    render(<LocationAutoPrompt />);
+    wait(LOCATION_PROMPT_DELAY_MS + 50);
     expect(ctx.openPicker).not.toHaveBeenCalled();
   });
 
-  it("waits for the saved-location check to finish", () => {
+  it("waits for the saved-location check to finish", async () => {
     ctx.loading = true;
-    mount();
+    const { LocationAutoPrompt, LOCATION_PROMPT_DELAY_MS } = await freshPrompt();
+    render(<LocationAutoPrompt />);
+    wait(LOCATION_PROMPT_DELAY_MS + 50);
     expect(ctx.openPicker).not.toHaveBeenCalled();
   });
 
-  it("does nothing on pages other than the home page", () => {
+  it("does nothing on pages other than the home page", async () => {
     pathname = "/tyres";
-    mount();
+    const { LocationAutoPrompt, LOCATION_PROMPT_DELAY_MS } = await freshPrompt();
+    render(<LocationAutoPrompt />);
+    wait(LOCATION_PROMPT_DELAY_MS + 50);
     expect(ctx.openPicker).not.toHaveBeenCalled();
   });
 
-  it("stays quiet for a week after it was last shown, then asks again", () => {
-    window.localStorage.setItem(LOCATION_PROMPT_KEY, String(Date.now() - 60_000));
-    mount();
+  it("stays silent when the off switch is set in local storage", async () => {
+    const { LocationAutoPrompt, LOCATION_PROMPT_DELAY_MS, LOCATION_PROMPT_OFF_KEY } = await freshPrompt();
+    window.localStorage.setItem(LOCATION_PROMPT_OFF_KEY, "1");
+    render(<LocationAutoPrompt />);
+    wait(LOCATION_PROMPT_DELAY_MS + 50);
     expect(ctx.openPicker).not.toHaveBeenCalled();
-
-    window.localStorage.setItem(LOCATION_PROMPT_KEY, String(Date.now() - LOCATION_PROMPT_SNOOZE_MS - 1000));
-    mount();
-    expect(ctx.openPicker).toHaveBeenCalledTimes(1);
   });
 
-  it("still asks when browser storage is blocked", () => {
+  it("still asks when browser storage is blocked", async () => {
     const get = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
       throw new Error("blocked");
     });
-    const set = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
-      throw new Error("blocked");
-    });
-    mount();
+    const { LocationAutoPrompt, LOCATION_PROMPT_DELAY_MS } = await freshPrompt();
+    render(<LocationAutoPrompt />);
+    wait(LOCATION_PROMPT_DELAY_MS + 50);
     expect(ctx.openPicker).toHaveBeenCalledTimes(1);
     get.mockRestore();
-    set.mockRestore();
   });
 });

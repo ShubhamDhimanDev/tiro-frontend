@@ -88,11 +88,12 @@ export default defineConfig({
     baseURL: BASE_URL,
     // framer-motion honours reduced motion (MotionConfig reducedMotion="user"); keeps e2e timing deterministic.
     contextOptions: { reducedMotion: "reduce" },
-    // The first-visit "Select fitting location" popup (components/location/location-auto-prompt.tsx) would cover the page
-    // on every spec that starts at `/`. Pretend it was already shown; the spec that tests the popup itself clears this.
+    // The "Select fitting location" popup (components/location/location-auto-prompt.tsx) opens on every home page load
+    // without a saved location and would cover the page in every spec that starts at `/`. Switch it off here; the spec
+    // that tests the popup itself clears this storage state.
     storageState: {
       cookies: [],
-      origins: [{ origin: BASE_URL, localStorage: [{ name: "mts_location_prompt_at", value: String(Date.now()) }] }],
+      origins: [{ origin: BASE_URL, localStorage: [{ name: "mts_location_prompt_off", value: "1" }] }],
     },
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
