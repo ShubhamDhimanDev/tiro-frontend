@@ -13,6 +13,10 @@ import { brandLogoSrc } from "@/lib/catalog/brand-logo";
  * Plain `<img>`, not `next/image`: logos come from the Laravel storage host,
  * which is not in `images.remotePatterns`, and they are tiny. The tile's size
  * comes from `className`, so there is no layout shift either way.
+ *
+ * `onError` only fires if the image fails after React has attached it. A logo that 404s while the server-rendered HTML is
+ * still hydrating has already failed by then and never reports it, so on mount a ref callback also checks for a finished
+ * load with no pixels (`complete && naturalWidth === 0`) and switches to the fallback the same way.
  */
 export function BrandMark({
   logoPath,
@@ -33,11 +37,15 @@ export function BrandMark({
   const src = brandLogoSrc(logoPath);
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
   if (!src || failedSrc === src) return <>{children}</>;
+  const checkAlreadyFailed = (img: HTMLImageElement | null) => {
+    if (img && img.complete && img.naturalWidth === 0) setFailedSrc(src);
+  };
 
   return (
     <span className={cx("flex shrink-0 items-center justify-center rounded-control bg-white p-1.5", className)}>
       {/* eslint-disable-next-line @next/next/no-img-element -- remote logo host is not configured for next/image; see doc comment */}
       <img
+        ref={checkAlreadyFailed}
         src={src}
         alt={decorative ? "" : name}
         loading="lazy"

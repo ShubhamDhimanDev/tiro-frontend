@@ -7,9 +7,10 @@ import { Sheet } from "@/components/ui/sheet";
 
 /**
  * The one "where should we fit your tyres" modal (phase 1). Rendered once by
- * the site header and opened ON DEMAND only: from the header pill, the mobile
- * menu, the finder, or `useLocation().openPicker()` at purchase intent. It
- * never opens on load and never blocks first paint.
+ * the site header and opened from the header pill, the mobile menu, the finder,
+ * `useLocation().openPicker()` at purchase intent, and, once a week on the home
+ * page when no location is saved, `<LocationAutoPrompt>` (after first paint, so
+ * it never blocks it).
  *
  * Desktop: 850px dialog, illustration panel left, form right. Phone: bottom
  * sheet sized to its content. Uses the existing capture form, serviceability
@@ -43,7 +44,7 @@ export function LocationSheet() {
 
         <div className="flex flex-col gap-4 p-5 md:p-8">
           <p className="text-[15px] text-muted">
-            Enter the suburb where you would like your tyres fitted, so we can show accurate stock and fitting times.
+            Enter the suburb or postcode where you would like your tyres fitted, so we can show accurate stock and fitting times.
           </p>
           {zone && (
             <p className="text-sm text-muted">

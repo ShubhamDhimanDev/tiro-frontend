@@ -1,4 +1,14 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+/**
+ * Opens the home page and waits until it has hydrated. The newsletter form is a client component; clicking Subscribe
+ * before React attaches its submit handler falls through to a native form submit (a page reload), so the inline
+ * error / success never appears. That made these tests intermittently fail on the heavier home page.
+ */
+async function gotoHydrated(page: Page) {
+  await page.goto("/");
+  await page.waitForLoadState("networkidle");
+}
 
 /**
  * Home page against the live API (Phase 7): the size finder, location
@@ -25,6 +35,57 @@ test.describe("home size finder", () => {
   test("the rego tab is not offered while the feature flag is off", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByTestId("hero-finder").getByRole("tab", { name: /rego/i })).toHaveCount(0);
+  });
+});
+
+test.describe("home layout (2026-10-21 refresh)", () => {
+  test("hero: finder has a Need help link and no suburb chip, with three static ticks", async ({ page }) => {
+    await page.goto("/");
+    const finder = page.getByTestId("hero-finder");
+    await expect(finder.getByRole("link", { name: "Need help?" })).toHaveAttribute("href", "/help");
+    await expect(finder.getByRole("button", { name: /add your suburb/i })).toHaveCount(0);
+    const ticks = page.getByRole("list", { name: "Included with every fitting" }).getByRole("listitem");
+    await expect(ticks).toHaveText(["At home, work or roadside", "Balancing included", "Old tyres recycled"]);
+  });
+
+  test("trust strip shows four points and replaces same-day fitting with delivery included", async ({ page }) => {
+    await page.goto("/");
+    const strip = page.getByRole("region", { name: "Why customers choose us" });
+    await expect(strip.getByRole("listitem")).toHaveCount(4);
+    await expect(strip).toContainText("Delivery included");
+    await expect(strip).toContainText("Straight to where we fit");
+    await expect(strip).not.toContainText(/same-day/i);
+  });
+
+  test("value cards link to the four info pages", async ({ page }) => {
+    await page.goto("/");
+    for (const [name, href] of [
+      [/Price-match guarantee/, "/price-guarantee"],
+      [/Flexible payment options/, "/payment-options"],
+      [/Warranties and returns/, "/warranties"],
+      [/Fleet and business/, "/fleet"],
+    ] as const) {
+      await expect(page.getByRole("link", { name }).first()).toHaveAttribute("href", href);
+    }
+  });
+
+  test("vehicle band tiles open the tyre catalogue filtered by category", async ({ page }) => {
+    await page.goto("/");
+    const band = page.locator("section[aria-labelledby='vehicle-heading']");
+    await expect(band.getByRole("link")).toHaveCount(4);
+    await band.getByRole("link", { name: "SUVs" }).click();
+    await expect(page).toHaveURL(/\/tyres\?category=suv/);
+  });
+
+  test("the top bar shows the hours and phone on desktop and scrolls away while the header stays", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    const bar = page.getByTestId("top-bar");
+    await expect(bar).toBeVisible();
+    await expect(bar.getByRole("link", { name: /^0\d{3} / })).toBeVisible();
+    await page.mouse.wheel(0, 800);
+    await expect(bar).not.toBeInViewport();
+    await expect(page.getByRole("banner", { name: "Site header" })).toBeInViewport();
   });
 });
 
@@ -80,7 +141,7 @@ test.describe("newsletter", () => {
       called = true;
       return route.fulfill({ status: 201, json: { data: { message: "x" } } });
     });
-    await page.goto("/");
+    await gotoHydrated(page);
     const card = page.locator("section[aria-labelledby='newsletter-heading']");
     await card.getByLabel("Email").fill("not-an-email");
     await card.getByRole("button", { name: "Subscribe" }).click();
@@ -89,7 +150,7 @@ test.describe("newsletter", () => {
   });
 
   test("a valid email is subscribed through the live API", async ({ page }) => {
-    await page.goto("/");
+    await gotoHydrated(page);
     const card = page.locator("section[aria-labelledby='newsletter-heading']");
     await card.getByLabel("Email").fill(`e2e+${Date.now()}@example.com`);
     await card.getByRole("button", { name: "Subscribe" }).click();
@@ -98,7 +159,7 @@ test.describe("newsletter", () => {
 
   test("shows an error and keeps the form when the API is unavailable", async ({ page }) => {
     await page.route("**/api/newsletter", (route) => route.fulfill({ status: 503, json: { message: "down" } }));
-    await page.goto("/");
+    await gotoHydrated(page);
     const card = page.locator("section[aria-labelledby='newsletter-heading']");
     await card.getByLabel("Email").fill("a@example.com");
     await card.getByRole("button", { name: "Subscribe" }).click();

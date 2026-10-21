@@ -852,6 +852,10 @@ the numbers are pinned by `tests/unit/palette.test.ts`. The rules that cost time
   **Green survives only as a status colour**, the `success` token `#167A4B`: "In stock", location-confirmed pin,
   the flexible-booking dots (the cart copy says "marked with a green dot") and success text. Never a button or tile.
   The palette guard fails on any `bg-green` / `text-green` / `--c-green`.
+  **One exception (2026-10-21, product owner): the top bar's "Book via WhatsApp" button is green**, through its own
+  named token `whatsapp` (`#167A4B`, hover `#0F6A3E`, white 5.36:1 / higher), not `bg-green` and not `success`.
+  `components/layout/top-bar.tsx` is the only file allowed to use it (pinned by `tests/unit/palette.test.ts`); the
+  button always carries the WhatsApp glyph and text, so it is never colour alone. Every other button stays navy.
 - **Logo:** `public/brand/tmt-logo.png` (red + black, light surfaces) and `tmt-logo-light.png` (red + white, dark
   surfaces) are the client's transparent PNGs; `<Logo tone="light">` no longer needs a white plate. The favicon is the
   icon on a white rounded plate (black lettering would vanish on dark browser tabs); the admin panel's
@@ -911,3 +915,30 @@ that cost real time to find, so please keep them when editing:
   the landscape notch). `app/layout.tsx` sets `themeColor` and `interactiveWidget: "resizes-content"` only.
 - Measure with a production build (`npm run build && npx next start`), not `next dev`. Scripts:
   `../docs/mobile-audit/scripts/` (see the report's appendix).
+
+## Homepage layout refresh (2026-10-21)
+
+Plan: `../docs/plan/06-homepage-layout-refresh.md`. Mockup layout and content, current red/navy palette. Order in
+`app/page.tsx`: `Hero` -> `UspStrip` -> `BrandsBand` -> `ValueCards` -> `VehicleBand` -> the older sections unchanged. `/` is
+still static (`○`); `components/layout/top-bar.tsx` is mounted in the root layout and reads no cookies or headers.
+
+- **Static copy lives in `lib/home/content.ts`** (hero ticks, trust points, value cards, vehicle types). The first trust point
+  and the top bar's "Serving ..." text come from `summariseCoverage` / `trustedTitle` / `areaPhrase`; no component names a place.
+- **Top bar:** 36px, not sticky (below `lg` the strip is the WhatsApp button only). The WhatsApp button uses the same number as
+  the call button (`whatsappHref()` defaults to `PHONE_DISPLAY`), so there is no WhatsApp env var. Phone and hours stay
+  env-driven (`lib/site/config.ts`).
+- **Hero:** `HeroArt bleed` makes the desktop photo fill the right of the section with a white left fade; `PageHero` does not
+  pass it. The `<picture>` + blank-pixel pattern is kept, so phones still never fetch the desktop photo. The finder's suburb
+  chip is off on home (`showLocation={false}`), on for city pages. `Tabs` gained a `trailing` slot ("Need help?").
+- **Vehicle band** keeps only the four types `/tyres?category=` can filter (Cars, SUVs, 4WD & Utes, Light Trucks). Vans, EV &
+  Runflat and Trailers wait for catalogue filters. Its road photo is gated by `AVAILABLE_FILES` in `lib/site/content-images.ts`;
+  without the file the band is a CSS dark gradient.
+- **Brands strip** is a static scroll-snap logo row (no marquee, no pause button). `components/ui/motion-pause-button.tsx` is no
+  longer used anywhere.
+- **Home photos (2026-10-21):** the desktop hero is `public/images/hero/hero-van-city-desktop.webp` (1600x800) and the
+  "How it works" photo is `public/images/home/how-it-works-technician-driveway.webp` (1200x896). Both came from the client's
+  WhatsApp photos (yellow livery), recoloured to the UI red with `../docs/prompts/recolor-yellow-to-red.py` (the Ford grille badge in
+  the hero photo is left as shot, by the client's decision); new filenames, so no `next/image` cache clearing. The older `hero-van-desktop.webp` and
+  `how-it-works-van-driveway.webp` are now unused. The phone hero is still `hero-van-mobile.webp`.
+- **Image still to drop in** (Gemini, `../docs/prompts/`): `public/images/banners/vehicle-band-road.webp` -> uncomment its line
+  in `AVAILABLE_FILES` (`lib/site/content-images.ts`).

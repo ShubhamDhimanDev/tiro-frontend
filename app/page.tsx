@@ -6,6 +6,8 @@ import { Hero } from "@/components/home/hero";
 import { UspStrip } from "@/components/home/usp-strip";
 import { OffersCarousel } from "@/components/home/offers-carousel";
 import { BrandsBand } from "@/components/home/brands-band";
+import { ValueCards } from "@/components/home/value-cards";
+import { VehicleBand } from "@/components/home/vehicle-band";
 import { DealsOnline } from "@/components/home/deals-online";
 import { HowItWorks } from "@/components/home/how-it-works";
 import { CoreServices } from "@/components/home/core-services";
@@ -26,7 +28,8 @@ export const metadata: Metadata = {
 };
 
 /**
- * Homepage (ISR, 15 min). Live data: offers (`GET /offers`), brands
+ * Homepage (ISR, 15 min). Order: hero, trust strip, brand logos, value cards, vehicle band, then offers, reviews and the
+ * rest. The top bar lives in the root layout, not here. Live data: offers (`GET /offers`), brands
  * (`GET /brands`), the served-city tree (`GET /locations`) and Google reviews
  * (`GET /reviews`). Every loader fails soft, so each data-driven section simply
  * hides when the API is down or empty; the finder, services and how-it-works
@@ -51,7 +54,10 @@ export default async function Home() {
       <OrganizationJsonLd name={SITE_NAME} url={SITE_URL} telephone={PHONE_HREF.replace("tel:", "")} />
 
       <Hero regoEnabled={isRegoEnabled()} />
-      <UspStrip summary={reviews.summary} />
+      <UspStrip />
+      <BrandsBand brands={brands} />
+      <ValueCards />
+      <VehicleBand />
 
       {offers.length > 0 && (
         <Reveal>
@@ -63,7 +69,6 @@ export default async function Home() {
 
       <Reveal><ReviewsSection data={reviews} /></Reveal>
       <TrustStrip />
-      <Reveal><BrandsBand brands={brands} /></Reveal>
       <Reveal><DealsOnline /></Reveal>
       <Reveal><HowItWorks /></Reveal>
       <Reveal><CoreServices /></Reveal>
