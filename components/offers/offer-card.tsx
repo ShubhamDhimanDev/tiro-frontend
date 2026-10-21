@@ -6,22 +6,22 @@ import { cx } from "@/components/ui/cx";
 import { formatOfferEnd, offerImageSrc, offerShopHref } from "@/lib/offers/helpers";
 import type { Offer } from "@/lib/offers/types";
 
-export type OfferTone = "sticker" | "action" | "black" | "accent";
+export type OfferTone = "sticker" | "green" | "black" | "yellow";
 
 export const TONES: Record<OfferTone, string> = {
-  sticker: "bg-action text-white",
-  action: "bg-action text-white",
+  sticker: "bg-green text-white",
+  green: "bg-green text-white",
   black: "bg-ink text-white",
-  accent: "bg-accent text-white",
+  yellow: "bg-gold text-black",
 };
 
-/** Tile colour from the badge wording: "4 for 3" navy sticker, discounts navy, gift cards black, the rest red. */
+/** Tile colour from the badge wording: "4 for 3" green sticker, discounts green, gift cards black, the rest yellow. */
 export function offerTone(badge: string): OfferTone {
   const b = badge.toLowerCase();
   if (b.split(/\s+/).includes("for")) return "sticker";
-  if (/%|\$|off/.test(b)) return "action";
+  if (/%|\$|off/.test(b)) return "green";
   if (/gift|premium|new/.test(b)) return "black";
-  return "accent";
+  return "yellow";
 }
 
 /**
@@ -54,7 +54,7 @@ export function OfferCard({
     <div className={cx("relative flex min-h-[124px] flex-col justify-between gap-3 p-5", TONES[tone])}>
       <span className="text-[34px] font-extrabold leading-none tracking-[-1.5px]">{offer.badge_text}</span>
       <span className="flex flex-wrap items-center gap-2">
-        {endsSoon && <Badge tone="accent" className="ring-1 ring-black">Ends soon</Badge>}
+        {endsSoon && <Badge tone="gold" className="ring-1 ring-black">Ends soon</Badge>}
         {offer.brand && <span className="text-sm font-bold">{offer.brand.name}</span>}
       </span>
     </div>
@@ -68,7 +68,7 @@ export function OfferCard({
       {image ? (
         <div className="relative aspect-square w-full overflow-hidden bg-chip">
           <ArticleImage src={image} className="h-full w-full object-cover" fallback={promoTile} />
-          {endsSoon && <Badge tone="accent" className="absolute left-3 top-3 ring-1 ring-black">Ends soon</Badge>}
+          {endsSoon && <Badge tone="gold" className="absolute left-3 top-3 ring-1 ring-black">Ends soon</Badge>}
         </div>
       ) : (
         promoTile
@@ -119,7 +119,7 @@ export function OfferCard({
           <Link
             href={`/deals/${offer.slug}`}
             aria-label={`Details for ${offer.title}`}
-            className="inline-flex min-h-11 items-center font-bold text-black underline decoration-accent decoration-[3px] underline-offset-4 hover:text-muted"
+            className="inline-flex min-h-11 items-center font-bold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted"
           >
             Offer details
           </Link>

@@ -10,7 +10,7 @@ export type TabItem = { key: string; label: string; panel: ReactNode };
 
 /**
  * Underline tabs (finder, product tabs): inactive grey, active black with a
- * 3px red underline, on a 1px rule. WAI-ARIA tabs: roving tabindex,
+ * 3px yellow underline, on a 1px rule. WAI-ARIA tabs: roving tabindex,
  * Arrow/Home/End keys. Only the active panel is mounted.
  */
 export function Tabs({
@@ -86,7 +86,7 @@ export function Tabs({
                 <m.span
                   layoutId="tab-underline"
                   aria-hidden="true"
-                  className="absolute inset-x-0 -bottom-[3px] h-[3px] bg-accent"
+                  className="absolute inset-x-0 -bottom-[3px] h-[3px] bg-gold"
                   transition={{ type: "spring", stiffness: 500, damping: 40 }}
                 />
               )}

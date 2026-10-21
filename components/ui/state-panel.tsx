@@ -7,8 +7,8 @@ export type StateTone = "info" | "success" | "warning" | "error";
 const TONE: Record<StateTone, { border: string; badge: string }> = {
   info: { border: "border-line", badge: "bg-ink text-white" },
   success: { border: "border-success", badge: "bg-success text-white" },
-  warning: { border: "border-accent", badge: "bg-accent text-white" },
-  error: { border: "border-black", badge: "bg-black text-accent-light" },
+  warning: { border: "border-gold", badge: "bg-gold text-black" },
+  error: { border: "border-black", badge: "bg-black text-gold" },
 };
 
 /**

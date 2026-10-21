@@ -37,7 +37,7 @@ export function CartBadge() {
         initial={{ scale: 1.6 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 500, damping: 18 }}
-        className="type-mono absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-accent px-1 text-xs font-bold leading-none text-white"
+        className="type-mono absolute -right-1.5 -top-1.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-gold px-1 text-xs font-bold leading-none text-black"
       >
         {itemCount > 99 ? "99+" : itemCount}
       </m.span>

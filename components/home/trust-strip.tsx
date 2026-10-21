@@ -25,7 +25,7 @@ export function TrustStrip({
       <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 rounded-card border border-line bg-band px-5 py-5">
         {summary && (
           <li className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black text-white">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black text-gold">
               <StarIcon className="h-5 w-5 fill-current" />
             </span>
             <span className="flex flex-col">

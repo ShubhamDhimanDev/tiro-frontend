@@ -18,7 +18,7 @@ import { PHONE_DISPLAY, PHONE_HREF, SITE_NAME } from "@/lib/site/config";
  * header).
  *
  * - Desktop (>=992px): sticky, 115px = row 1 (72px: logo, location pill,
- *   red "Search tyres", phone, account, cart) + row 2 (43px: seven nav
+ *   yellow "Search tyres", phone, account, cart) + row 2 (43px: seven nav
  *   items with hover/click mega panels).
  * - Phone/tablet (<992px): sticky row 1 only (56px: menu, logo, phone, cart).
  *   The second row (location pill + "Search tyres") sits directly under it
@@ -48,7 +48,7 @@ export async function SiteHeader() {
             </div>
 
             <div className="hidden lg:block">
-              <Link href={CTA.href} className={buttonClassName({ variant: "accent", size: "md" })}>
+              <Link href={CTA.href} className={buttonClassName({ variant: "yellow", size: "md" })}>
                 <SearchIcon className="h-5 w-5" />
                 {CTA.label}
               </Link>
@@ -83,7 +83,7 @@ export async function SiteHeader() {
       <div className="border-b border-line bg-surface lg:hidden">
         <div className="container-page flex items-center gap-2 py-2.5">
           <LocationChip variant="field" className="min-w-0 flex-1" />
-          <Link href={CTA.href} className={buttonClassName({ variant: "accent", size: "md", className: "shrink-0 !gap-1.5 !px-3" })}>
+          <Link href={CTA.href} className={buttonClassName({ variant: "yellow", size: "md", className: "shrink-0 !gap-1.5 !px-3" })}>
             <SearchIcon className="h-5 w-5" />
             {CTA.label}
           </Link>

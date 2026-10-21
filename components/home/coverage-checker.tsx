@@ -84,7 +84,7 @@ export function CoverageChecker({ cities = [] }: { cities?: { name: string; href
           onChange={(e) => setValue(e.target.value)}
           error={inputError}
         />
-        <Button type="submit" loading={loading} fullWidth size="lg" variant="action">
+        <Button type="submit" loading={loading} fullWidth size="lg" variant="green">
           {loading ? "Checking" : "Check my area"}
         </Button>
 
@@ -138,7 +138,7 @@ export function CoverageChecker({ cities = [] }: { cities?: { name: string; href
             <li key={city.href + city.name}>
               <Link
                 href={city.href}
-                className="inline-flex min-h-11 items-center gap-2 rounded-control bg-black px-4 text-sm font-bold text-white transition-colors duration-300 hover:bg-accent hover:text-white"
+                className="inline-flex min-h-11 items-center gap-2 rounded-control bg-black px-4 text-sm font-bold text-white transition-colors duration-300 hover:bg-gold hover:text-black"
               >
                 <PinIcon className="h-4 w-4" />
                 {city.name}

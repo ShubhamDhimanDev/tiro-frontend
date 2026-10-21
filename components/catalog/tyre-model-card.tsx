@@ -205,7 +205,7 @@ export function TyreModelCard({
               <span
                 data-testid="four-for-three"
                 className={cx(
-                  "badge-pop absolute right-3 top-3 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-action text-white shadow-rest",
+                  "badge-pop absolute right-3 top-3 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-green text-white shadow-rest",
                   compact && "max-sm:right-1 max-sm:top-1 max-sm:h-11 max-sm:w-11",
                 )}
               >
@@ -242,7 +242,7 @@ export function TyreModelCard({
                 <TierBadge tier={tier} className="py-0" />
               )}
               {onOffer && (
-                <Badge tone="action" className="py-0">
+                <Badge tone="green" className="py-0">
                   Special price
                 </Badge>
               )}
@@ -261,7 +261,7 @@ export function TyreModelCard({
             fourForThree ? (
               <div
                 data-mock={primary.mock_price || undefined}
-                className="flex min-h-12 items-center justify-between gap-2 bg-action px-4 py-2.5 text-white"
+                className="flex min-h-12 items-center justify-between gap-2 bg-green px-4 py-2.5 text-white"
               >
                 <span className="text-sm font-bold">4 for 3*</span>
                 <span className="flex items-baseline gap-2">
@@ -279,7 +279,7 @@ export function TyreModelCard({
                 <span className="text-sm text-muted">From</span>
                 <span className="flex items-baseline gap-2">
                   {was !== undefined && <s className="type-mono text-sm text-muted">{formatMoney(was)}</s>}
-                  <span className="type-mono text-xl font-extrabold text-action">{formatEa(fromPrice)}ea</span>
+                  <span className="type-mono text-xl font-extrabold text-green">{formatEa(fromPrice)}ea</span>
                 </span>
               </div>
             )
@@ -295,7 +295,7 @@ export function TyreModelCard({
               aria-expanded={flipped}
               aria-label={`Select quantity for ${singleSize ? label : name}`}
               onClick={() => flip(true)}
-              className={buttonClassName({ variant: "action", size: "sm", fullWidth: true })}
+              className={buttonClassName({ variant: "green", size: "sm", fullWidth: true })}
             >
               Select quantity
             </button>
@@ -376,7 +376,7 @@ export function TyreModelCard({
                     value={row.qty}
                     checked={qty === row.qty}
                     onChange={() => setQty(row.qty)}
-                    className="h-4 w-4 shrink-0 accent-[#12355b]"
+                    className="h-4 w-4 shrink-0 accent-[#3c8425]"
                   />
                   <span className="flex-1">
                     {row.qty} {row.qty === 1 ? "Tyre" : "Tyres"}
@@ -411,7 +411,7 @@ export function TyreModelCard({
                 disabled={active.stock_status === "unavailable_in_zone" || ladderLoading}
                 aria-label={`Add ${activeLabel} to cart`}
                 data-testid="quick-add"
-                className={buttonClassName({ variant: "action", size: "sm", className: "ml-auto min-w-28 !border-white/0" })}
+                className={buttonClassName({ variant: "green", size: "sm", className: "ml-auto min-w-28 !border-white/0" })}
               >
                 <AnimatePresence mode="wait" initial={false}>
                   {justAdded ? (

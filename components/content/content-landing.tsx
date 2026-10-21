@@ -38,7 +38,7 @@ export function ContentLanding({
         title={page.title}
         lead={page.excerpt ?? undefined}
         actions={
-          <Link href="/tyres" className={buttonClassName({ variant: "action" })}>
+          <Link href="/tyres" className={buttonClassName({ variant: "green" })}>
             Find your tyres
           </Link>
         }

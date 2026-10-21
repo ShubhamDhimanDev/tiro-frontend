@@ -51,7 +51,7 @@ function CartPageBody() {
           <h2 className="type-h3">Your cart is currently empty</h2>
           <p className="mt-1 text-muted">Find your tyres and we will fit them at your place.</p>
         </div>
-        <Link href="/tyres" className={buttonClassName({ variant: "action", fullWidth: true })}>
+        <Link href="/tyres" className={buttonClassName({ variant: "green", fullWidth: true })}>
           Shop tyres now
         </Link>
       </div>
@@ -83,7 +83,7 @@ function CartPageBody() {
                       {price?.promotion && (
                         <span
                           data-testid="line-promo-badge"
-                          className="mt-1 inline-flex w-fit items-center rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-semibold text-ink"
+                          className="mt-1 inline-flex w-fit items-center rounded-full bg-gold-soft px-2.5 py-0.5 text-xs font-semibold text-ink"
                         >
                           {price.promotion}
                         </span>
@@ -188,7 +188,7 @@ function CartPageBody() {
 
           {/* Wrapper hides it below lg (the sticky bar carries Checkout there); a `hidden` class on the link itself loses to the button's own `inline-flex`. */}
           <div className="hidden lg:block">
-            <Link href="/checkout" className={buttonClassName({ variant: "action", size: "lg", fullWidth: true })}>
+            <Link href="/checkout" className={buttonClassName({ variant: "green", size: "lg", fullWidth: true })}>
               Checkout
             </Link>
           </div>
@@ -214,7 +214,7 @@ function CartPageBody() {
               <p className="text-sm font-medium leading-tight text-black">Set location for prices</p>
             )}
           </div>
-          <Link href="/checkout" className={buttonClassName({ variant: "action", className: "shrink-0" })}>
+          <Link href="/checkout" className={buttonClassName({ variant: "green", className: "shrink-0" })}>
             Checkout
           </Link>
         </div>

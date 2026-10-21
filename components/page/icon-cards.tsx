@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { cx } from "@/components/ui/cx";
 
-/** Responsive grid of small cards: red icon circle, bold title, short text. */
+/** Responsive grid of small cards: yellow icon circle, bold title, short text. */
 export function IconCards({
   items,
   columns = 3,
@@ -18,7 +18,7 @@ export function IconCards({
         <li key={item.title} className="flex gap-4 rounded-card border border-line bg-surface p-5 shadow-rest">
           <span
             aria-hidden="true"
-            className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-full bg-accent text-white [&_svg]:h-6 [&_svg]:w-6"
+            className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-full bg-gold text-black [&_svg]:h-6 [&_svg]:w-6"
           >
             {item.icon}
           </span>

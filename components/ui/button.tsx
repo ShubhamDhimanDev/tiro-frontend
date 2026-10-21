@@ -2,34 +2,32 @@ import type { ButtonHTMLAttributes, ReactNode, Ref } from "react";
 import { cx } from "./cx";
 import { TyreLoader } from "./tyre-loader";
 
-export type ButtonVariant = "primary" | "action" | "accent" | "black" | "danger" | "secondary" | "inverse" | "ghost";
+export type ButtonVariant = "primary" | "green" | "yellow" | "black" | "danger" | "secondary" | "ghost" | "gold";
 export type ButtonSize = "md" | "sm" | "lg";
 
 const base =
   "inline-flex select-none items-center justify-center gap-2 rounded-control border-2 font-bold max-w-full text-center transition-colors duration-300 ease-out disabled:cursor-not-allowed disabled:border-dashed";
 
-const action =
-  "border-action bg-action text-white hover:border-action-hover hover:bg-action-hover disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text";
-const accent =
-  "border-accent bg-accent text-white hover:border-accent-hover hover:bg-accent-hover disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text";
+const green =
+  "border-green bg-green text-white hover:border-green-hover hover:bg-green-hover disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text";
+const yellow =
+  "border-gold bg-gold text-black hover:border-[#e6b900] hover:bg-[#e6b900] disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text";
 
 const variants: Record<ButtonVariant, string> = {
-  // Primary action: deep navy ("Find tyres", "Add to cart"). `primary` is the alias most call sites use.
-  primary: action,
-  action,
-  // Brand red: header CTA, subscribe, confirm. White text (4.87:1); black on this red would be only 4.3:1.
-  accent,
+  // Primary action: green ("Find tyres", "Add to cart").
+  primary: green,
+  green,
+  // Brand yellow: header CTA, subscribe, confirm.
+  yellow,
+  gold: yellow,
   black:
     "border-black bg-black text-white hover:border-[#333] hover:bg-[#333] disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text",
-  // Destructive: black (red is the brand accent, so it never means "danger").
+  // Destructive: black (the palette has no red).
   danger:
     "border-black bg-black text-white hover:border-[#333] hover:bg-[#333] disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text",
   // Black outline.
   secondary:
     "border-black bg-transparent text-black hover:bg-black hover:text-white disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text disabled:hover:bg-disabled-bg",
-  // White outline: for use ON a red or black surface, where the black outline of `secondary` would vanish or fail contrast.
-  inverse:
-    "border-white bg-transparent text-white hover:bg-white hover:text-accent disabled:border-disabled-border disabled:bg-disabled-bg disabled:text-disabled-text disabled:hover:bg-disabled-bg",
   ghost: "border-transparent bg-transparent text-black hover:bg-chip disabled:text-disabled-text disabled:hover:bg-transparent",
 };
 

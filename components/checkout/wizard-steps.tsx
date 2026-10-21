@@ -140,7 +140,7 @@ export function StepDetails({
       </div>
 
       <label className="flex min-h-11 cursor-pointer items-start gap-3 text-sm text-black">
-        <input type="checkbox" checked={details.newsletter} onChange={(e) => set({ newsletter: e.target.checked })} className="mt-0.5 h-5 w-5 shrink-0 accent-action" />
+        <input type="checkbox" checked={details.newsletter} onChange={(e) => set({ newsletter: e.target.checked })} className="mt-0.5 h-5 w-5 shrink-0 accent-green" />
         Sign me up to receive email updates and news (optional)
       </label>
 
@@ -262,7 +262,7 @@ export function StepTyres({
                 key={w.key}
                 className={cx(
                   "flex min-h-12 cursor-pointer items-center gap-3 rounded-control border-2 px-3 text-sm font-bold has-[:focus-visible]:outline has-[:focus-visible]:outline-[3px] has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-black",
-                  on ? "border-black bg-accent text-white" : "border-line bg-surface hover:border-black",
+                  on ? "border-black bg-gold" : "border-line bg-surface hover:border-black",
                 )}
               >
                 <input type="checkbox" checked={on} onChange={() => toggleWheel(w.key)} className="h-5 w-5 shrink-0 accent-black" />

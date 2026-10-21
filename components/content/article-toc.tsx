@@ -11,7 +11,7 @@ export function ArticleToc({ entries }: { entries: TocEntry[] }) {
           <li key={entry.id}>
             <a
               href={`#${entry.id}`}
-              className={`-ml-px block border-l-2 border-transparent py-1.5 pr-2 leading-snug text-muted hover:border-accent hover:text-ink ${
+              className={`-ml-px block border-l-2 border-transparent py-1.5 pr-2 leading-snug text-muted hover:border-gold hover:text-ink ${
                 entry.level === 3 ? "pl-7" : "pl-4"
               }`}
             >

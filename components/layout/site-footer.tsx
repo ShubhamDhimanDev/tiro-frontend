@@ -9,12 +9,12 @@ import { HOURS_LINE, PHONE_DISPLAY, PHONE_HREF, SITE_NAME } from "@/lib/site/con
 
 /**
  * Site footer (design v2): a black contact bar, then the dark (#242424)
- * footer with red column headings. Columns collapse to accordions below
+ * footer with yellow column headings. Columns collapse to accordions below
  * 768px. Every link points at a real route. There is no newsletter surface
  * here: the home page carries the single signup (no endpoint yet).
  */
 const linkClass =
-  "flex min-h-11 items-center text-[15px] text-white transition-colors duration-300 hover:text-accent-light";
+  "flex min-h-11 items-center text-[15px] text-white transition-colors duration-300 hover:text-gold";
 
 function LinkList({ links }: { links: { href: string; label: string }[] }): ReactNode {
   return (
@@ -79,8 +79,8 @@ export async function SiteFooter() {
       heading: "Contact",
       body: (
         <div>
-          <a href={PHONE_HREF} className="type-mono flex min-h-11 items-center gap-2 text-base font-bold text-white hover:text-accent-light">
-            <PhoneIcon className="h-5 w-5 text-accent-light" />
+          <a href={PHONE_HREF} className="type-mono flex min-h-11 items-center gap-2 text-base font-bold text-white hover:text-gold">
+            <PhoneIcon className="h-5 w-5 text-gold" />
             {PHONE_DISPLAY}
           </a>
           <p className="mb-2 text-sm text-footer-muted">{HOURS_LINE}</p>
@@ -117,7 +117,7 @@ export async function SiteFooter() {
             </Link>
             <a
               href={PHONE_HREF}
-              className="flex min-h-12 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-control border-2 border-accent bg-accent px-5 text-[15px] font-bold text-white transition-colors duration-300 hover:border-accent-hover hover:bg-accent-hover md:flex-none"
+              className="flex min-h-12 flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-control border-2 border-gold bg-gold px-5 text-[15px] font-bold text-black transition-colors duration-300 hover:border-[#e6b900] hover:bg-[#e6b900] md:flex-none"
             >
               <PhoneIcon className="h-5 w-5" />
               Call
@@ -173,7 +173,7 @@ export async function SiteFooter() {
                   <a
                     href="#"
                     aria-label={`${SITE_NAME} on ${label}`}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 text-white transition-colors duration-300 hover:border-accent hover:text-accent-light"
+                    className="flex h-11 w-11 items-center justify-center rounded-full border border-white/25 text-white transition-colors duration-300 hover:border-gold hover:text-gold"
                   >
                     <Icon className="h-5 w-5" />
                   </a>

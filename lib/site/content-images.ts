@@ -67,7 +67,7 @@ export const CONTENT_IMAGES = {
   // Homepage sections
   "home-how-it-works": img("/images/home/how-it-works-van-driveway.webp", 1200, 896, "A Tiro technician fitting a new tyre on a customer's driveway beside the van"),
   "home-deals-online": img("/images/home/deals-online-phones.webp", 1024, 1024, "Two smartphones showing a tyre product page and the 4 for 3 quantity picker"),
-  "home-newsletter": img("/images/home/newsletter-tyre.webp", 1024, 1024, "A new tyre lit with a red rim glow on a dark background"),
+  "home-newsletter": img("/images/home/newsletter-tyre.webp", 1024, 1024, "A new tyre lit with a yellow rim glow on a dark background"),
   // Offers hub bands (4:3)
   "offers-latest": img("/images/offers/offers-latest.webp", 1200, 900, "A set of four new tyres with a blank promotional tag"),
   "offers-price-guarantee": img("/images/offers/offers-price-guarantee.webp", 1200, 900, "A technician giving a thumbs up beside a tyre"),

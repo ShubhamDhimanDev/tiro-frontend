@@ -36,12 +36,12 @@ export function InfoPage({ page, reviews, extra }: { page: InfoPageContent; revi
         actions={
           <>
             {page.primaryCta && (
-              <Link href={page.primaryCta.href} className={buttonClassName({ variant: "action" })}>
+              <Link href={page.primaryCta.href} className={buttonClassName({ variant: "green" })}>
                 {page.primaryCta.label}
               </Link>
             )}
             {page.secondaryCta && (
-              <Link href={page.secondaryCta.href} className={buttonClassName({ variant: "accent" })}>
+              <Link href={page.secondaryCta.href} className={buttonClassName({ variant: "yellow" })}>
                 {page.secondaryCta.label}
               </Link>
             )}
@@ -68,7 +68,7 @@ export function InfoPage({ page, reviews, extra }: { page: InfoPageContent; revi
             <ul className="mt-1 flex flex-col gap-2 text-base text-black">
               {s.bullets.map((b) => (
                 <li key={b} className="flex items-start gap-3">
-                  <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+                  <span aria-hidden="true" className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold text-black">
                     <CheckIcon className="h-3.5 w-3.5" strokeWidth={3} />
                   </span>
                   <span className="font-medium">{b}</span>

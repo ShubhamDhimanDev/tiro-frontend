@@ -38,10 +38,10 @@ export default async function ServicesPage() {
         lead="From a new set to a quick puncture repair, our technicians bring the equipment to your home or workplace."
         actions={
           <>
-            <Link href="/tyres" className={buttonClassName({ variant: "action" })}>
+            <Link href="/tyres" className={buttonClassName({ variant: "green" })}>
               Search tyres
             </Link>
-            <Link href="/booking" className={buttonClassName({ variant: "accent" })}>
+            <Link href="/booking" className={buttonClassName({ variant: "yellow" })}>
               Book a fitting
             </Link>
           </>

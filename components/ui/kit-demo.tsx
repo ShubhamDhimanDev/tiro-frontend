@@ -15,9 +15,9 @@ import { TyreLoader } from "@/components/ui/tyre-loader";
 import { Tabs } from "@/components/ui/tabs";
 
 const SWATCHES = [
-  ["accent", "bg-accent text-white", "#DA291C"],
-  ["action", "bg-action text-white", "#12355B"],
-  ["accent-soft (notice wash)", "bg-accent-soft text-black", "#FDECEA"],
+  ["gold", "bg-gold text-black", "#FFCE00"],
+  ["green", "bg-green text-white", "#3C8425"],
+  ["gold-soft (warning wash)", "bg-gold-soft text-black", "#FFF4BF"],
   ["ink", "bg-black text-white", "#000000"],
   ["footer", "bg-footer text-white", "#242424"],
   ["band", "bg-band text-black border border-line", "#F8F8F8"],
@@ -62,8 +62,8 @@ export function KitDemo() {
       <section aria-labelledby="k-btn" className="flex flex-col gap-3">
         <h2 id="k-btn" className="type-h2">Buttons</h2>
         <div className="flex flex-wrap gap-3">
-          <Button variant="action">Find tyres</Button>
-          <Button variant="accent">Search tyres</Button>
+          <Button variant="green">Find tyres</Button>
+          <Button variant="yellow">Search tyres</Button>
           <Button variant="black">Checkout</Button>
           <Button variant="danger">Delete</Button>
           <Button variant="secondary">Secondary</Button>
@@ -112,8 +112,8 @@ export function KitDemo() {
           <TierBadge tier="premium" />
           <TierBadge tier="mid" />
           <TierBadge tier="budget" />
-          <Badge tone="action">4 for 3</Badge>
-          <Badge tone="accent">Ends soon</Badge>
+          <Badge tone="green">4 for 3</Badge>
+          <Badge tone="gold">Ends soon</Badge>
           <Badge tone="warning">Warning</Badge>
           <Badge tone="danger">Payment failed</Badge>
           <Chip>Low noise</Chip>

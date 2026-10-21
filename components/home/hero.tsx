@@ -8,7 +8,7 @@ function UspLine() {
   const phrases = ["tyre fitting wherever you are", "delivery to your door", "wheel balancing", "tyre fitting wherever you are"];
   return (
     <div id="usp-line" className="flex items-start gap-2 md:items-center text-[15px] font-bold text-black">
-      <span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+      <span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold">
         <CheckIcon className="h-3.5 w-3.5" strokeWidth={3} />
       </span>
       <span className="sr-only">Free tyre fitting, delivery and wheel balancing</span>

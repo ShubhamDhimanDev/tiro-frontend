@@ -187,15 +187,15 @@ export function FittingDateStrip({
                   disabled={disabled}
                   onClick={() => pickDate(d.iso)}
                   className={cx(
-                    "relative flex h-16 w-full flex-col items-center justify-center",
-                    !ready ? "animate-pulse bg-chip text-black" : disabled ? "bg-[#6b6b6b] text-white" : isSelected ? "bg-accent text-white" : "bg-surface text-black hover:bg-accent-soft",
+                    "relative flex h-16 w-full flex-col items-center justify-center text-black",
+                    !ready ? "animate-pulse bg-chip" : disabled ? "bg-[#6b6b6b] text-white" : isSelected ? "bg-gold" : "bg-surface hover:bg-gold-soft",
                   )}
                 >
                   <span className="text-lg font-semibold leading-none">{d.day}</span>
                   <span className="mt-1 text-[11px]">{d.month}</span>
                   {ready && info.open && (info.flexible || info.lastSlot) && (
                     <span className="absolute right-1 top-1 flex gap-0.5" aria-hidden="true">
-                      {info.flexible && <span className="h-2.5 w-2.5 rounded-full bg-success" />}
+                      {info.flexible && <span className="h-2.5 w-2.5 rounded-full bg-green" />}
                       {info.lastSlot && <span className="h-2.5 w-2.5 rounded-full bg-black" />}
                     </span>
                   )}
@@ -207,7 +207,7 @@ export function FittingDateStrip({
       </div>
       <p className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-black">
         <span className="inline-flex items-center gap-1.5">
-          <span aria-hidden="true" className="h-3 w-3 rounded-full bg-success" />
+          <span aria-hidden="true" className="h-3 w-3 rounded-full bg-green" />
           Flexible booking discount
         </span>
         <span className="inline-flex items-center gap-1.5">
@@ -253,7 +253,7 @@ export function FittingDateStrip({
                           className={cx(
                             "flex min-h-[48px] cursor-pointer items-center justify-center rounded-control border-2 px-2 py-2 text-sm font-bold",
                             PEER_FOCUS,
-                            on ? "border-black bg-accent text-white" : "border-line bg-surface hover:border-black",
+                            on ? "border-black bg-gold" : "border-line bg-surface hover:border-black",
                           )}
                         >
                           <input
@@ -278,13 +278,13 @@ export function FittingDateStrip({
                 className={cx(
                   "flex min-h-[64px] cursor-pointer flex-col justify-center rounded-control border-2 px-3 py-2 text-sm",
                   PEER_FOCUS,
-                  flexSelected ? "border-black bg-accent text-white" : "border-line bg-surface hover:border-black",
+                  flexSelected ? "border-black bg-gold" : "border-line bg-surface hover:border-black",
                 )}
               >
                 <input type="radio" name={`${id}-time`} value="flexible" checked={flexSelected} onChange={pickFlexible} className="sr-only" />
                 <span className="font-bold">
                   I&apos;m flexible
-                  <span className="ml-1 text-xs font-bold text-success">-{formatMoney(flexOffer.discount_cents)}*</span>
+                  <span className="ml-1 text-xs font-bold text-green">-{formatMoney(flexOffer.discount_cents)}*</span>
                 </span>
                 <span className="text-xs">
                   anytime between {formatClock(selected.flexible.window_start)} and {formatClock(selected.flexible.window_end)}

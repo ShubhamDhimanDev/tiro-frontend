@@ -30,11 +30,11 @@ export function LocationSheet() {
         {/* Placeholder illustration: replace with a real map/van image. */}
         <div
           aria-hidden="true"
-          className="relative hidden flex-col items-center justify-center gap-4 bg-accent p-8 text-white md:flex"
+          className="relative hidden flex-col items-center justify-center gap-4 bg-gold p-8 text-black md:flex"
         >
           <div className="relative flex h-40 w-40 items-center justify-center rounded-full bg-white/60">
-            <PinIcon className="h-24 w-24 text-accent" strokeWidth={1.5} />
-            <span className="absolute -bottom-2 -right-4 flex h-16 w-16 items-center justify-center rounded-full bg-black text-accent">
+            <PinIcon className="h-24 w-24" strokeWidth={1.5} />
+            <span className="absolute -bottom-2 -right-4 flex h-16 w-16 items-center justify-center rounded-full bg-black text-gold">
               <TruckIcon className="h-9 w-9" />
             </span>
           </div>

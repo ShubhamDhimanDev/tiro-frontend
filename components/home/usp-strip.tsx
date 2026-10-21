@@ -19,7 +19,7 @@ export function UspStrip({ summary = null }: { summary?: ReviewsSummary | null }
       >
         {POINTS.map(({ label, note, Icon }) => (
           <div key={label} className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold text-black">
               <Icon className="h-5 w-5" />
             </span>
             <span className="flex flex-col">
@@ -30,7 +30,7 @@ export function UspStrip({ summary = null }: { summary?: ReviewsSummary | null }
         ))}
         {summary && (
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black text-white">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black text-gold">
               <StarIcon className="h-5 w-5 fill-current" />
             </span>
             <span className="flex flex-col">

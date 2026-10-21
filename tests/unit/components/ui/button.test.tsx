@@ -22,13 +22,13 @@ describe("Button", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
-  it("uses the action (navy) token for primary and black for secondary", () => {
+  it("uses the green token for primary and black for secondary", () => {
     const { rerender } = render(<Button>A</Button>);
-    expect(screen.getByRole("button")).toHaveClass("bg-action", "min-h-12");
+    expect(screen.getByRole("button")).toHaveClass("bg-green", "min-h-12");
     rerender(<Button variant="secondary">A</Button>);
     expect(screen.getByRole("button")).toHaveClass("border-black");
-    rerender(<Button variant="accent">A</Button>);
-    expect(screen.getByRole("button")).toHaveClass("bg-accent");
+    rerender(<Button variant="gold">A</Button>);
+    expect(screen.getByRole("button")).toHaveClass("bg-gold");
   });
 
   it("sm is 44px on touch (40px md+), md is 48px", () => {

@@ -121,7 +121,7 @@ export default async function HelpCentrePage() {
           <aside aria-label="Contact us" className="flex flex-col gap-3 rounded-card bg-surface p-5 text-black shadow-raised md:p-6">
             <p className="type-h3">Talk to a person</p>
             <p className="text-muted">{HOURS_LINE}</p>
-            <a href={PHONE_HREF} className={buttonClassName({ variant: "action", fullWidth: true })}>
+            <a href={PHONE_HREF} className={buttonClassName({ variant: "green", fullWidth: true })}>
               <PhoneIcon aria-hidden="true" className="h-5 w-5" />
               {PHONE_DISPLAY}
             </a>
@@ -143,7 +143,7 @@ export default async function HelpCentrePage() {
                 href={href}
                 className="group flex h-full flex-col items-start gap-3 rounded-card border border-line bg-surface p-5 shadow-rest transition-shadow hover:shadow-raised"
               >
-                <span aria-hidden="true" className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-full bg-accent text-white">
+                <span aria-hidden="true" className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-full bg-gold text-black">
                   <Icon className="h-6 w-6" />
                 </span>
                 <span className="flex min-w-0 flex-col gap-0.5">

@@ -25,7 +25,7 @@ export function Steps({ steps, label, className }: { steps: Step[]; label: strin
           className={cx(
             "flex min-w-0 flex-col gap-1 border-t-4 pt-2 transition-colors duration-300",
             step.state === "done" && "border-ink",
-            step.state === "current" && "border-accent",
+            step.state === "current" && "border-gold",
             step.state === "todo" && "border-line",
           )}
         >

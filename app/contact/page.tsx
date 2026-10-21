@@ -45,7 +45,7 @@ export default function ContactPage() {
         }
         lead="Send us a message, ask for a quote on a tyre you cannot find, or tell us about your fleet. The quickest way is still a phone call."
         actions={
-          <a href={PHONE_HREF} className={buttonClassName({ variant: "accent" })}>
+          <a href={PHONE_HREF} className={buttonClassName({ variant: "yellow" })}>
             <PhoneIcon aria-hidden="true" className="h-5 w-5" />
             {PHONE_DISPLAY}
           </a>
@@ -87,11 +87,11 @@ export default function ContactPage() {
 
         <aside className="flex flex-col gap-6">
           <section aria-labelledby="call-heading" className="flex flex-col gap-3 rounded-card bg-ink p-6 text-white">
-            <h2 id="call-heading" className="type-eyebrow font-bold uppercase text-accent-light">
+            <h2 id="call-heading" className="type-eyebrow font-bold uppercase text-gold">
               Call us
             </h2>
-            <a href={PHONE_HREF} className="type-mono inline-flex min-h-11 items-center gap-3 text-2xl font-bold hover:text-accent-light">
-              <PhoneIcon className="h-6 w-6 text-accent-light" />
+            <a href={PHONE_HREF} className="type-mono inline-flex min-h-11 items-center gap-3 text-2xl font-bold hover:text-gold">
+              <PhoneIcon className="h-6 w-6 text-gold" />
               {PHONE_DISPLAY}
             </a>
             <p className="text-footer-muted">{HOURS_LINE}</p>
@@ -103,7 +103,7 @@ export default function ContactPage() {
             <ul className="flex flex-col gap-1">
               {LINKS.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="flex min-h-11 items-center font-bold text-black underline decoration-accent decoration-[3px] underline-offset-4 hover:text-muted">
+                  <Link href={l.href} className="flex min-h-11 items-center font-bold text-black underline decoration-gold decoration-[3px] underline-offset-4 hover:text-muted">
                     {l.label}
                   </Link>
                 </li>
@@ -125,7 +125,7 @@ export default function ContactPage() {
             </p>
             <p className="text-muted">
               If your suburb is not on our list yet, leave your details and we will tell you the day we start fitting tyres near you. Not sure if
-              you are covered? <Link href="/locations" className="inline-flex min-h-11 items-center font-bold text-black underline decoration-accent decoration-[3px] underline-offset-4">Check the locations page</Link>.
+              you are covered? <Link href="/locations" className="inline-flex min-h-11 items-center font-bold text-black underline decoration-gold decoration-[3px] underline-offset-4">Check the locations page</Link>.
             </p>
             <p className="flex items-center gap-2 text-sm text-muted">
               <HelpIcon aria-hidden="true" className="h-4 w-4" />

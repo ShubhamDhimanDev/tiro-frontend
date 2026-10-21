@@ -49,7 +49,7 @@ export function StripePaymentStep({
         appearance: {
           theme: "stripe",
           variables: {
-            colorPrimary: "#12355b",
+            colorPrimary: "#3c8425",
             colorText: "#14110b",
             colorDanger: "#000000",
             borderRadius: "8px",

@@ -220,7 +220,7 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
       <div className="container-page max-w-lg py-16 text-center">
         <h2 className="type-h2">Your cart is empty</h2>
         <p className="mt-2 text-muted">Add tyres to your cart to choose a fitting time.</p>
-        <Link href="/tyres" className={buttonClassName({ variant: "action", className: "mt-6" })}>
+        <Link href="/tyres" className={buttonClassName({ variant: "green", className: "mt-6" })}>
           Shop tyres now
         </Link>
       </div>
@@ -424,7 +424,7 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
             <div className="flex shrink-0 items-center gap-3">
               {shownTotal !== undefined && (
                 <>
-                  <CartIcon aria-hidden="true" className="h-6 w-6 text-accent" />
+                  <CartIcon aria-hidden="true" className="h-6 w-6 text-gold" />
                   <span data-testid="wizard-total" className="type-mono text-lg font-extrabold">
                     {formatMoney(shownTotal)}
                   </span>
@@ -451,7 +451,7 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
               ))}
             </ol>
             <div className="h-1 rounded-full bg-line md:mt-2" aria-hidden="true">
-              <div className="h-1 rounded-full bg-accent transition-all duration-300" style={{ width: `${((step + 1) / WIZARD_STEPS.length) * 100}%` }} />
+              <div className="h-1 rounded-full bg-gold transition-all duration-300" style={{ width: `${((step + 1) / WIZARD_STEPS.length) * 100}%` }} />
             </div>
             {hold && step > 0 && !holdExpired && hold.record.hold_expires_at && !order && (
               <div data-testid="wizard-hold" className="mt-2 rounded-control bg-band px-3 py-1.5 text-sm md:mt-3 md:py-2">
@@ -474,7 +474,7 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
             )}
             {!lastStep ? (
               <Button
-                variant="action"
+                variant="green"
                 onClick={next}
                 loading={holdBusy || matching}
                 disabled={(step === 0 && holdServiceDown) || matching}
@@ -484,7 +484,7 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
                 {holdBusy ? "Holding time" : matching ? "Matching address" : "Next"}
               </Button>
             ) : !order ? (
-              <Button variant="action" onClick={placeOrder} loading={submitting} className="min-w-44" data-testid="wizard-complete">
+              <Button variant="green" onClick={placeOrder} loading={submitting} className="min-w-44" data-testid="wizard-complete">
                 {submitting ? "Placing order" : "Place order and pay"}
               </Button>
             ) : null}
@@ -494,7 +494,7 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
     >
       <div ref={bodyRef}>
         {holdExpired ? (
-          <div role="alert" data-testid="hold-expired" className="flex flex-col items-start gap-4 rounded-card border-[3px] border-black bg-accent-soft p-4">
+          <div role="alert" data-testid="hold-expired" className="flex flex-col items-start gap-4 rounded-card border-[3px] border-black bg-gold-soft p-4">
             <div>
               <h3 className="type-h3 flex items-center gap-2">
                 <AlertIcon aria-hidden="true" className="h-6 w-6 shrink-0" />
@@ -505,7 +505,7 @@ export function CheckoutWizard({ resumeBookingId = null }: { resumeBookingId?: n
                 continue.
               </p>
             </div>
-            <Button variant="action" onClick={pickAnotherTime}>
+            <Button variant="green" onClick={pickAnotherTime}>
               Pick another time
             </Button>
           </div>

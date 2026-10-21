@@ -53,7 +53,7 @@ export function Newsletter() {
           {photo.src ? (
             <Image src={photo.src} alt="" fill sizes="(min-width: 1024px) 42vw, 45vw" className="object-cover" />
           ) : (
-            <TyreIcon className="h-28 w-28 text-accent" strokeWidth={1.2} />
+            <TyreIcon className="h-28 w-28 text-gold" strokeWidth={1.2} />
           )}
         </div>
         <div className="flex flex-col gap-4 p-6 md:p-10">
@@ -97,7 +97,7 @@ export function Newsletter() {
                   {banner}
                 </p>
               )}
-              <Button type="submit" variant="action" fullWidth loading={busy}>
+              <Button type="submit" variant="green" fullWidth loading={busy}>
                 {busy ? "Subscribing" : "Subscribe"}
               </Button>
               <p className="text-xs text-muted">We only email you if you subscribe. Unsubscribe any time.</p>
