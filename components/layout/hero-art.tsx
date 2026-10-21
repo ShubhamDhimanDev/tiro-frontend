@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { cx } from "@/components/ui/cx";
 import { HERO_IMAGES } from "@/lib/site/images";
 
 /** 1x1 transparent GIF. The desktop `<img>` below uses it as its own `src` so phones never download the real photo. */
@@ -13,11 +14,15 @@ const BLANK_PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAAL
  * - Phones and small tablets: nothing by default, so the finder stays the first thing on screen. The home hero passes
  *   `mobile` to show the square van photo as a banner below the finder instead.
  *
+ * - `bleed` (home hero only): on desktop the photo is not a rounded card in the grid but fills the right of the section edge to
+ *   edge, with a white fade on its left side so the headline stays readable over any photo. The parent section must be
+ *   `relative overflow-hidden`. Ignored while there is no photo (the SVG fallback has no bleed form). `PageHero` never sets it.
+ *
  * The desktop photo sits in a `<picture>` whose only real source is gated by `min-width: 992px`; the `<img>` itself is a
  * blank pixel. A plain `<img src>` in a `hidden lg:block` wrapper is still fetched on phones, and because it is eager the
  * home page's prefetched data also made every other page preload it (191KB on /cart, /login, ...).
  */
-export function HeroArt({ mobile = false }: { mobile?: boolean }) {
+export function HeroArt({ mobile = false, bleed = false }: { mobile?: boolean; bleed?: boolean }) {
   const photo = HERO_IMAGES.desktop;
   const mobilePhoto = mobile ? HERO_IMAGES.mobile : null;
   if (photo) {
@@ -28,11 +33,18 @@ export function HeroArt({ mobile = false }: { mobile?: boolean }) {
             <Image src={mobilePhoto.src} alt={mobilePhoto.alt} fill sizes="(min-width: 768px) 720px, 100vw" className="object-cover object-[50%_70%]" />
           </div>
         )}
-        <div className="relative hidden h-full min-h-[420px] lg:block">
+        <div className={bleed ? "absolute inset-y-0 right-0 hidden w-[56%] lg:block" : "relative hidden h-full min-h-[420px] lg:block"}>
           <picture>
             <source media="(min-width: 992px)" srcSet={photo.src} width={photo.width} height={photo.height} />
-            <img src={BLANK_PIXEL} width={photo.width} height={photo.height} alt={photo.alt} className="absolute inset-0 h-full w-full rounded-sheet object-cover object-[35%_50%]" />
+            <img
+              src={BLANK_PIXEL}
+              width={photo.width}
+              height={photo.height}
+              alt={photo.alt}
+              className={cx("absolute inset-0 h-full w-full object-cover object-[35%_50%]", !bleed && "rounded-sheet")}
+            />
           </picture>
+          {bleed && <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-gradient-to-r from-surface from-0% via-surface/60 via-25% to-transparent to-55%" />}
         </div>
       </>
     );

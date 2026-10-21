@@ -6,7 +6,8 @@ import { describe, expect, it } from "vitest";
  * Palette guard (user rule 2026-10-01, amended 2026-10-05, theme changed twice on 2026-10-13): the
  * storefront uses the brand red #DA291C (the `accent` token; the logo artwork stays #FF0000),
  * deep navy #12355B (the `action` partner colour, hover #0B2545), white, black, neutral greys, a status
- * green #167A4B (`success`: in stock / success only, never a button) and ONE semantic error colour,
+ * green #167A4B (`success`: in stock / success only, never a button; the one exception, 2026-10-21, is the
+ * named `whatsapp` token for the top bar's WhatsApp button) and ONE semantic error colour,
  * the danger token (--c-danger #b3261e, used via text-danger / border-danger / bg-danger-soft) for
  * error states only. Yellow/gold (the retired brand colour), the retired `green` button colour, raw Tailwind
  * red / rose / orange / amber / blue families, the retired alias tokens and the legacy red/blue
@@ -52,7 +53,10 @@ const FORBIDDEN: [string, RegExp][] = [
 ];
 
 describe("palette guard", () => {
-  it("allows the danger token utilities (they are not a forbidden family)", () => {
+  it("allows the danger and whatsapp token utilities (they are not a forbidden family)", () => {
+    for (const cls of ["bg-whatsapp", "hover:bg-whatsapp-hover"]) {
+      expect(FORBIDDEN.some(([, re]) => re.test(cls))).toBe(false);
+    }
     for (const cls of ["text-danger", "border-danger", "bg-danger-soft"]) {
       expect(FORBIDDEN.some(([, re]) => re.test(cls))).toBe(false);
     }
@@ -62,6 +66,22 @@ describe("palette guard", () => {
 
   it("scans a meaningful number of sources", () => {
     expect(files.length).toBeGreaterThan(100);
+  });
+
+  // 2026-10-21 exception: the named `whatsapp` token is the one green button, and only the top bar may use it.
+  it("uses the whatsapp token only in components/layout/top-bar.tsx", () => {
+    const re = new RegExp(String.raw`\b(?:${UTIL})-whatsapp`);
+    const allowed = path.join("components", "layout", "top-bar.tsx");
+    const hits: string[] = [];
+    for (const f of files) {
+      if (f.endsWith(allowed)) continue;
+      readFileSync(f, "utf8")
+        .split("\n")
+        .forEach((line, i) => {
+          if (re.test(line)) hits.push(`${path.relative(ROOT, f)}:${i + 1}: ${line.trim().slice(0, 120)}`);
+        });
+    }
+    expect(hits).toEqual([]);
   });
 
   for (const [label, re] of FORBIDDEN) {
@@ -135,6 +155,12 @@ describe("palette contrast (see the comment at the top of app/globals.css)", () 
 
   it("keeps the navy well apart from the red in lightness, so a navy and a red button never read as one colour", () => {
     expect(contrast(action, accent)).toBeGreaterThanOrEqual(2);
+  });
+
+  it("keeps white text on the WhatsApp green fill and on its darker hover at AA", () => {
+    expect(contrast("#ffffff", token("--c-whatsapp"))).toBeGreaterThanOrEqual(4.5);
+    expect(contrast("#ffffff", token("--c-whatsapp-hover"))).toBeGreaterThanOrEqual(4.5);
+    expect(luminance(token("--c-whatsapp-hover"))).toBeLessThan(luminance(token("--c-whatsapp")));
   });
 
   it("keeps the status green readable as text on white (it is never a fill)", () => {

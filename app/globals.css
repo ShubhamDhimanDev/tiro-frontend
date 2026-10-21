@@ -13,7 +13,7 @@
  * was flat neon red), so the UI red is now a warmer, deeper one and text on it is white. The logo
  * files (public/brand/*.png, favicon) are the client's artwork and stay #FF0000.
  *
- *   Red    #DA291C  brand accent: header CTA, brands band, tab underline, focus halo, icon circles
+ *   Red    #DA291C  brand accent: header CTA, tab underline, focus halo, icon circles, trust-strip and vehicle-band icons
  *   Navy   #12355B  the PARTNER colour (token `action`): primary CTA ("Find tyres", "Add to cart"), "4 for 3" /
  *                   savings tiles and badges, "from $" prices, mid-range tier, checkboxes. White on it 12.5:1.
  *                   Chosen in docs/color-review/PARTNER-COLOURS.md: split-complement of the red, a very different
@@ -21,6 +21,9 @@
  *                   clearly distinct from red for red-green colour-blind visitors (colour distance 90+ vs 17-18).
  *   Green  #167A4B  STATUS only (token `success`): "In stock", location confirmed, flexible-booking dots, success
  *                   text. Never a button or tile fill.
+ *   WhatsApp #167A4B  (token `whatsapp`, hover #0F6A3E) the ONE green button, 2026-10-21 exception: the top bar's
+ *                   "Book via WhatsApp" only (white on it 5.36:1, hover higher). Same value as `success`, but a separate
+ *                   named token so the palette guard keeps rejecting any generic green class and nothing else borrows it.
  *   Black  #000     nav, premium tier, fills, links; body text #212529
  *   White + neutral greys for surfaces, lines and secondary text.
  *
@@ -76,6 +79,8 @@
   --c-muted: #4e535a; /* secondary text, ~7.6:1 on white, ~7:1 on --c-chip */
   --c-link: #000000; /* links on light surfaces: black, underlined, red hover */
   --c-success: #167a4b; /* status green: in stock, location set, success TEXT (5.36:1 on white). Not a button colour */
+  --c-whatsapp: #167a4b; /* "Book via WhatsApp" button fill (top bar only). White on it 5.36:1 */
+  --c-whatsapp-hover: #0f6a3e; /* hover fill: darker, white keeps higher contrast */
   --c-danger: #b3261e; /* error TEXT/border/icon: 6.6:1 on white, 5.9:1 on --c-danger-soft. Never the only cue (keep icon + text). */
   --c-danger-soft: #fdeceb; /* error wash */
   --c-disabled-bg: #f1f1f1; /* disabled controls: light fill + 4.5:1 border + dark-grey text, so they read as disabled but not hidden */
@@ -135,6 +140,8 @@
   --color-muted: var(--c-muted);
   --color-link: var(--c-link);
   --color-success: var(--c-success);
+  --color-whatsapp: var(--c-whatsapp);
+  --color-whatsapp-hover: var(--c-whatsapp-hover);
   --color-warning: var(--c-warning);
   --color-danger: var(--c-danger);
   --color-danger-soft: var(--c-danger-soft);
@@ -329,54 +336,10 @@
   display: none;
 }
 
-/* Brands band marquee. Frozen for reduced motion by the global override. */
-@keyframes tiro-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-@media (min-width: 768px) {
-  .marquee-track {
-    animation: tiro-marquee 40s linear infinite;
-    width: max-content;
-  }
-  .marquee-fade {
-    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
-  }
-}
 /* Pause control (components/ui/motion-pause-button.tsx). */
 [data-paused="true"] *,
 [data-paused="true"] {
   animation-play-state: paused !important;
-}
-.marquee-track:hover {
-  animation-play-state: paused;
-}
-
-/* Rotating USP line: one phrase visible at a time, clipped by its box. */
-@keyframes tiro-usp {
-  0%,
-  28% {
-    transform: translateY(0);
-  }
-  33%,
-  61% {
-    transform: translateY(-100%);
-  }
-  66%,
-  94% {
-    transform: translateY(-200%);
-  }
-  100% {
-    transform: translateY(-300%);
-  }
-}
-.usp-rotator > span {
-  display: block;
-  animation: tiro-usp 12s ease-in-out infinite;
 }
 
 /* Decorative hero art entrance (the heading and finder are never animated: LCP). */

@@ -132,17 +132,22 @@ export function FinderLocation() {
  * vehicle" | "Search by rego" (rego only when the feature flag is on). Size
  * embeds the existing `TyreSearchForm` in finder style (staggered fitment
  * stays behind its checkbox); vehicle hands off to the make/model/year picker
- * at /tyres/by-vehicle. Visual spec: white card, 10px radius, 32px padding.
+ * at /tyres/by-vehicle. Visual spec: white card, 10px radius, 32px padding. A "Need help?" link
+ * (to /help) sits at the right of the tab row from md up. `showLocation={false}` drops the suburb
+ * chip: the home hero does that (the header location pill already captures the suburb), city pages keep it.
  */
 export function HeroFinder({
   regoEnabled = false,
   lookupRego,
   defaultRegoState,
+  showLocation = true,
 }: {
   regoEnabled?: boolean;
   lookupRego?: RegoLookup;
   /** Pre-select this state (e.g. "VIC") in the Rego tab. Used on city pages. */
   defaultRegoState?: string;
+  /** Show the suburb chip under the form. Defaults to true; the home hero turns it off. */
+  showLocation?: boolean;
 }) {
   const [active, setActive] = useState<TabKey>("size");
   const tabs: { key: TabKey; label: string; panel: React.ReactNode }[] = [
@@ -177,10 +182,17 @@ export function HeroFinder({
         activeKey={active}
         onChange={(k) => setActive(k as TabKey)}
         panelClassName="pt-5"
+        trailing={
+          <Link href="/help" className="hidden min-h-11 items-center px-2 text-sm font-bold text-link underline decoration-accent underline-offset-4 hover:bg-accent hover:text-white md:flex">
+            Need help?
+          </Link>
+        }
       />
-      <div className="mt-4">
-        <FinderLocation />
-      </div>
+      {showLocation && (
+        <div className="mt-4">
+          <FinderLocation />
+        </div>
+      )}
     </div>
   );
 }
