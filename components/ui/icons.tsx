@@ -197,6 +197,37 @@ export const YoutubeIcon = (p: SVGProps<SVGSVGElement>) => (
     <path d="M10 9.5v5l4.5-2.5-4.5-2.5z" />
   </Icon>
 );
+export const WhatsAppIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M3.5 20.5l1.3-4.3A8.5 8.5 0 1 1 8 19.3l-4.5 1.2z" />
+    <path d="M9.3 8.8c-.3.7-.2 1.7.9 3.2 1.1 1.5 2.4 2.3 3.4 2.5.8.1 1.4-.4 1.6-1l-1.7-.9-.8.7c-.8-.4-1.5-1.1-1.9-1.9l.7-.8-.8-1.7c-.3 0-.9.1-1.4.9z" strokeWidth="1.6" />
+  </Icon>
+);
+/* Vehicle silhouettes (side view, facing right) for the home vehicle band. `CarIcon` in icons-extra.tsx is a front view, so these form their own family. */
+export const SedanIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M3 16.5V13l2.3-.8L8 7.5h6.6a2 2 0 0 1 1.5.7L19 12l2 .8v3.7" />
+    <path d="M3 16.5h2M9.5 16.5h5M19.5 16.5H21M8 12h7" />
+    <circle cx="7.2" cy="16.8" r="2.2" />
+    <circle cx="17.2" cy="16.8" r="2.2" />
+  </Icon>
+);
+export const SuvIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M3 16.5V10l1.5-.5L6 6.5h9.4a2 2 0 0 1 1.5.7L20 11.5l1 .8v4.2" />
+    <path d="M3 16.5h2M9.5 16.5h5M19.5 16.5H21M3 12h18M12 6.5V12" />
+    <circle cx="7.2" cy="16.8" r="2.2" />
+    <circle cx="17.2" cy="16.8" r="2.2" />
+  </Icon>
+);
+export const UteIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Icon {...p}>
+    <path d="M2.5 11v5.5M2.5 11H11M11 7.5h4.2a2 2 0 0 1 1.6.8l2.2 3.2 2 .7v4.3" />
+    <path d="M11 7.5v9M2.5 16.5h2.5M9.5 16.5h5M19.5 16.5H21" />
+    <circle cx="7.2" cy="16.8" r="2.2" />
+    <circle cx="17.2" cy="16.8" r="2.2" />
+  </Icon>
+);
 export const MinusIcon = (p: SVGProps<SVGSVGElement>) => (
   <Icon {...p}>
     <path d="M5 12h14" />

@@ -1,38 +1,27 @@
 import { HeroArt } from "@/components/layout/hero-art";
 import { HeroFinder } from "@/components/home/hero-finder";
-import { MotionPauseButton } from "@/components/ui/motion-pause-button";
 import { CheckIcon } from "@/components/ui/icons";
 
-/** Rotating "FREE ..." line. Decorative (hidden from AT); the static copy is read instead. */
-function UspLine() {
-  const phrases = ["tyre fitting wherever you are", "delivery to your door", "wheel balancing", "tyre fitting wherever you are"];
+const HERO_TICKS = ["At home, work or roadside", "Balancing included", "Old tyres recycled"];
+
+/** Three static inclusions under the finder: yellow tick badge + bold label. Wraps to extra rows on narrow screens. */
+function HeroTicks() {
   return (
-    <div id="usp-line" className="flex items-start gap-2 md:items-center text-[15px] font-bold text-black">
-      <span aria-hidden="true" className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold">
-        <CheckIcon className="h-3.5 w-3.5" strokeWidth={3} />
-      </span>
-      <span className="sr-only">Free tyre fitting, delivery and wheel balancing</span>
-      {/* Phones: one static, wrapping line (nothing clipped or moving). md+: the rotating line. */}
-      <span aria-hidden="true" className="min-w-0 flex-1 leading-snug md:hidden">
-        FREE tyre fitting, delivery and balancing
-      </span>
-      <span aria-hidden="true" className="hidden h-6 min-w-0 items-center gap-1.5 overflow-hidden whitespace-nowrap leading-6 md:flex">
-        <span className="leading-6">FREE</span>
-        <span className="usp-rotator block h-6 min-w-0 overflow-hidden leading-6">
-          {phrases.map((p, i) => (
-            <span key={i} className="block h-6 truncate leading-6">
-              {p}
-            </span>
-          ))}
-        </span>
-      </span>
-      <MotionPauseButton targetId="usp-line" label="the rotating offer text" className="-my-2.5 ml-auto hidden md:flex" />
-    </div>
+    <ul aria-label="Included with every fitting" className="flex flex-wrap items-center gap-x-6 gap-y-3 text-[15px] font-bold text-black">
+      {HERO_TICKS.map((label) => (
+        <li key={label} className="flex items-center gap-2">
+          <span aria-hidden="true" className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gold">
+            <CheckIcon className="h-4 w-4" strokeWidth={3} />
+          </span>
+          {label}
+        </li>
+      ))}
+    </ul>
   );
 }
 
 /**
- * Home hero. Mobile order: headline, finder card, USP line, then the van photo
+ * Home hero. Mobile order: headline, finder card, inclusions, then the van photo
  * (no artwork above the finder, so "Find tyres" stays on the first screen).
  * Desktop: copy + finder on the left, chevrons and van art right.
  */
@@ -50,7 +39,7 @@ export function Hero({ regoEnabled }: { regoEnabled: boolean }) {
             </p>
           </div>
           <HeroFinder regoEnabled={regoEnabled} />
-          <UspLine />
+          <HeroTicks />
         </div>
         <HeroArt mobile />
       </div>

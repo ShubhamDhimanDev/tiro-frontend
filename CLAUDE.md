@@ -873,3 +873,32 @@ that cost real time to find, so please keep them when editing:
   the landscape notch). `app/layout.tsx` sets `themeColor` and `interactiveWidget: "resizes-content"` only.
 - Measure with a production build (`npm run build && npx next start`), not `next dev`. Scripts:
   `../docs/mobile-audit/scripts/` (see the report's appendix).
+
+## Homepage layout (2026-10-21)
+
+Mockup layout on the yellow theme. Order in `app/page.tsx`: `Hero` -> `UspStrip` -> `ValueCards` -> `VehicleBand` -> the older
+sections exactly as before (offers, reviews, trust badges, brands band, deals, how it works, services, newsletter, flexible
+banner, coverage). `/` stays static (`○`); nothing new reads cookies or headers.
+
+- **Static copy lives in `lib/home/content.ts`** (trust points, value cards, vehicle types). The first trust point
+  ("Trusted in ...") and the top bar's "Serving ..." come from `trustedTitle` / `areaPhrase`; no component names a place.
+- **`UspStrip` is a client component** (reads `useCoverage()`), because the location, services and info pages render it
+  inside tests and pages that cannot await an async child. It has no props and no rating tile.
+- **Top bar** (`components/layout/top-bar.tsx`, root layout): 36px, not sticky, "Serving <area>" + hours on the left, green
+  "Book via WhatsApp" on the right (`bg-green`, white text). No phone number here; the header has the call button. Below `lg`
+  only the WhatsApp button shows. WhatsApp uses the call number (`whatsappHref()` defaults to `PHONE_DISPLAY`), no env var.
+- **Hero** is unchanged except the desktop photo: `public/images/hero/hero-van-city-desktop.webp` (the client's original
+  1600x800 shot, Ford badge as shot). New filename, so no `next/image` cache clearing.
+- **Vehicle band** has only the four types `/tyres?category=` can filter (Cars, SUVs, 4WD & Utes, Light Trucks). Vans, EV &
+  Runflat and Trailers wait for catalogue filters. Its road photo is gated by `AVAILABLE_FILES` in
+  `lib/site/content-images.ts` (uncomment its line once `banners/vehicle-band-road.webp` exists); until then a CSS gradient.
+- **Header logo** is the wide lockup (`<Logo wide />`, `public/brand/tmt-logo-wide.png` and `-light.png`). Those two files are
+  DERIVED: the client's red wide artwork recoloured to `--c-gold` with Pillow (alpha kept), "MOBILE TYRES" set to black (white
+  on the light file) to match the mockup. Replace them with official yellow artwork when the client supplies it. Footer and
+  sign-in keep the round mark on a white plate.
+- **First-visit location popup** (`components/location/location-auto-prompt.tsx`, mounted in the root layout): home page
+  only, when no zone is saved, once a week per browser (`localStorage` key `mts_location_prompt_at`), 1.2s after load, and it
+  opens the normal `LocationSheet`. `playwright.config.ts` pre-sets that key so the other e2e specs are not covered by it;
+  `tests/e2e/location/first-visit-prompt.spec.ts` clears it.
+- **`BrandMark`** also checks on mount for an image that already failed before hydration (`complete && naturalWidth === 0`),
+  because `onError` never fires for it.

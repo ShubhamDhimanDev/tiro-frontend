@@ -4,6 +4,8 @@ import { loadHomeBrands, loadHomeCities, loadHomeOffers, loadHomeReviews } from 
 import { Reveal } from "@/components/motion/reveal";
 import { Hero } from "@/components/home/hero";
 import { UspStrip } from "@/components/home/usp-strip";
+import { ValueCards } from "@/components/home/value-cards";
+import { VehicleBand } from "@/components/home/vehicle-band";
 import { OffersCarousel } from "@/components/home/offers-carousel";
 import { BrandsBand } from "@/components/home/brands-band";
 import { DealsOnline } from "@/components/home/deals-online";
@@ -51,7 +53,9 @@ export default async function Home() {
       <OrganizationJsonLd name={SITE_NAME} url={SITE_URL} telephone={PHONE_HREF.replace("tel:", "")} />
 
       <Hero regoEnabled={isRegoEnabled()} />
-      <UspStrip summary={reviews.summary} />
+      <UspStrip />
+      <ValueCards />
+      <VehicleBand />
 
       {offers.length > 0 && (
         <Reveal>

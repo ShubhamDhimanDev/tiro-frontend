@@ -7,9 +7,11 @@ import { MotionProvider } from "@/components/motion/motion-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { LocationProvider } from "@/components/location/location-provider";
 import { CoverageData } from "@/components/location/coverage-data";
+import { LocationAutoPrompt } from "@/components/location/location-auto-prompt";
 import { CartProvider } from "@/components/cart/cart-provider";
 import { CartDrawerProvider } from "@/components/cart/cart-drawer";
 import { SocialProofToast } from "@/components/ui/social-proof-toast";
+import { TopBar } from "@/components/layout/top-bar";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SITE_NAME } from "@/lib/site/config";
@@ -68,6 +70,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 >
                   Skip to content
                 </a>
+                <TopBar />
                 <SiteHeader />
                 {/* The one `<main>` landmark for the whole site (pages must not
                     render their own `<main>`). The skip link targets its id. */}
@@ -76,6 +79,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 </main>
                 <SiteFooter />
                 <SocialProofToast />
+                <LocationAutoPrompt />
               </CartDrawerProvider>
             </CartProvider>
           </AuthProvider>

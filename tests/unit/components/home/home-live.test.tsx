@@ -9,6 +9,7 @@ import { OffersCarousel } from "@/components/home/offers-carousel";
 import { BrandsBand } from "@/components/home/brands-band";
 import { ReviewsSection } from "@/components/home/reviews";
 import { UspStrip } from "@/components/home/usp-strip";
+import { CoverageProvider } from "@/components/location/coverage-provider";
 import { Newsletter } from "@/components/home/newsletter";
 import type { Offer } from "@/lib/offers/types";
 
@@ -85,11 +86,25 @@ describe("home live data", () => {
     expect(michelin.querySelector("img")).toBeNull();
   });
 
-  it("shows the API rating only when a summary exists", () => {
-    const { rerender } = render(<UspStrip />);
+  it("shows the four trust points, naming the served area only when the admin has one", () => {
+    const { unmount } = render(<UspStrip />);
+    const items = screen.getAllByRole("listitem").map((li) => li.textContent);
+    expect(items).toEqual([
+      "Trusted fitting, at your doorFitted by local technicians",
+      "Delivery includedStraight to where we fit",
+      "Competitive pricesTop brands available",
+      "Old tyres recycledIncluded in the service",
+    ]);
     expect(screen.queryByText(/out of 5/)).not.toBeInTheDocument();
-    rerender(<UspStrip summary={{ average_rating: 4.6, total_count: 12 }} />);
-    expect(screen.getByText("Rated 4.6 out of 5")).toBeInTheDocument();
+    unmount();
+
+    const served = { stateCodes: ["QX"], stateNames: ["Testland"], cityNames: ["Sampleton"], example: null };
+    render(
+      <CoverageProvider value={served}>
+        <UspStrip />
+      </CoverageProvider>,
+    );
+    expect(screen.getByText("Trusted in Sampleton")).toBeInTheDocument();
   });
 
   it("renders review text and author, without a sample footnote", () => {

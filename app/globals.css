@@ -327,29 +327,6 @@
   animation-play-state: paused;
 }
 
-/* Rotating USP line: one phrase visible at a time, clipped by its box. */
-@keyframes tiro-usp {
-  0%,
-  28% {
-    transform: translateY(0);
-  }
-  33%,
-  61% {
-    transform: translateY(-100%);
-  }
-  66%,
-  94% {
-    transform: translateY(-200%);
-  }
-  100% {
-    transform: translateY(-300%);
-  }
-}
-.usp-rotator > span {
-  display: block;
-  animation: tiro-usp 12s ease-in-out infinite;
-}
-
 /* Decorative hero art entrance (the heading and finder are never animated: LCP). */
 @keyframes tiro-van-in {
   from {
