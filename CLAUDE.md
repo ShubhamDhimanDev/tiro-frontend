@@ -924,8 +924,9 @@ still static (`○`); `components/layout/top-bar.tsx` is mounted in the root lay
 
 - **Static copy lives in `lib/home/content.ts`** (hero ticks, trust points, value cards, vehicle types). The first trust point
   and the top bar's "Serving ..." text come from `summariseCoverage` / `trustedTitle` / `areaPhrase`; no component names a place.
-- **Top bar:** 36px, not sticky, WhatsApp button hidden unless `NEXT_PUBLIC_WHATSAPP_NUMBER` is set (below `lg` the strip is
-  WhatsApp only, and absent with no number). Phone and hours stay env-driven (`lib/site/config.ts`).
+- **Top bar:** 36px, not sticky (below `lg` the strip is the WhatsApp button only). The WhatsApp button uses the same number as
+  the call button (`whatsappHref()` defaults to `PHONE_DISPLAY`), so there is no WhatsApp env var. Phone and hours stay
+  env-driven (`lib/site/config.ts`).
 - **Hero:** `HeroArt bleed` makes the desktop photo fill the right of the section with a white left fade; `PageHero` does not
   pass it. The `<picture>` + blank-pixel pattern is kept, so phones still never fetch the desktop photo. The finder's suburb
   chip is off on home (`showLocation={false}`), on for city pages. `Tabs` gained a `trailing` slot ("Need help?").

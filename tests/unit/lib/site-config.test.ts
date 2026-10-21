@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HOURS_LINE, PHONE_DISPLAY, PHONE_HREF, WHATSAPP_NUMBER, phoneToTel, whatsappHref } from "@/lib/site/config";
+import { HOURS_LINE, PHONE_DISPLAY, PHONE_HREF, phoneToTel, whatsappHref } from "@/lib/site/config";
 
 describe("site config", () => {
   it("defaults to the unconfirmed public number in display and tel: form", () => {
@@ -13,10 +13,9 @@ describe("site config", () => {
     expect(phoneToTel("+61 2 1234 5678")).toBe("tel:+61212345678");
   });
 
-  it("has no WhatsApp number by default, so the top bar hides the button", () => {
-    expect(WHATSAPP_NUMBER).toBe("");
-    expect(whatsappHref()).toBeNull();
-    expect(whatsappHref("  ")).toBeNull();
+  it("points WhatsApp at the same number as the call button", () => {
+    expect(whatsappHref()).toBe("https://wa.me/61434762864");
+    expect(whatsappHref(PHONE_DISPLAY)).toBe(PHONE_HREF.replace("tel:+", "https://wa.me/"));
   });
 
   it("builds a wa.me link from digits only, reading a leading 0 as Australian", () => {
