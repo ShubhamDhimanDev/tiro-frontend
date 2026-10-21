@@ -897,8 +897,10 @@ banner, coverage). `/` stays static (`○`); nothing new reads cookies or header
   on the light file) to match the mockup. Replace them with official yellow artwork when the client supplies it. Footer and
   sign-in keep the round mark on a white plate.
 - **First-visit location popup** (`components/location/location-auto-prompt.tsx`, mounted in the root layout): home page
-  only, when no zone is saved, once a week per browser (`localStorage` key `mts_location_prompt_at`), 1.2s after load, and it
-  opens the normal `LocationSheet`. `playwright.config.ts` pre-sets that key so the other e2e specs are not covered by it;
-  `tests/e2e/location/first-visit-prompt.spec.ts` clears it.
+  only, when no zone is saved, on every full page load until a location is entered (not again on in-page navigation back to
+  `/`), 1.2s after load, and it opens the normal `LocationSheet`. Setting the `localStorage` item `mts_location_prompt_off`
+  silences it: `playwright.config.ts` sets it so the other e2e specs are not covered, and
+  `tests/e2e/location/first-visit-prompt.spec.ts` clears it. (An earlier "once a week" snooze was dropped: it made the popup
+  vanish for testers after one view.)
 - **`BrandMark`** also checks on mount for an image that already failed before hydration (`complete && naturalWidth === 0`),
   because `onError` never fires for it.

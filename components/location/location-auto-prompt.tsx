@@ -4,31 +4,32 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useLocation } from "@/components/location/location-provider";
 
-/** localStorage key holding the time (ms since epoch) the first-visit prompt was last shown in this browser. */
-export const LOCATION_PROMPT_KEY = "mts_location_prompt_at";
-/** After showing the prompt once, stay quiet for a week, whether or not the visitor filled it in. */
-export const LOCATION_PROMPT_SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
+/** Set this localStorage item (any value) to silence the popup, e.g. in Playwright's storage state or while testing by hand. */
+export const LOCATION_PROMPT_OFF_KEY = "mts_location_prompt_off";
 /** Let the page paint first, so the popup never competes with the hero image for load time. */
 export const LOCATION_PROMPT_DELAY_MS = 1200;
 
-function recentlyPrompted(): boolean {
+/** True once the popup has opened during this page load, so going back to the home page in the same visit does not re-open it. */
+let promptedThisLoad = false;
+
+function silenced(): boolean {
   try {
-    const at = Number(window.localStorage.getItem(LOCATION_PROMPT_KEY));
-    return Number.isFinite(at) && at > 0 && Date.now() - at < LOCATION_PROMPT_SNOOZE_MS;
+    return window.localStorage.getItem(LOCATION_PROMPT_OFF_KEY) !== null;
   } catch {
-    // Storage blocked (private window, site data off): treat as "not shown yet" and still ask once per page load.
     return false;
   }
 }
 
 /**
- * Opens the shared "Select fitting location" dialog on a visitor's first visit to the home page, asking for a suburb or
- * postcode. Mounted once in the root layout; renders nothing itself (the dialog is `<LocationSheet>` in the header).
+ * Opens the shared "Select fitting location" dialog when a visitor arrives on the home page without a saved location,
+ * asking for a suburb or postcode. Mounted once in the root layout; renders nothing itself (the dialog is
+ * `<LocationSheet>` in the header).
  *
- * Deliberately narrow, because a popup on arrival is easy to overdo:
- * - home page only (`/`), not every landing page, so search visitors reach tyre pages and the catalogue unobstructed;
- * - only when no service zone is saved yet (the zone cookie lasts 30 days), and only after the zone check has finished;
- * - at most once a week per browser, whatever the visitor does with it (the header pill and finder stay available);
+ * - home page only (`/`), so search visitors reach tyre pages and the catalogue unobstructed;
+ * - only when no service zone is saved (the zone cookie lasts 30 days) and the zone check has finished, so it stops for
+ *   good once a visitor enters a location;
+ * - once per page load: a visitor who closes it is asked again on their next visit to the site, not on every
+ *   navigation back to the home page;
  * - after a short delay, so it never delays first paint.
  *
  * The dialog itself is the normal `Sheet`: Escape, the close button or a tap outside dismisses it, and focus returns to
@@ -40,13 +41,9 @@ export function LocationAutoPrompt() {
   const eligible = pathname === "/" && !loading && !zone;
 
   useEffect(() => {
-    if (!eligible || recentlyPrompted()) return;
+    if (!eligible || promptedThisLoad || silenced()) return;
     const timer = window.setTimeout(() => {
-      try {
-        window.localStorage.setItem(LOCATION_PROMPT_KEY, String(Date.now()));
-      } catch {
-        // See recentlyPrompted(): nothing to remember it with, so it may show again on the next page load.
-      }
+      promptedThisLoad = true;
       openPicker();
     }, LOCATION_PROMPT_DELAY_MS);
     return () => window.clearTimeout(timer);

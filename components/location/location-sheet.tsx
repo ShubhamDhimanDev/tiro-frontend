@@ -8,9 +8,9 @@ import { Sheet } from "@/components/ui/sheet";
 /**
  * The one "where should we fit your tyres" modal (phase 1). Rendered once by
  * the site header and opened from the header pill, the mobile menu, the finder,
- * `useLocation().openPicker()` at purchase intent, and, once a week on the home
- * page when no location is saved, `<LocationAutoPrompt>` (after first paint, so
- * it never blocks it).
+ * `useLocation().openPicker()` at purchase intent, and, on each home page load
+ * with no location saved, `<LocationAutoPrompt>` (after first paint, so it
+ * never blocks it).
  *
  * Desktop: 850px dialog, illustration panel left, form right. Phone: bottom
  * sheet sized to its content. Uses the existing capture form, serviceability
