@@ -62,9 +62,9 @@ export async function DealsOnline() {
   const items = buildItems(trustedTitle(summariseCoverage(await loadLocationTree())));
   return (
     <section aria-labelledby="deals-heading" className="container-page pt-[50px] lg:pt-20">
-      <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
+      <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16">
         {/* Decorative image: no information in it, so phones skip it (it added about 340px of scrolling). */}
-        <div aria-hidden="true" className="order-2 max-md:hidden lg:order-1">
+        <div aria-hidden="true" className="order-2 max-md:hidden">
           {photo.src ? (
             <div className="relative mx-auto aspect-square w-full max-w-[560px]">
               <Image src={photo.src} alt="" fill sizes="(min-width: 1024px) 42vw, 560px" className="object-cover" />
@@ -73,7 +73,7 @@ export async function DealsOnline() {
             <PhoneMock />
           )}
         </div>
-        <div className="order-1 flex flex-col gap-4 lg:order-2">
+        <div className="order-1 flex flex-col gap-4">
           <h2 id="deals-heading" className="type-h2">
             Get the best deals online, fitted on your doorstep
           </h2>

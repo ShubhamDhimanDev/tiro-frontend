@@ -15,21 +15,21 @@ export function ValueCards() {
       <h2 id="value-heading" className="sr-only">
         More ways we make it easy
       </h2>
-      <ul className="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2 lg:gap-5">
         {HOME_VALUE_CARDS.map(({ id, title, body, href }) => {
           const Icon = ICONS[id];
           return (
             <li key={id} className="flex">
               <Link
                 href={href}
-                className="group flex w-full flex-col gap-3 rounded-card border border-line bg-surface p-5 transition-[border-color,box-shadow] duration-300 hover:border-black hover:shadow-raised"
+                className="group flex w-full items-center gap-4 rounded-card border border-line bg-surface p-5 transition-[border-color,box-shadow] duration-300 hover:border-black hover:shadow-raised lg:gap-5 lg:p-6"
               >
-                <Icon className="h-8 w-8 text-black" />
-                <span className="flex flex-col gap-1">
+                <Icon className="h-10 w-10 shrink-0 text-black" />
+                <span className="flex flex-1 flex-col gap-1">
                   <span className="type-h3">{title}</span>
                   <span className="text-[15px] leading-snug text-muted">{body}</span>
                 </span>
-                <ArrowRightIcon className="mt-auto h-5 w-5 text-black transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRightIcon className="h-5 w-5 shrink-0 text-black transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </li>
           );

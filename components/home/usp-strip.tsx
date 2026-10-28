@@ -17,15 +17,15 @@ export function UspStrip() {
   const trusted = trustedTitle(useCoverage());
   return (
     <section aria-label="Why customers choose us" className="border-y border-line bg-band">
-      <ul className="container-page grid grid-cols-1 gap-4 py-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+      <ul className="container-page grid grid-cols-1 gap-4 py-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-line lg:py-7">
         {HOME_TRUST_POINTS.map(({ id, label, note }) => {
           const Icon = ICONS[id];
           return (
-            <li key={id} className="flex items-center gap-3">
+            <li key={id} className="flex items-center gap-3 lg:flex-col lg:px-4 lg:text-center">
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold text-black">
                 <Icon className="h-5 w-5" />
               </span>
-              <span className="flex flex-col">
+              <span className="flex flex-col lg:items-center">
                 <span className="text-[15px] font-bold leading-tight text-black">{label ?? trusted}</span>
                 <span className="text-sm leading-snug text-muted">{note}</span>
               </span>

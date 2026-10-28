@@ -47,9 +47,9 @@ export function Newsletter() {
 
   return (
     <section aria-labelledby="newsletter-heading" className="container-page pt-[50px] lg:pt-20">
-      <div className="grid overflow-hidden rounded-card bg-band md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
+      <div className="grid overflow-hidden rounded-card bg-band md:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
         {/* Decorative side panel, desktop only: the photo when present, else the CSS placeholder. */}
-        <div aria-hidden="true" className="asphalt-texture relative flex min-h-[200px] items-center justify-center max-md:hidden md:min-h-[360px]">
+        <div aria-hidden="true" className="asphalt-texture relative flex min-h-[200px] items-center justify-center max-md:hidden md:order-2 md:min-h-[360px]">
           {photo.src ? (
             <Image src={photo.src} alt="" fill sizes="(min-width: 1024px) 42vw, 45vw" className="object-cover" />
           ) : (
