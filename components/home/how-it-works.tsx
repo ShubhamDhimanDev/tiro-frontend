@@ -12,8 +12,8 @@ export function HowItWorks() {
   const photo = CONTENT_IMAGES["home-how-it-works"];
   return (
     <section aria-labelledby="how-heading" className="container-page pt-[50px] lg:pt-20">
-      <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:gap-16">
-        <div className="flex flex-col gap-5">
+      <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16">
+        <div className="flex flex-col gap-5 lg:order-2">
           <h2 id="how-heading" className="type-h2">
             How it works
           </h2>
@@ -47,14 +47,14 @@ export function HowItWorks() {
         </div>
 
         {photo.src ? (
-          <div className="relative aspect-[4/3] overflow-hidden rounded-card">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-card lg:order-1">
             <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 1024px) 45vw, 100vw" className="object-cover" />
           </div>
         ) : (
           // No photo yet: a decorative CSS placeholder, desktop only (on phones it was a 260px black box that said nothing).
           <div
             aria-hidden="true"
-            className="asphalt-texture relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-card max-md:hidden"
+            className="asphalt-texture relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-card max-md:hidden lg:order-1"
           >
             <span className="absolute -left-6 top-0 h-full w-16 -skew-x-[18deg] bg-gold opacity-90" />
             <span className="absolute left-14 top-0 h-full w-6 -skew-x-[18deg] bg-gold opacity-90" />

@@ -27,8 +27,8 @@ export function VehicleBand() {
           <Image src={photo.src} alt="" fill sizes="100vw" className="object-cover object-left" />
         </div>
       )}
-      <div className="container-page relative py-10 lg:py-14">
-        <h2 id="vehicle-heading" className="type-h2 mb-6 text-white">
+      <div className="container-page relative py-10 lg:grid lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-center lg:gap-12 lg:py-14">
+        <h2 id="vehicle-heading" className="type-h2 mb-6 text-white lg:mb-0">
           Mobile tyre fitting for every vehicle
         </h2>
         <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">

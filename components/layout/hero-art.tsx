@@ -28,7 +28,7 @@ export function HeroArt({ mobile = false }: { mobile?: boolean }) {
             <Image src={mobilePhoto.src} alt={mobilePhoto.alt} fill sizes="(min-width: 768px) 720px, 100vw" className="object-cover object-[50%_70%]" />
           </div>
         )}
-        <div className="relative hidden h-full min-h-[420px] lg:block">
+        <div className="relative hidden h-full min-h-[420px] lg:order-1 lg:block">
           <picture>
             <source media="(min-width: 992px)" srcSet={photo.src} width={photo.width} height={photo.height} />
             <img src={BLANK_PIXEL} width={photo.width} height={photo.height} alt={photo.alt} className="absolute inset-0 h-full w-full rounded-sheet object-cover object-[35%_50%]" />
