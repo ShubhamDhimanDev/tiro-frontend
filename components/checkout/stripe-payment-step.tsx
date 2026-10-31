@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import { getStripePromise } from "@/lib/checkout/stripe-client";
+import { ordersApi } from "@/lib/orders/client-api";
 import { Button } from "@/components/ui/button";
 import { PaymentUnavailable } from "@/components/checkout/payment-unavailable";
 import { LockIcon } from "@/components/ui/icons";
@@ -23,12 +24,14 @@ import { LockIcon } from "@/components/ui/icons";
  * Payment Element is unverified.
  */
 export function StripePaymentStep({
+  orderId,
   clientSecret,
   returnUrl,
   orderNumber,
   onConfirmed,
   onError,
 }: {
+  orderId: number;
   clientSecret: string;
   returnUrl: string;
   orderNumber?: string;
@@ -58,16 +61,18 @@ export function StripePaymentStep({
         },
       }}
     >
-      <PaymentForm returnUrl={returnUrl} onConfirmed={onConfirmed} onError={onError} />
+      <PaymentForm orderId={orderId} returnUrl={returnUrl} onConfirmed={onConfirmed} onError={onError} />
     </Elements>
   );
 }
 
 function PaymentForm({
+  orderId,
   returnUrl,
   onConfirmed,
   onError,
 }: {
+  orderId: number;
   returnUrl: string;
   onConfirmed: () => void;
   onError: (message: string) => void;
@@ -100,6 +105,13 @@ function PaymentForm({
     }
 
     if (result.paymentIntent && (result.paymentIntent.status === "succeeded" || result.paymentIntent.status === "processing")) {
+      // Ask the backend to confirm the order now rather than waiting on the
+      // webhook. It re-reads the PaymentIntent from Stripe itself, so this
+      // only ever confirms a payment Stripe reports as succeeded; for
+      // `processing` it is a no-op and the webhook settles it later. The
+      // customer has already paid at this point, so a failed call here must
+      // not block them: the order page re-fetches authoritative state anyway.
+      await ordersApi.stripeConfirm(orderId);
       onConfirmed();
     }
     // Any other status (e.g. requires_action resolved via redirect already in

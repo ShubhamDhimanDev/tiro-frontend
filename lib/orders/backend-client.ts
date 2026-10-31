@@ -92,6 +92,23 @@ export const liveOrdersBackend = {
         ...(!opts.token && opts.orderToken ? { "X-Order-Token": opts.orderToken } : {}),
       },
     }),
+
+  /**
+   * `POST /api/v1/orders/{order}/stripe-confirm` — Stripe only. Called right
+   * after `stripe.confirmPayment()` resolves (and from the `return_url`
+   * page) so the order confirms immediately instead of waiting on the
+   * webhook. Laravel re-reads the PaymentIntent from Stripe itself; this
+   * never carries a client-supplied "it succeeded" claim. Same auth
+   * precedence as `show()`; no `Idempotency-Key` (naturally idempotent).
+   */
+  stripeConfirm: (orderId: number | string, opts: { token?: string | null; orderToken?: string | null }) =>
+    call(`/orders/${encodeURIComponent(String(orderId))}/stripe-confirm`, {
+      method: "POST",
+      headers: {
+        ...(opts.token ? { Authorization: `Bearer ${opts.token}` } : {}),
+        ...(!opts.token && opts.orderToken ? { "X-Order-Token": opts.orderToken } : {}),
+      },
+    }),
 };
 
 export type OrdersBackend = typeof liveOrdersBackend;

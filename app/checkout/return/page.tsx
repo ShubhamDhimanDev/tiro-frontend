@@ -4,6 +4,9 @@ import { redirect } from "next/navigation";
 import { StatePanel } from "@/components/ui/state-panel";
 import { buttonClassName } from "@/components/ui/button";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/site/config";
+import { getAuthToken } from "@/lib/auth/cookies";
+import { ordersBackend } from "@/lib/orders/backend";
+import { getOrderToken } from "@/lib/orders/order-token-cookie";
 
 /**
  * Stripe's `return_url` target for redirect-mandatory payment methods
@@ -16,7 +19,8 @@ import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/site/config";
  * `failed`, ...). This app never trusts them for state: the order page
  * (`app/orders/[order]/page.tsx`) re-fetches authoritative order/payment state
  * and shows the success or "payment pending, checking" state itself, so
- * `succeeded`/`processing`/anything unknown simply forwards there. Only a
+ * `succeeded`/`processing`/anything unknown simply forwards there (after a
+ * best-effort `stripe-confirm` call to Laravel, see `confirmStripeOrder`). Only a
  * clearly failed redirect is rendered here, with a way to recover. `order` (this
  * app's own query param, set when it built the `return_url`) identifies the
  * order; it must be a plain integer or it is ignored.
@@ -27,6 +31,25 @@ export const metadata: Metadata = {
 };
 
 const FAILED_STATUSES = new Set(["failed", "requires_payment_method", "canceled"]);
+
+/**
+ * Best-effort: asks Laravel to re-read the PaymentIntent from Stripe and
+ * confirm the order now, instead of waiting on the webhook. Nothing from
+ * Stripe's query string is passed along. Never blocks the redirect: if it
+ * fails (or Stripe still says `processing`), the order page shows the
+ * pending state and the webhook settles it.
+ */
+async function confirmStripeOrder(orderId: string) {
+  try {
+    const token = await getAuthToken();
+    const orderToken = token ? null : await getOrderToken(orderId);
+    if (!token && !orderToken) return;
+
+    await ordersBackend.stripeConfirm(orderId, { token, orderToken });
+  } catch {
+    // Intentionally ignored, see above.
+  }
+}
 
 export default async function CheckoutReturnPage({
   searchParams,
@@ -44,6 +67,7 @@ export default async function CheckoutReturnPage({
   }
 
   if (!status || !FAILED_STATUSES.has(status)) {
+    await confirmStripeOrder(orderId);
     redirect(`/orders/${orderId}`);
   }
 

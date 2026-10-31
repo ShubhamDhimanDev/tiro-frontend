@@ -138,4 +138,21 @@ export const stubOrdersBackend: OrdersBackend = {
 
     return { status: 200, body: { data: toRecord(order, true) } };
   },
+
+  /** Mirrors `show()`'s auth check, then simulates Stripe reporting `succeeded`. */
+  async stripeConfirm(orderId: number | string, opts: { token?: string | null; orderToken?: string | null }) {
+    const order = orders.get(Number(orderId));
+    if (!order) return { status: 404, body: { message: "Order not found." } };
+
+    if (opts.token) {
+      if (order.isGuest) return { status: 403, body: { message: "You don't have permission to complete payment for this order." } };
+    } else if (!opts.orderToken || opts.orderToken !== order.guestToken) {
+      return { status: 403, body: { message: "You don't have permission to complete payment for this order." } };
+    }
+
+    order.status = "confirmed";
+    order.paymentStatus = "paid";
+
+    return { status: 200, body: { data: toRecord(order, true) } };
+  },
 };
