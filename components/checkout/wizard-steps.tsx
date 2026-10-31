@@ -432,6 +432,7 @@ function PaymentForOrder({ order, onPaid, onError }: { order: OrderCreateRecord;
   if (gateway === "stripe" && clientSecret) {
     return (
       <StripePaymentStep
+        orderId={order.id}
         clientSecret={clientSecret}
         orderNumber={order.order_number}
         returnUrl={`${typeof window !== "undefined" ? window.location.origin : ""}/checkout/return?order=${order.id}`}

@@ -86,4 +86,15 @@ export const ordersApi = {
       method: "POST",
       headers: { "Idempotency-Key": idempotencyKey },
     }),
+
+  /**
+   * Stripe only — proxies `POST /api/v1/orders/{order}/stripe-confirm`.
+   * Called from `components/checkout/stripe-payment-step.tsx` right after
+   * `stripe.confirmPayment()` resolves, so the order confirms without
+   * waiting for the webhook. Laravel re-reads the PaymentIntent from Stripe
+   * itself; a `success` result only means the call completed — read
+   * `payment_status` on the returned order to see whether it was confirmed.
+   */
+  stripeConfirm: (orderId: number) =>
+    request<OrderResponse>(`/api/orders/${orderId}/stripe-confirm`, { method: "POST" }),
 };
