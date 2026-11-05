@@ -67,14 +67,14 @@ describe("merchandising: API data first, mocks only when enabled", () => {
         ],
       }),
     ).toEqual([
-      { qty: 1, unitCents: 21900 },
-      { qty: 4, unitCents: 16425 },
+      { qty: 1, unitCents: 21900, totalCents: 21900 },
+      { qty: 4, unitCents: 16425, totalCents: 65700 },
     ]);
   });
 
   it("falls back to a flat ladder (no invented uplift) when the engine is unavailable", () => {
     const ladder = quantityLadder(16300);
-    expect(ladder.map((r) => r.qty)).toEqual([1, 2, 3, 4, 5]);
+    expect(ladder.map((r) => r.qty)).toEqual([1, 2, 3, 4]);
     expect(new Set(ladder.map((r) => r.unitCents))).toEqual(new Set([16300]));
   });
 

@@ -13,6 +13,7 @@ import { Drawer } from "@/components/ui/drawer";
 import { CheckIcon, MinusIcon, PinIcon, PlusIcon } from "@/components/ui/icons";
 import { INCLUDES_LINE } from "@/components/catalog/pdp-buy-panel";
 import { formatMoney } from "@/lib/catalog/format-money";
+import { MAX_CART_TYRES, totalTyres } from "@/lib/cart/cart";
 import { splitTyreLabel } from "@/lib/cart/label";
 import { rowPrice } from "@/lib/cart/live-lines";
 
@@ -148,7 +149,7 @@ function OpenCartDrawer({ open, onClose }: { open: boolean; onClose: () => void 
                         <button
                           type="button"
                           aria-label={`Increase quantity for ${name}`}
-                          disabled={item.quantity >= 20}
+                          disabled={totalTyres(state) >= MAX_CART_TYRES}
                           onClick={() => setQuantity(key, item.quantity + 1)}
                           className="flex h-11 w-11 items-center justify-center text-black disabled:text-muted"
                         >

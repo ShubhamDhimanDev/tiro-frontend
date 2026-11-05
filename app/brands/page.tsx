@@ -5,7 +5,6 @@ import { brandListTag } from "@/lib/content/tags";
 import { BrandHero } from "@/components/catalog/brand-hero";
 import { BrandMark } from "@/components/catalog/brand-mark";
 import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
-import { TierBadge } from "@/components/ui/badge";
 import type { BrandsResponse } from "@/lib/catalog/types";
 
 export const metadata: Metadata = {
@@ -15,16 +14,6 @@ export const metadata: Metadata = {
 
 // Not specified by the contract beyond "cacheable": see app/tyres/[slug]/page.tsx's revalidate comment for the same judgment call.
 export const revalidate = 3600;
-
-/** Initials shown when a brand has no uploaded logo (or its image fails to load). */
-function initials(name: string): string {
-  return name
-    .split(/[\s-]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]!.toUpperCase())
-    .join("");
-}
 
 export default async function BrandsPage() {
   const result = await catalogBackend.brands({ next: { revalidate: 3600, tags: [brandListTag()] } });
@@ -47,15 +36,11 @@ export default async function BrandsPage() {
               <li key={brand.slug}>
                 <Link
                   href={`/brands/${brand.slug}`}
-                  className="flex h-full min-h-40 flex-col items-center justify-center gap-2 rounded-card border border-line bg-surface p-4 text-center shadow-rest transition-shadow hover:shadow-raised"
+                  className="flex h-full min-h-36 items-center justify-center rounded-card border border-line bg-surface p-4 text-center shadow-rest transition-shadow hover:shadow-raised"
                 >
-                  <BrandMark logoPath={brand.logo_path} name={brand.name} className="h-14 w-32">
-                    <span aria-hidden="true" className="flex h-14 w-14 items-center justify-center rounded-full bg-black text-lg font-extrabold text-gold">
-                      {initials(brand.name)}
-                    </span>
+                  <BrandMark logoPath={brand.logo_path} name={brand.name} className="h-20 w-40">
+                    <span className="text-lg font-extrabold leading-tight text-black md:text-xl">{brand.name}</span>
                   </BrandMark>
-                  <span className="flex min-h-[3.5rem] items-center text-base font-extrabold leading-tight text-black">{brand.name}</span>
-                  {brand.tier ? <TierBadge tier={brand.tier} /> : brand.country_of_origin && <span className="text-xs text-muted">{brand.country_of_origin}</span>}
                 </Link>
               </li>
             ))}

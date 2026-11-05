@@ -160,8 +160,10 @@ export function PdpBuyProvider({
       : null;
   const ladderState = usePriceLadder(tyreVariantId, baseCents !== null, zoneId ?? "");
   const ladder = baseCents === null ? null : ladderState.status === "ready" ? ladderState.rows : fallbackRows(baseCents);
-  const unitCents = ladder === null ? null : (ladder.find((row) => row.qty === Math.min(quantity, QUANTITY_STEPS[QUANTITY_STEPS.length - 1]))?.unitCents ?? baseCents);
-  const totalCents = unitCents === null ? null : unitCents * clampQuantity(quantity);
+  const ladderRow = ladder?.find((row) => row.qty === Math.min(quantity, QUANTITY_STEPS[QUANTITY_STEPS.length - 1]));
+  const unitCents = ladder === null ? null : (ladderRow?.unitCents ?? baseCents);
+  // The engine's exact order total beats unit x quantity, which can be a cent out (e.g. $370 / 3 tyres).
+  const totalCents = unitCents === null ? null : (ladderRow?.totalCents ?? unitCents * clampQuantity(quantity));
 
   const add = useCallback(() => {
     addToCart({ tyre_variant_id: tyreVariantId, quantity, position, label, slug, image, ...(unitCents !== null ? { unit_cents: unitCents } : {}) });

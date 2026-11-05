@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonClassName } from "@/components/ui/button";
 import { CheckIcon } from "@/components/ui/icons";
 import { bookingApi } from "@/lib/booking/client-api";
 import { weekWindow } from "@/lib/booking/date-window";
@@ -10,12 +10,12 @@ import { formatMoney } from "@/lib/catalog/format-money";
 import { formatDuration } from "@/lib/booking/format-duration";
 import { ServiceError } from "@/components/ui/service-error";
 import { PHONE_DISPLAY, PHONE_HREF } from "@/lib/site/config";
-import type { BookingAddonKey, BookingDay, BookingFlexibleOffer, BookingItemInput, BookingSlot } from "@/lib/booking/types";
+import type { BookingAddonKey, BookingDay, BookingFlexibleOffer, BookingItemInput, BookingRules, BookingSlot } from "@/lib/booking/types";
 
 type FetchState =
   | { status: "loading" }
   | { status: "error"; message: string }
-  | { status: "ready"; durationMinutes: number; days: BookingDay[]; flexible: BookingFlexibleOffer | null };
+  | { status: "ready"; durationMinutes: number; days: BookingDay[]; flexible: BookingFlexibleOffer | null; rules: BookingRules | null };
 
 /** Radio value for the flexible option (never a real "HH:MM"). */
 const FLEX = "flexible";
@@ -120,6 +120,7 @@ export function AppointmentSlotPicker({
               durationMinutes: res.data.data.duration_minutes,
               days: res.data.data.days,
               flexible: res.data.data.flexible ?? null,
+              rules: res.data.data.booking_rules ?? null,
             },
           });
         } else if (res.kind === "not_found") {
@@ -214,6 +215,18 @@ export function AppointmentSlotPicker({
             time is the appointment window for your fitting.
           </p>
 
+          {state.rules && !state.rules.same_day_open && weekOffset === 0 ? (
+            <div data-testid="same-day-closed" className="flex flex-col gap-3 rounded-card border border-line bg-gold-soft p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-ink">
+                <strong className="font-semibold">Same-day fitting needs a booking before {formatClock(state.rules.same_day_cutoff)}.</strong>{" "}
+                The earliest day online is {formatDay(state.rules.earliest_date, "long")}. Need it today? Give us a call.
+              </p>
+              <a href={PHONE_HREF} className={buttonClassName({ variant: "black", size: "sm", className: "shrink-0" })}>
+                Call {PHONE_DISPLAY}
+              </a>
+            </div>
+          ) : null}
+
           {firstOpenDay === null ? (
             <div className="rounded-card border border-line bg-surface p-4 text-sm text-muted">
               No times are free in this 7 days. Try the next 7 days, or call us on{" "}
@@ -253,7 +266,7 @@ export function AppointmentSlotPicker({
                     >
                       <span className="text-xs font-semibold uppercase tracking-wide">{parts.weekday}</span>
                       <span className="font-mono text-2xl font-bold leading-none">{parts.day}</span>
-                      <span className="text-xs">{full ? "Full" : parts.month}</span>
+                      <span className="text-xs">{full ? (state.rules && !state.rules.same_day_open && day.date === state.rules.today ? "Call us" : "Full") : parts.month}</span>
                     </span>
                   </label>
                 );

@@ -11,6 +11,7 @@ import { ServiceError } from "@/components/ui/service-error";
 import { Button, buttonClassName } from "@/components/ui/button";
 import { CartIcon, CheckIcon, MinusIcon, PinIcon, PlusIcon } from "@/components/ui/icons";
 import { formatMoney } from "@/lib/catalog/format-money";
+import { MAX_CART_TYRES, totalTyres } from "@/lib/cart/cart";
 import { splitTyreLabel } from "@/lib/cart/label";
 import { rowPrice } from "@/lib/cart/live-lines";
 import { FITTING_INCLUSIONS } from "@/lib/site/inclusions";
@@ -111,7 +112,7 @@ function CartPageBody() {
                       <button
                         type="button"
                         aria-label={`Increase quantity for ${name}`}
-                        disabled={item.quantity >= 20}
+                        disabled={totalTyres(state) >= MAX_CART_TYRES}
                         onClick={() => setQuantity(key, item.quantity + 1)}
                         className="flex h-11 w-11 items-center justify-center text-black disabled:text-muted"
                       >

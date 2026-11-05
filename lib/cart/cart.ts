@@ -120,17 +120,28 @@ export function clearCartStorage(): void {
   window.localStorage.removeItem(STORAGE_KEY);
 }
 
-/** Adds an item, merging quantity into an existing row with the same variant+position rather than duplicating it. */
+/** An order holds at most 4 tyres in total (the backend's `SizePricingService::MAX_TYRES`); larger jobs are a phone call. */
+export const MAX_CART_TYRES = 4;
+
+/** Tyres across every line of the cart. */
+export function totalTyres(state: CartState): number {
+  return state.items.reduce((sum, item) => sum + item.quantity, 0);
+}
+
+/** Adds an item, merging quantity into an existing row with the same variant+position rather than duplicating it. Never takes the cart past {@link MAX_CART_TYRES} tyres. */
 export function addItem(state: CartState, incoming: CartItem): CartState {
+  const room = MAX_CART_TYRES - totalTyres(state);
+  if (room <= 0) return state;
+  const added = Math.min(incoming.quantity, room);
   const key = itemKey(incoming);
   const existingIndex = state.items.findIndex((item) => itemKey(item) === key);
   if (existingIndex === -1) {
-    return { ...state, items: [...state.items, incoming] };
+    return { ...state, items: [...state.items, { ...incoming, quantity: added }] };
   }
   const items = state.items.slice();
   items[existingIndex] = {
     ...items[existingIndex],
-    quantity: items[existingIndex].quantity + incoming.quantity,
+    quantity: items[existingIndex].quantity + added,
     ...(incoming.unit_cents !== undefined ? { unit_cents: incoming.unit_cents } : {}),
   };
   return { ...state, items };
@@ -140,7 +151,9 @@ export function addItem(state: CartState, incoming: CartItem): CartState {
 export function updateQuantity(state: CartState, key: CartItemKey, quantity: number): CartState {
   if (quantity <= 0) return removeItem(state, key);
   const targetKey = itemKey(key);
-  return { ...state, items: state.items.map((item) => (itemKey(item) === targetKey ? { ...item, quantity } : item)) };
+  const others = state.items.reduce((sum, item) => (itemKey(item) === targetKey ? sum : sum + item.quantity), 0);
+  const capped = Math.min(quantity, Math.max(1, MAX_CART_TYRES - others));
+  return { ...state, items: state.items.map((item) => (itemKey(item) === targetKey ? { ...item, quantity: capped } : item)) };
 }
 
 export function removeItem(state: CartState, key: CartItemKey): CartState {

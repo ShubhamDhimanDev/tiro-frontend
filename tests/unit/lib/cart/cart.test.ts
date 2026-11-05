@@ -33,10 +33,20 @@ describe("addItem", () => {
   });
 
   it("merges quantity into an existing row with the same variant+position", () => {
-    const state = addItem(EMPTY_CART, item({ quantity: 4 }));
-    const next = addItem(state, item({ quantity: 2 }));
+    const state = addItem(EMPTY_CART, item({ quantity: 2 }));
+    const next = addItem(state, item({ quantity: 1 }));
     expect(next.items).toHaveLength(1);
-    expect(next.items[0].quantity).toBe(6);
+    expect(next.items[0].quantity).toBe(3);
+  });
+
+  it("never takes the cart past 4 tyres: it tops up to 4, then ignores more", () => {
+    const state = addItem(EMPTY_CART, item({ quantity: 3 }));
+    const topped = addItem(state, item({ quantity: 4 }));
+    expect(topped.items[0].quantity).toBe(4);
+    expect(addItem(topped, item({ quantity: 1 }))).toBe(topped);
+    // across different rows too
+    const other = addItem(state, item({ tyre_variant_id: 2, quantity: 3 }));
+    expect(other.items.map((i) => i.quantity)).toEqual([3, 1]);
   });
 
   it("keeps front/rear rows for the same variant separate", () => {
@@ -48,10 +58,16 @@ describe("addItem", () => {
 
 describe("updateQuantity / removeItem", () => {
   it("updates the quantity of the matching row only", () => {
-    const state: CartState = { items: [item({ tyre_variant_id: 1 }), item({ tyre_variant_id: 2 })], addons: [] };
-    const next = updateQuantity(state, { tyre_variant_id: 1, position: "all" }, 8);
-    expect(next.items.find((i) => i.tyre_variant_id === 1)?.quantity).toBe(8);
-    expect(next.items.find((i) => i.tyre_variant_id === 2)?.quantity).toBe(4);
+    const state: CartState = { items: [item({ tyre_variant_id: 1, quantity: 1 }), item({ tyre_variant_id: 2, quantity: 2 })], addons: [] };
+    const next = updateQuantity(state, { tyre_variant_id: 1, position: "all" }, 2);
+    expect(next.items.find((i) => i.tyre_variant_id === 1)?.quantity).toBe(2);
+    expect(next.items.find((i) => i.tyre_variant_id === 2)?.quantity).toBe(2);
+  });
+
+  it("caps an increase at 4 tyres across the whole cart", () => {
+    const state: CartState = { items: [item({ tyre_variant_id: 1, quantity: 1 }), item({ tyre_variant_id: 2, quantity: 2 })], addons: [] };
+    const next = updateQuantity(state, { tyre_variant_id: 1, position: "all" }, 9);
+    expect(next.items.find((i) => i.tyre_variant_id === 1)?.quantity).toBe(2);
   });
 
   it("removes the row when quantity drops to 0 or below", () => {
