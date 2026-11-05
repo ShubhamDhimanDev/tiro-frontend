@@ -34,7 +34,8 @@ export function wasPrice(variant: TyreListItem): number | undefined {
 }
 
 export const MIN_QUANTITY = 1;
-export const MAX_QUANTITY = 20;
+/** An order holds at most 4 tyres; larger jobs are a phone call. Mirrors the backend's `SizePricingService::MAX_TYRES`. */
+export const MAX_QUANTITY = 4;
 
 /** Default quantity per fitting position: a full set of four, or an axle pair. */
 export const DEFAULT_QUANTITY: Record<BookingPosition, number> = { all: 4, front: 2, rear: 2 };

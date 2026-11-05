@@ -100,4 +100,46 @@ describe("AppointmentSlotPicker", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent("Couldn't load appointment times.");
     expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
   });
+  it("explains the same-day cutoff and offers a call button once it has passed", async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const tomorrow = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+    slots.mockResolvedValue({
+      kind: "success",
+      status: 200,
+      data: {
+        data: {
+          duration_minutes: 72,
+          booking_rules: { timezone: "Australia/Melbourne", same_day_cutoff: "09:00", same_day_open: false, today, earliest_date: tomorrow },
+          days: [
+            { date: today, slots: [] },
+            { date: tomorrow, slots: [{ start: "09:00", end: "10:12" }] },
+          ],
+        },
+      },
+    });
+    renderPicker();
+    const notice = await screen.findByTestId("same-day-closed");
+    expect(notice).toHaveTextContent("before 9:00 am");
+    expect(screen.getByRole("link", { name: /^Call / })).toHaveAttribute("href", expect.stringMatching(/^tel:/));
+    // today's tile is labelled for a call, not "Full"
+    expect(screen.getByTestId("date-strip")).toHaveTextContent("Call us");
+  });
+
+  it("shows no call prompt while same-day booking is still open", async () => {
+    const today = new Date().toISOString().slice(0, 10);
+    slots.mockResolvedValue({
+      kind: "success",
+      status: 200,
+      data: {
+        data: {
+          duration_minutes: 72,
+          booking_rules: { timezone: "Australia/Melbourne", same_day_cutoff: "09:00", same_day_open: true, today, earliest_date: today },
+          days: [{ date: today, slots: [{ start: "13:00", end: "14:12" }] }],
+        },
+      },
+    });
+    renderPicker();
+    await screen.findAllByRole("radio");
+    expect(screen.queryByTestId("same-day-closed")).not.toBeInTheDocument();
+  });
 });

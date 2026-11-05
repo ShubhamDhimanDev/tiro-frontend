@@ -68,7 +68,7 @@ describe("home live data", () => {
     expect(screen.getByRole("link", { name: "Michelin" })).toHaveAttribute("href", "/brands/michelin");
   });
 
-  it("shows a brand's uploaded logo beside its name, and the name alone for brands without one", () => {
+  it("shows only a brand's uploaded logo, and only the name for brands without one", () => {
     render(
       <BrandsBand
         brands={[
@@ -79,7 +79,7 @@ describe("home live data", () => {
     );
     const accelera = screen.getByRole("link", { name: "Accelera" });
     expect(accelera).toHaveAttribute("href", "/brands/accelera");
-    expect(accelera).toHaveTextContent("Accelera");
+    expect(accelera.textContent).toBe("");
     expect(accelera.querySelector("img")).toHaveAttribute("src", "http://localhost:8000/storage/media/accelera.webp");
     const michelin = screen.getByRole("link", { name: "Michelin" });
     expect(michelin).toHaveTextContent("Michelin");

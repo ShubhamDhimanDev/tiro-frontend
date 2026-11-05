@@ -59,8 +59,24 @@ export interface BookingDay {
   slots: BookingSlot[];
 }
 
+/**
+ * `data.booking_rules`: the same-day cutoff. Today can only be booked before
+ * `same_day_cutoff` (business time); after it the earliest day is `earliest_date`.
+ */
+export interface BookingRules {
+  timezone: string;
+  /** 24h "HH:MM", e.g. "09:00". */
+  same_day_cutoff: string;
+  same_day_open: boolean;
+  /** Today's date in business time ("YYYY-MM-DD"). */
+  today: string;
+  earliest_date: string;
+}
+
 export interface BookingSlotsData {
   duration_minutes: number;
+  /** Absent from older responses and stubs: treat as no cutoff information. */
+  booking_rules?: BookingRules;
   /** Phase 6a. Absent means not offered. */
   flexible?: BookingFlexibleOffer;
   days: BookingDay[];
