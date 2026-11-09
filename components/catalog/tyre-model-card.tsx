@@ -42,7 +42,7 @@ export function formatEa(cents: number): string {
  *
  * Front: photo, brand, pattern, size/load/speed, feature chips, "from" price in
  * red (or the red "4 for 3" strip), and a "Select quantity" button. That button
- * flips the card to a dark back face with a 1 to 5 tyre per-tyre price table
+ * flips the card to a dark back face with a 1 to 4 tyre per-tyre price table
  * and Add to cart. A model with several sizes gets a size picker on the back
  * face (defaulting to the cheapest size), and the table and Add follow it.
  *
