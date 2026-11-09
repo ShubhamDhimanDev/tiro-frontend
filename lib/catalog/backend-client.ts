@@ -53,7 +53,7 @@ export const liveCatalogBackend = {
   /** `GET /api/v1/tyres/facets` (Phase 7): sidebar options with counts for a size scope. */
   facets: (params: URLSearchParams, cacheInit?: RequestInit) => call(`/tyres/facets?${params.toString()}`, cacheInit),
 
-  /** `GET /api/v1/tyres/price-ladders` (Phase 7): 1 to 5 tyre per-tyre prices from the pricing engine. */
+  /** `GET /api/v1/tyres/price-ladders` (Phase 7): 1 to 4 tyre per-tyre prices from the pricing engine. */
   priceLadders: (ids: number[], zone: string | null) =>
     call(`/tyres/price-ladders?ids=${ids.join(",")}${zone ? `&zone=${encodeURIComponent(zone)}` : ""}`, { cache: "no-store" }),
 

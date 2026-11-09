@@ -85,7 +85,7 @@ describe("TyreModelCard", () => {
     // The back face (quantity table + Add) is hidden until the card is flipped.
     expect(screen.queryByRole("button", { name: /Add Bridgestone Turanza T005/ })).toBeNull();
     await user.click(screen.getByRole("button", { name: /Select quantity for Bridgestone Turanza T005/ }));
-    expect(screen.getAllByRole("radio")).toHaveLength(5);
+    expect(screen.getAllByRole("radio")).toHaveLength(4);
     expect(screen.getByRole("radio", { name: /4 Tyres/ })).toBeChecked();
     expect(screen.getByRole("button", { name: /Add Bridgestone Turanza T005/ })).toBeInTheDocument();
   });

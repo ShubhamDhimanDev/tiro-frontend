@@ -41,7 +41,7 @@ interface PdpBuyValue {
   setQuantity: (next: number) => void;
   /** Per-tyre price in cents for the chosen quantity (from the quantity ladder), or `null` until price is known and orderable. */
   unitCents: number | null;
-  /** Per-tyre price for 1 to 5 tyres from the pricing engine (flat zone price if it could not be fetched). `null` until priced. */
+  /** Per-tyre price for 1 to 4 tyres from the pricing engine (flat zone price if it could not be fetched). `null` until priced. */
   ladder: { qty: number; unitCents: number }[] | null;
   /** True while the ladder is still loading: the price shown is the zone price, not final. */
   ladderLoading: boolean;
