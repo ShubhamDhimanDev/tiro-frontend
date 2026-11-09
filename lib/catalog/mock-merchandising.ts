@@ -18,11 +18,11 @@ import type { LadderEntry, PriceLadder, TyreListItem } from "./types";
  */
 export const MOCK_PRICES = CATALOG_MOCKS;
 
-/** An order holds at most 4 tyres (the backend's `SizePricingService::MAX_TYRES`). */
-export const QUANTITY_STEPS = [1, 2, 3, 4] as const;
+/** An order holds at most 5 tyres (the backend's `SizePricingService::MAX_TYRES`). */
+export const QUANTITY_STEPS = [1, 2, 3, 4, 5] as const;
 
 /** Per-tyre uplift of the old mock ladder (mock mode only). */
-const MOCK_LADDER_UPLIFT: Record<number, number> = { 1: 0.4, 2: 0.14, 3: 0.07, 4: 0 };
+const MOCK_LADDER_UPLIFT: Record<number, number> = { 1: 0.4, 2: 0.14, 3: 0.07, 4: 0, 5: 0 };
 
 /** Deterministic placeholder per-tyre price in cents: $95 to $340, whole dollars. Mock mode only. */
 export function mockUnitCents(item: Pick<TyreListItem, "id" | "width" | "rim_diameter">): number {
@@ -60,7 +60,7 @@ export function ladderFromApi(entry: Pick<PriceLadder, "ladder">): LadderRow[] {
   return entry.ladder.map((row: LadderEntry) => ({ qty: row.quantity, unitCents: row.unit_price, totalCents: row.total }));
 }
 
-/** Same price for 1 to 4 tyres: the fallback when the pricing engine could not be reached. */
+/** Same price for 1 to 5 tyres: the fallback when the pricing engine could not be reached. */
 export function flatLadder(unitCents: number): LadderRow[] {
   return QUANTITY_STEPS.map((qty) => ({ qty, unitCents }));
 }

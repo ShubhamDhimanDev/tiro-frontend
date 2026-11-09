@@ -120,8 +120,8 @@ export function clearCartStorage(): void {
   window.localStorage.removeItem(STORAGE_KEY);
 }
 
-/** An order holds at most 4 tyres in total (the backend's `SizePricingService::MAX_TYRES`); larger jobs are a phone call. */
-export const MAX_CART_TYRES = 4;
+/** An order holds at most 5 tyres in total (the backend's `SizePricingService::MAX_TYRES`); larger jobs are a phone call. */
+export const MAX_CART_TYRES = 5;
 
 /** Tyres across every line of the cart. */
 export function totalTyres(state: CartState): number {
