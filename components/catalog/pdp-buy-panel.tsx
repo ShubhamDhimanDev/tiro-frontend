@@ -93,7 +93,7 @@ function PriceBlock() {
 
 /**
  * The PDP buy area (right column on desktop, after the name on phones):
- * quantity boxes 1 to 4 (default 4), price per tyre and total, next available
+ * quantity boxes 1 to 5 (default 4), price per tyre and total, next available
  * fitting preview, Add to cart, what is included, then the inline fitting
  * strip (location, week of dates, windows) with Express Checkout.
  * Reads everything from `<PdpBuyProvider>`. The quantity prices come from the
@@ -132,7 +132,7 @@ export function PdpBuyPanel() {
 
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1 text-sm font-bold text-black">Select quantity</legend>
-        <div className="mt-2 grid grid-cols-4 gap-2">
+        <div className="mt-2 grid grid-cols-5 gap-2">
           {QUANTITY_STEPS.map((q) => (
             <label
               key={q}

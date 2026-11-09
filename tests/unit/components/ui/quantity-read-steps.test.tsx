@@ -26,9 +26,10 @@ describe("QuantityStepper", () => {
     await user.click(screen.getByRole("button", { name: "Decrease quantity" }));
     expect(screen.getByTestId("total")).toHaveTextContent("$567.00");
     await user.click(screen.getByRole("button", { name: "Increase quantity" }));
-    // An order holds at most 4 tyres.
+    await user.click(screen.getByRole("button", { name: "Increase quantity" }));
+    // An order holds at most 5 tyres.
     expect(screen.getByRole("button", { name: "Increase quantity" })).toBeDisabled();
-    expect(screen.getByRole("spinbutton", { name: "Quantity" })).toHaveValue(4);
+    expect(screen.getByRole("spinbutton", { name: "Quantity" })).toHaveValue(5);
   });
   it("disables minus at 1", () => {
     render(<QuantityStepper value={1} onChange={() => {}} />);

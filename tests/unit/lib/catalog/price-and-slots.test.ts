@@ -7,9 +7,9 @@ describe("quantity and total", () => {
   it("defaults to 4 for all, 2 per axle", () => {
     expect(DEFAULT_QUANTITY).toEqual({ all: 4, front: 2, rear: 2 });
   });
-  it("clamps to 1-4 (an order holds at most 4 tyres)", () => {
+  it("clamps to 1-5 (an order holds at most 5 tyres)", () => {
     expect(clampQuantity(0)).toBe(1);
-    expect(clampQuantity(99)).toBe(4);
+    expect(clampQuantity(99)).toBe(5);
     expect(clampQuantity(NaN)).toBe(1);
   });
   it("multiplies cents by quantity", () => {
