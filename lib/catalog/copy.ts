@@ -11,7 +11,7 @@ import type { BrandSummary, TyreType } from "./types";
 export function sizeSeoCopy(size: string): string[] {
   return [
     `${size} is the size moulded into the sidewall of your current tyres. The first number is the section width in millimetres, the second is the sidewall height as a percentage of that width, and the R number is the wheel diameter in inches.`,
-    "Always match the size, load index and speed rating recommended for your vehicle. If you are not sure, check the tyre placard on the driver's door jamb or search by vehicle, and we will show the fitments for it.",
+    "Always match the size, load index and speed rating recommended for your vehicle. If you are not sure, check the tyre placard on the driver's door jamb or ask our team.",
     "Set your location to see the price and stock for your suburb. Your tyres are fitted where you are.",
   ];
 }
@@ -31,7 +31,7 @@ const TYPE_COPY: Record<TyreType, string> = {
 export function typeSeoCopy(type: TyreType): string[] {
   return [
     TYPE_COPY[type],
-    `Browse ${TYRE_TYPE_LABELS[type].toLowerCase()} tyres below, then check the size, load index and speed rating against your vehicle before you order. Search by size or by vehicle if you want to narrow the list.`,
+    `Browse ${TYRE_TYPE_LABELS[type].toLowerCase()} tyres below, then check the size, load index and speed rating against your vehicle before you order. Search by size if you want to narrow the list.`,
   ];
 }
 

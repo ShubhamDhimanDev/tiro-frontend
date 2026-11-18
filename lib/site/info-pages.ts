@@ -298,7 +298,7 @@ export const INFO_PAGES = {
         icon: "tyre",
         image: "how-1",
         paragraphs: [
-          "Search by size or by vehicle, compare good, better and best options, and see one price that already includes fitting. Not sure of your size? It is printed on the sidewall of your current tyres.",
+          "Search by size, compare good, better and best options, and see one price that already includes fitting. Not sure of your size? It is printed on the sidewall of your current tyres.",
         ],
         cta: { href: "/tyres", label: "Search tyres" },
       },

@@ -96,7 +96,7 @@ export function InvalidSizeState({ message, values }: { message: string; values:
         {message}
       </p>
       <p className="text-sm text-muted">
-        Check the numbers on your tyre sidewall (for example 205/55 R16), or search by vehicle instead.
+        Check the numbers on your tyre sidewall (for example 205/55 R16), or contact our team and we will help.
       </p>
       <ChangeSizeSheet values={values} variant="button" label="Change size" />
     </div>

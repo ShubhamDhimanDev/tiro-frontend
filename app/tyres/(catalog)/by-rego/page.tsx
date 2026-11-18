@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 /**
  * Find by number plate. The lookup is behind `NEXT_PUBLIC_FEATURE_REGO` (see
  * `lib/rego/flag.ts`); with the flag off the page says so and points to the
- * size and vehicle finders instead of showing a form that cannot work.
+ * size finder instead of showing a form that cannot work.
  */
 export default function FindByRegoPage() {
   const enabled = isRegoEnabled();
@@ -53,13 +53,10 @@ export default function FindByRegoPage() {
                 <Link href="/tyres" className={buttonClassName()}>
                   Search by size
                 </Link>
-                <Link href="/tyres/by-vehicle" className={buttonClassName({ variant: "secondary" })}>
-                  Find by vehicle
-                </Link>
               </>
             }
           >
-            Until then, pick your tyre size or choose your make, model and year.
+            Until then, pick your tyre size.
           </StatePanel>
         )}
       </div>

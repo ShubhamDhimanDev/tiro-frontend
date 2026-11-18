@@ -3,7 +3,6 @@ import { cx } from "@/components/ui/cx";
 
 const ITEMS = [
   { key: "size", href: "/tyres", label: "By size" },
-  { key: "vehicle", href: "/tyres/by-vehicle", label: "By vehicle" },
   { key: "rego", href: "/tyres/by-rego", label: "By number plate" },
   { key: "type", href: "/tyres/type", label: "By type" },
   { key: "brand", href: "/brands", label: "By brand" },
@@ -12,7 +11,7 @@ const ITEMS = [
 export type FinderKey = (typeof ITEMS)[number]["key"];
 
 /**
- * Link tabs shared by the "find tyres" pages (size, vehicle, number plate,
+ * Link tabs shared by the "find tyres" pages (size, number plate,
  * type, brand). Plain links, so each way in stays a crawlable page. The rego
  * link only shows when the feature flag is on.
  */

@@ -14,7 +14,6 @@ export type SitemapEntry = { path: string; lastModified?: string; priority?: num
 export const STATIC_PATHS: SitemapEntry[] = [
   { path: "/", priority: 1, changeFrequency: "daily" },
   { path: "/tyres", priority: 0.9, changeFrequency: "daily" },
-  { path: "/tyres/by-vehicle", priority: 0.6, changeFrequency: "weekly" },
   { path: "/tyres/type", priority: 0.6, changeFrequency: "weekly" },
   { path: "/tyres/latest-releases", priority: 0.6, changeFrequency: "weekly" },
   { path: "/brands", priority: 0.8, changeFrequency: "weekly" },

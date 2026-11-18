@@ -26,15 +26,16 @@ describe("HeroFinder tabs", () => {
     ctx.openPicker.mockClear();
   });
 
-  it("shows Search by size and vehicle only when the rego flag is off", () => {
+  it("shows only Search by size when the rego flag is off (no vehicle tab)", () => {
     render(<HeroFinder />);
-    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["Search by size", "Search by vehicle"]);
+    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["Search by size"]);
+    expect(screen.queryByRole("tab", { name: "Search by vehicle" })).not.toBeInTheDocument();
     expect(screen.queryByRole("tab", { name: "Search by rego" })).not.toBeInTheDocument();
   });
 
   it("adds a Rego tab when the flag is on", () => {
     render(<HeroFinder regoEnabled />);
-    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["Search by size", "Search by vehicle", "Search by rego"]);
+    expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual(["Search by size", "Search by rego"]);
   });
 
   it("starts on Size with the real size search form and keeps staggered fitment reachable", () => {
@@ -49,12 +50,9 @@ describe("HeroFinder tabs", () => {
     render(<HeroFinder regoEnabled />);
     screen.getByRole("tab", { name: "Search by size" }).focus();
     await user.keyboard("{ArrowRight}");
-    expect(screen.getByRole("tab", { name: "Search by vehicle" })).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByRole("tab", { name: "Search by vehicle" })).toHaveFocus();
-    expect(screen.getByRole("tab", { name: "Search by size" })).toHaveAttribute("tabindex", "-1");
-    expect(screen.getByRole("link", { name: "Find by vehicle" })).toHaveAttribute("href", "/tyres/by-vehicle");
-    await user.keyboard("{End}");
     expect(screen.getByRole("tab", { name: "Search by rego" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tab", { name: "Search by rego" })).toHaveFocus();
+    expect(screen.getByRole("tab", { name: "Search by size" })).toHaveAttribute("tabindex", "-1");
     await user.keyboard("{ArrowRight}");
     expect(screen.getByRole("tab", { name: "Search by size" })).toHaveAttribute("aria-selected", "true");
     await user.keyboard("{ArrowLeft}");

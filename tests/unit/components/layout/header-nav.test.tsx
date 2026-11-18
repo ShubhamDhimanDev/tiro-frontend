@@ -38,7 +38,7 @@ describe("HeaderNav (desktop mega menu)", () => {
     expect(tyres.getAttribute("aria-controls")).toBe(region.id);
     expect(region).toBeVisible();
     expect(screen.getByRole("link", { name: "By size" })).toHaveAttribute("href", "/tyres");
-    expect(screen.getByRole("link", { name: "By vehicle" })).toHaveAttribute("href", "/tyres/by-vehicle");
+    expect(screen.queryByRole("link", { name: "By vehicle" })).not.toBeInTheDocument();
 
     await user.click(tyres);
     expect(tyres).toHaveAttribute("aria-expanded", "false");

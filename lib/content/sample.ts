@@ -13,7 +13,7 @@ export const SAMPLE_FAQS: Faq[] = [
   { id: 9004, category: "pricing", sort_order: 4, question: "What is included in the price?", answer: "Fitting, wheel balancing, new valves and taking your old tyres away for recycling are included in the price you see." },
   { id: 9005, category: "pricing", sort_order: 5, question: "Which payment methods do you accept?", answer: "Cards and digital wallets online, pay-later options where available, and card on the day if you choose pay on fitting." },
   { id: 9006, category: "pricing", sort_order: 6, question: "Can you match a lower price?", answer: "If you find the same tyre cheaper with fitting included, send us the details through the price guarantee form and we will review it." },
-  { id: 9007, category: "tyres", sort_order: 7, question: "How do I find my tyre size?", answer: "It is printed on the sidewall of your current tyres, for example 205/55 R16. You can also search by vehicle and we will suggest the fitments." },
+  { id: 9007, category: "tyres", sort_order: 7, question: "How do I find my tyre size?", answer: "It is printed on the sidewall of your current tyres, for example 205/55 R16." },
   { id: 9008, category: "tyres", sort_order: 8, question: "Can you repair a puncture?", answer: "Often, yes. Damage to the sidewall or shoulder cannot be repaired safely, and the technician will explain what they find." },
 ];
 

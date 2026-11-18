@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 /**
  * Results skeleton: shown while a `(catalog)` route's server fetch is in
  * flight (`/tyres?...`, and the fallback for `/tyres/type/[type]` and
- * `/tyres/latest-releases`; `/tyres/by-vehicle` has its own).
+ * `/tyres/latest-releases`).
  *
  * Mirrors the real layout so nothing jumps when content arrives: compact
  * header row, then horizontal ~150px cards (one column on phones, two from
