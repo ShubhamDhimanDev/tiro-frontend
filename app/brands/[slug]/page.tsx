@@ -128,7 +128,6 @@ export default async function BrandDetailPage({ params }: { params: Promise<{ sl
           popular={popular}
           links={[
             { href: "/brands", label: "All brands" },
-            { href: "/tyres/by-vehicle", label: "Find tyres by vehicle" },
           ]}
         />
       </div>

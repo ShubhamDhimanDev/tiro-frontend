@@ -110,10 +110,10 @@ test.describe("route-group regression guard: app/tyres/(catalog)/ move", () => {
     await expect(page).toHaveURL("/tyres/latest-releases");
     await expect(page.getByRole("heading", { name: "Latest releases" })).toBeVisible();
 
-    const byVehicleRes = await page.goto("/tyres/by-vehicle");
-    expect(byVehicleRes?.status()).toBe(200);
-    await expect(page).toHaveURL("/tyres/by-vehicle");
-    await expect(page.getByRole("heading", { name: "Find tyres for your vehicle" })).toBeVisible();
+    // "Find by vehicle" was removed; the old URL redirects to the size search.
+    await page.goto("/tyres/by-vehicle");
+    await expect(page).toHaveURL("/tyres");
+    await expect(page.getByRole("heading", { name: "Find your tyre size" })).toBeVisible();
   });
 });
 

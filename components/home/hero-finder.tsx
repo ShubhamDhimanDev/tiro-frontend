@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import type { FormEvent } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { TyreSearchForm } from "@/components/catalog/tyre-search-form";
 import { useLocation } from "@/components/location/location-provider";
-import { Button, buttonClassName } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Tabs } from "@/components/ui/tabs";
 import { Input, Select } from "@/components/ui/field";
 import { PinIcon, SearchIcon } from "@/components/ui/icons";
@@ -15,7 +14,7 @@ import { lookupRego as defaultLookup } from "@/lib/rego/adapter";
 import type { RegoLookup } from "@/lib/rego/adapter";
 import { AU_STATES, REGO_NO_MATCH_MESSAGE, validateRego } from "@/lib/rego/validate";
 
-type TabKey = "size" | "vehicle" | "rego";
+type TabKey = "size" | "rego";
 
 /**
  * Rego tab. Validates locally, then calls the adapter. Until the lookup provider is chosen the
@@ -53,7 +52,9 @@ export function RegoPanel({
     if (result.kind === "no_match") setFormMessage(REGO_NO_MATCH_MESSAGE);
     else if (result.kind === "not_implemented") setFormMessage("Number plate search isn't available yet.");
     else if (result.kind === "error") setFormMessage(result.message);
-    else router.push(`/tyres/by-vehicle?vehicle=${result.vehicleId}`);
+    // The vehicle fitment page is hidden for now, so a rego match has nowhere to show its fitment.
+    // Falls back to the size search until the rego provider and a results page exist.
+    else router.push("/tyres");
   }
 
   return (
@@ -129,10 +130,10 @@ export function FinderLocation() {
 
 /**
  * Finder card (home hero, location pages): tabs "Search by size" | "Search by
- * vehicle" | "Search by rego" (rego only when the feature flag is on). Size
- * embeds the existing `TyreSearchForm` in finder style (staggered fitment
- * stays behind its checkbox); vehicle hands off to the make/model/year picker
- * at /tyres/by-vehicle. Visual spec: white card, 10px radius, 32px padding.
+ * rego" (rego only when the feature flag is on). Size embeds the existing
+ * `TyreSearchForm` in finder style (staggered fitment stays behind its
+ * checkbox). The "Search by vehicle" tab was removed at the client's request
+ * (2026-11-18). Visual spec: white card, 10px radius, 32px padding.
  */
 export function HeroFinder({
   regoEnabled = false,
@@ -147,19 +148,6 @@ export function HeroFinder({
   const [active, setActive] = useState<TabKey>("size");
   const tabs: { key: TabKey; label: string; panel: React.ReactNode }[] = [
     { key: "size", label: "Search by size", panel: <TyreSearchForm initial={{}} finder /> },
-    {
-      key: "vehicle",
-      label: "Search by vehicle",
-      panel: (
-        <div className="flex flex-col gap-4">
-          <p className="text-[15px] text-muted">Pick your make, model and year and we will show the sizes that fit.</p>
-          <Link href="/tyres/by-vehicle" className={buttonClassName({ size: "lg", fullWidth: true })}>
-            <SearchIcon className="h-5 w-5" />
-            Find by vehicle
-          </Link>
-        </div>
-      ),
-    },
   ];
   if (regoEnabled) {
     tabs.push({

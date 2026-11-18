@@ -253,11 +253,7 @@ export default async function TyreDetailPage({ params }: { params: Promise<{ slu
                       )}
                       <p>
                         This tyre is sized for R{detail.rim_diameter} wheels. Always match the size, load index and speed rating
-                        recommended for your vehicle, or{" "}
-                        <Link href="/tyres/by-vehicle" className="font-bold text-link underline underline-offset-4 hover:text-black">
-                          find your vehicle&apos;s fitment
-                        </Link>
-                        .
+                        recommended for your vehicle.
                       </p>
                     </div>
                   ),

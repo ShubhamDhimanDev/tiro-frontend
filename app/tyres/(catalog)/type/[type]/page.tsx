@@ -72,7 +72,6 @@ export default async function TyreTypePage({ params }: { params: Promise<{ type:
         popular={popular}
         links={[
           { href: "/tyres", label: "Search by size" },
-          { href: "/tyres/by-vehicle", label: "Find tyres by vehicle" },
           { href: "/brands", label: "Browse by brand" },
         ]}
       />

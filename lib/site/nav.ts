@@ -40,7 +40,6 @@ export const NAV_GROUPS: NavGroup[] = [
     href: "/tyres",
     links: [
       { href: "/tyres", label: "By size" },
-      { href: "/tyres/by-vehicle", label: "By vehicle" },
       { href: "/brands", label: "By brand" },
       { href: "/tyres/type/highway", label: "By type" },
       { href: "/tyres/latest-releases", label: "Latest releases" },
@@ -48,7 +47,7 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
     aside: {
       title: "Find your tyres",
-      body: "Search by size or vehicle. Fitting, balancing and old-tyre recycling are included in the price.",
+      body: "Search by size, brand or type. Fitting, balancing and old-tyre recycling are included in the price.",
       cta: { href: "/tyres", label: "Search tyres" },
     },
   },

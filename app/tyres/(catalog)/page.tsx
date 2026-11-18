@@ -246,7 +246,6 @@ export default async function TyresPage({ searchParams }: { searchParams: RawSea
         seoParagraphs={staggered || browsing ? undefined : sizeSeoCopy(sizeLabel)}
         popular={popular}
         links={[
-          { href: "/tyres/by-vehicle", label: "Find tyres by vehicle" },
           { href: "/brands", label: "Browse by brand" },
           { href: "/tyres/latest-releases", label: "Latest releases" },
         ]}

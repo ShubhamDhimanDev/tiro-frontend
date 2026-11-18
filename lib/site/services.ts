@@ -17,11 +17,11 @@ export const SERVICE_CONTENT: ServiceContent[] = [
   {
     slug: "tyre-sales",
     title: "Tyre sales",
-    summary: "Search by size, vehicle or brand and buy online with fitting included.",
+    summary: "Search by size, brand or type and buy online with fitting included.",
     intro:
       "Choose from the brands we stock, compare good, better and best options for your car, and check out online. Your tyres are fitted where you are, so there is nothing to drop off or collect.",
     points: [
-      "Search by tyre size, by vehicle, by brand or by tyre type.",
+      "Search by tyre size, by brand or by tyre type.",
       "Prices and stock are shown for your suburb once you set your location.",
       "Price-match claims are handled online.",
     ],
@@ -30,7 +30,7 @@ export const SERVICE_CONTENT: ServiceContent[] = [
       {
         question: "How do I find the right tyre size?",
         answer:
-          "The size is printed on the sidewall of your current tyres (for example 205/55 R16). You can also search by your vehicle and we will suggest the fitments for it.",
+          "The size is printed on the sidewall of your current tyres (for example 205/55 R16).",
       },
       {
         question: "Do I need to be home for the fitting?",

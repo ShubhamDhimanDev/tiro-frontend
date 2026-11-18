@@ -125,28 +125,17 @@ Holden Commodore).
   endpoint that's proxied for the same reason, PDP availability
   (`app/api/catalog/tyres/[slug]/availability/route.ts`) — browser never
   calls Laravel directly, keeping `LARAVEL_API_URL` server-only.
-- `components/vehicles/vehicle-picker.tsx` — the 4-step cascade UI (make →
-  model → year/generation → series/body_type disambiguation only when a
-  year range has more than one candidate `Vehicle` row → fitment fetch).
-  No separate "confirm vehicle" step, per the contract: resolving to one
-  vehicle id fetches fitment immediately.
-- `components/vehicles/vehicle-fitment-result.tsx` — renders the resolved
-  fitment, mirroring `<TyreSearchResults>`/`<TyreSearchResultsStaggered>`'s
-  visual shape (one size block, or Front/Rear side-by-side). Handles the
-  zero-fitment `fitments: {}` case explicitly (data-entry gap, not an
-  error, per the contract) with a message + link back to `/tyres`'s manual
-  size search, not a dead end. The "Shop tyres for this fitment" links
-  reuse `lib/catalog/search-params.ts`'s `buildTyreSearchQuery` — the same
-  utility staggered search pagination already uses — rather than a second
-  param-construction path; no `zone` is ever included (`/tyres` resolves
-  it itself from the cookie) and no explicit page beyond the utility's own
-  default of `1`.
-- `app/tyres/by-vehicle/page.tsx` — the picker's page shell (metadata +
-  breadcrumb only; all data fetching lives in the client component below
-  it). Linked from `/tyres`'s hub state and the site header nav. Not a
-  per-vehicle SEO landing page — `Vehicle.slug` is reserved for a
-  *possible* future vehicle-browse page per `01-task-breakdown.md`, not
-  built this round.
+- **The public "Find by vehicle" page was removed 2026-11-18 (client request).**
+  Deleted: `app/tyres/(catalog)/by-vehicle/`, `components/vehicles/`
+  (`<VehiclePicker>`, `<VehicleFitmentResult>`) and `tests/e2e/vehicles/picker.spec.ts`.
+  `/tyres/by-vehicle` is a permanent redirect to `/tyres` in `next.config.ts`. Also removed:
+  the "Search by vehicle" tab in `<HeroFinder>`, the "By vehicle" tab in `<FinderNav>`, the
+  header "Shop tyres" menu link, the sitemap entry, and every "Find by vehicle" link/copy line.
+  **Kept on purpose:** `lib/vehicles/`, `app/api/vehicles/**` and `year-groups.ts`, because
+  checkout (`<CheckoutVehiclePicker>`) and saved vehicles (`<SavedVehicleFitmentPicker>`)
+  still use them. To bring the feature back, restore the deleted files from git history
+  and drop the redirect. The rego success path in `<RegoPanel>` now goes to `/tyres` (it used
+  to open the vehicle page), and needs a real results page once a rego provider exists.
 - Judgment calls flagged, not nailed down by the contract: `series`/
   `body_type`/`year_to` modelled as nullable (the contract's own example
   doesn't show a null case for any of them); `confidence` typed as a free
@@ -271,7 +260,7 @@ trusting the doc alone, same posture every prior phase documents for itself.
 - Vehicle/rego capture (requirements §6): `components/checkout/vehicle-step.tsx`
   captures rego/state (required text/select) plus an optional
   `components/checkout/checkout-vehicle-picker.tsx` — a lighter make/model/
-  year cascade than `components/vehicles/vehicle-picker.tsx` (resolves a
+  year cascade than the removed vehicle page picker (resolves a
   `vehicle_id` only, no fitment fetch; checkout doesn't need fitment) kept
   as its own component rather than bolting a second mode onto the existing
   picker. Per `StoreOrderRequest`'s own docblock, `rego`/`state` are

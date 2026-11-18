@@ -10,7 +10,7 @@ import { isRegoEnabled } from "@/lib/rego/flag";
  * `/tyres` with no size: the find-by-size page. Finder card on a grey band,
  * a "where to find your size" explainer (the sidewall diagram is a CSS
  * placeholder; see docs/prompts/IMAGE-MANIFEST.md), popular sizes, types and
- * links to the other ways in (vehicle, rego, brand).
+ * links to the other ways in (rego, brand).
  */
 export function SizeFinderHub({ values, popular }: { values: TyreSearchFormValues; popular: PopularSize[] }) {
   return (
@@ -35,11 +35,6 @@ export function SizeFinderHub({ values, popular }: { values: TyreSearchFormValue
                 Not sure of your size?
               </h2>
               <ul className="mt-3 flex flex-col gap-1 text-[15px]">
-                <li>
-                  <Link href="/tyres/by-vehicle" className="inline-flex min-h-11 items-center font-bold text-black underline underline-offset-4">
-                    Find it by your vehicle
-                  </Link>
-                </li>
                 <li>
                   <Link href="/guides" className="inline-flex min-h-11 items-center font-bold text-black underline underline-offset-4">
                     How to read your tyre size
@@ -72,8 +67,8 @@ export function SizeFinderHub({ values, popular }: { values: TyreSearchFormValue
             </ol>
             <p className="mt-4 text-sm text-muted">
               Not sure?{" "}
-              <Link href="/tyres/by-vehicle" className="font-bold text-link underline underline-offset-4 hover:text-black">
-                Find it by vehicle
+              <Link href="/contact" className="font-bold text-link underline underline-offset-4 hover:text-black">
+                Ask our team
               </Link>
               .
             </p>
@@ -119,7 +114,6 @@ export function SizeFinderHub({ values, popular }: { values: TyreSearchFormValue
 
         <nav aria-label="Other ways to find tyres" className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
           {[
-            { href: "/tyres/by-vehicle", label: "Find by vehicle" },
             ...(isRegoEnabled() ? [{ href: "/tyres/by-rego", label: "Find by number plate" }] : []),
             { href: "/brands", label: "Browse by brand" },
             { href: "/tyres/latest-releases", label: "Latest releases" },
