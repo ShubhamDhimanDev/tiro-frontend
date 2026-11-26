@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { groupTyresByModel } from "@/lib/catalog/group-by-model";
+import { groupTyresByModel, groupTyresByVariant } from "@/lib/catalog/group-by-model";
 import { prepareResults, sortGroups } from "@/lib/catalog/extra-filters";
 import { deriveTiers } from "@/lib/catalog/tiers";
 import { RevealItem, RevealList } from "@/components/motion/reveal";
@@ -16,8 +16,8 @@ import type { BookingPosition } from "@/lib/booking/types";
  *
  * Items go through `prepareResults` first (a no-op against the live API:
  * placeholder prices only with `NEXT_PUBLIC_CATALOG_MOCKS=on`, client-side
- * filters only on the stub backend), then are grouped per pattern and sorted
- * for the price sorts.
+ * filters only on the stub backend), then get one card per variant (each size
+ * of a pattern is its own card) and are sorted for the price sorts.
  *
  * A syntactically valid search that matches nothing is a normal `200` with
  * `data: []`, not an error: it renders `emptyState` (default: the no-results
@@ -53,8 +53,11 @@ export function TyreResultsGrid({
     return <>{emptyState ?? <NoResultsState message={emptyMessage} showChangeSize={false} />}</>;
   }
 
-  const groups = sortGroups(groupTyresByModel(prepared), values.sort);
-  const tiers = deriveTiers(groups)?.byModel;
+  // One card per variant; tiers stay per pattern, so every size of a pattern carries the same badge.
+  const groups = sortGroups(groupTyresByVariant(prepared), values.sort);
+  const tiers = deriveTiers(groupTyresByModel(prepared))?.byModel;
+  // The pattern-chip anchor goes on the first card of each pattern only (ids must be unique).
+  const anchorAt = new Set(anchorIds ? [...new Map(groups.map((g, i) => [g.model.slug, i] as const).reverse()).values()] : []);
 
   return (
     <RevealList as="ul" label={label} className="grid gap-4 min-[576px]:grid-cols-2 lg:grid-cols-3">
@@ -62,8 +65,8 @@ export function TyreResultsGrid({
         <RevealItem
           as="li"
           soft
-          key={group.model.slug + group.variants[0].slug}
-          id={anchorIds ? `model-${group.model.slug}` : undefined}
+          key={group.variants[0].id}
+          id={anchorAt.has(index) ? `model-${group.model.slug}` : undefined}
           className="scroll-mt-24"
         >
           <TyreModelCard

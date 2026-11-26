@@ -32,12 +32,30 @@ export function groupTyresByModel(items: TyreListItem[]): TyreModelGroup[] {
     group.variants.push(item);
   }
 
-  for (const group of groups.values()) {
-    const prices = group.variants
-      .map((v) => v.promotional_price ?? v.unit_price ?? v.list_price)
-      .filter((p): p is number => typeof p === "number");
-    if (prices.length > 0) group.fromPrice = Math.min(...prices);
-  }
+  for (const group of groups.values()) setFromPrice(group);
 
   return order.map((key) => groups.get(key)!);
+}
+
+/**
+ * One single-variant group per item, in the order given: what the product
+ * cards render, so every size/load/speed of a pattern gets its own card
+ * instead of a size picker inside one card. Use `groupTyresByModel` for
+ * anything that is about patterns (tiers, pattern chips).
+ */
+export function groupTyresByVariant(items: TyreListItem[]): TyreModelGroup[] {
+  return items.map(variantGroup);
+}
+
+/** A group holding just this one variant. */
+export function variantGroup(item: TyreListItem): TyreModelGroup {
+  return setFromPrice({ model: item.tyre_model, variants: [item] });
+}
+
+function setFromPrice(group: TyreModelGroup): TyreModelGroup {
+  const prices = group.variants
+    .map((v) => v.promotional_price ?? v.unit_price ?? v.list_price)
+    .filter((p): p is number => typeof p === "number");
+  if (prices.length > 0) group.fromPrice = Math.min(...prices);
+  return group;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import type { PointerEvent } from "react";
 import { AnimatePresence, m } from "framer-motion";
 import { useCart } from "@/components/cart/cart-provider";
@@ -12,7 +12,7 @@ import { fallbackRows, usePriceLadder } from "@/components/catalog/use-price-lad
 import { Badge, TierBadge, type Tier } from "@/components/ui/badge";
 import { buttonClassName } from "@/components/ui/button";
 import { cx } from "@/components/ui/cx";
-import { CheckIcon, ChevronDownIcon, CloseIcon } from "@/components/ui/icons";
+import { CheckIcon, CloseIcon } from "@/components/ui/icons";
 import { LinkPendingOverlay } from "@/components/ui/link-pending-overlay";
 import { formatMoney } from "@/lib/catalog/format-money";
 import type { TyreModelGroup } from "@/lib/catalog/group-by-model";
@@ -26,25 +26,21 @@ function sizeText(v: TyreListItem): string {
   return `${v.width}/${v.profile} R${v.rim_diameter}`;
 }
 
-/** Distinct sizes among a model's variants. One size means "Add" is unambiguous. */
-export function distinctSizeCount(group: TyreModelGroup): number {
-  return new Set(group.variants.map(sizeText)).size;
-}
-
 /** `$198` for whole dollars, `$198.50` otherwise. */
 export function formatEa(cents: number): string {
   return formatMoney(cents).replace(/\.00$/, "");
 }
 
 /**
- * Results card (design v2, phase 3). One per `tyre_model`, grouped from the flat
- * variant list (`lib/catalog/group-by-model.ts`).
+ * Results card (design v2, phase 3). One per variant (`groupTyresByVariant` in
+ * `lib/catalog/group-by-model.ts`): a pattern sold in several sizes gets one
+ * card per size, not a size picker inside one card (client request 2026-11-26).
+ * Given a multi-variant group (tier picks, related products) it shows the cheapest.
  *
  * Front: photo, brand, pattern, size/load/speed, feature chips, "from" price in
  * red (or the red "4 for 3" strip), and a "Select quantity" button. That button
  * flips the card to a dark back face with a 1 to 4 tyre per-tyre price table
- * and Add to cart. A model with several sizes gets a size picker on the back
- * face (defaulting to the cheapest size), and the table and Add follow it.
+ * and Add to cart.
  *
  * The quantity table comes from the pricing engine (`/tyres/price-ladders`,
  * fetched when the card flips, or on mount for a 4 for 3 card whose strip needs
@@ -81,26 +77,18 @@ export function TyreModelCard({
   compact?: boolean;
 }) {
   const { add } = useCart();
-  const { model, fromPrice } = group;
-  const primary = cheapestVariant(group);
-  const sizeCount = distinctSizeCount(group);
-  const singleSize = sizeCount === 1;
-  // One entry per size, each with its cheapest variant: the back face's size picker, and the variant its price table and Add act on.
-  const sizes = useMemo(() => {
-    const bySize = new Map<string, TyreListItem[]>();
-    for (const v of group.variants) bySize.set(sizeText(v), [...(bySize.get(sizeText(v)) ?? []), v]);
-    return [...bySize.entries()].map(([text, variants]) => ({ text, variant: cheapestVariant({ ...group, variants }) }));
-  }, [group]);
-  const [selectedSize, setSelectedSize] = useState(() => sizeText(primary));
-  const active = sizes.find((size) => size.text === selectedSize)?.variant ?? primary;
+  const { model } = group;
+  // One card is one variant. Callers pass single-variant groups (`groupTyresByVariant`); a multi-variant group shows its cheapest.
+  const active = cheapestVariant(group);
+  const primary = active;
+  const fromPrice = effectivePrice(active) ?? group.fromPrice;
   const name = fullTyreName(model.brand.name, model.name);
-  const label = `${name} ${sizeText(primary)}`;
   const activeLabel = `${name} ${sizeText(active)}`;
   const stock = primary.stock_status;
   const was = fromPrice !== undefined && effectivePrice(primary) === fromPrice ? wasPrice(primary) : undefined;
   const onOffer = was !== undefined;
   const fourForThree = fromPrice !== undefined && isFourForThree(primary);
-  const canFlip = fromPrice !== undefined && group.variants.some((v) => v.stock_status !== "unavailable_in_zone");
+  const canFlip = fromPrice !== undefined && active.stock_status !== "unavailable_in_zone";
   const chips = featureChips(primary);
 
   const [flipped, setFlipped] = useState(false);
@@ -128,9 +116,8 @@ export function TyreModelCard({
   const activePrice = effectivePrice(active) ?? fromPrice;
   const ladder = ladderState.status === "ready" ? ladderState.rows : activePrice !== undefined ? fallbackRows(activePrice) : [];
   const unitForQty = ladder.find((row) => row.qty === qty)?.unitCents ?? activePrice ?? 0;
-  // The front "4 for 3" strip describes the headline (cheapest) variant, so it only reads the ladder while that one is selected.
-  const dealWas = ladderState.status === "ready" && active.id === primary.id ? ladder.find((row) => row.qty === 1)?.unitCents : undefined;
-  const dealNow = ladderState.status === "ready" && active.id === primary.id ? ladder.find((row) => row.qty === 4)?.unitCents : undefined;
+  const dealWas = ladderState.status === "ready" ? ladder.find((row) => row.qty === 1)?.unitCents : undefined;
+  const dealNow = ladderState.status === "ready" ? ladder.find((row) => row.qty === 4)?.unitCents : undefined;
 
   function flip(next: boolean, by: "hover" | "button" = "button") {
     setFlipped(next);
@@ -234,7 +221,6 @@ export function TyreModelCard({
             <p className="text-sm text-muted">
               {sizeText(primary)} · {primary.load_index}
               {primary.speed_rating}
-              {!singleSize ? ` +${sizeCount - 1} more size${sizeCount > 2 ? "s" : ""}` : ""}
             </p>
             <div className="flex flex-wrap items-center gap-1.5">
               {stock && <StockBadge status={stock} />}
@@ -293,7 +279,7 @@ export function TyreModelCard({
               type="button"
               disabled={!canFlip}
               aria-expanded={flipped}
-              aria-label={`Select quantity for ${singleSize ? label : name}`}
+              aria-label={`Select quantity for ${activeLabel}`}
               onClick={() => flip(true)}
               className={buttonClassName({ variant: "green", size: "sm", fullWidth: true })}
             >
@@ -330,33 +316,10 @@ export function TyreModelCard({
               </button>
             </div>
             {/* The pattern name is not repeated here: it is the page's one text node for this tyre (e2e getByText stays unique). */}
-            {singleSize ? (
-              <p className="mt-3 text-sm text-white/75">
-                {sizeText(active)} · {active.load_index}
-                {active.speed_rating}
-              </p>
-            ) : (
-              <div className="relative mt-3">
-                <select
-                  value={selectedSize}
-                  onChange={(e) => setSelectedSize(e.target.value)}
-                  // An open native list can fire pointerleave on the card: once the picker is used, treat the panel as pinned open.
-                  onFocus={() => {
-                    openedBy.current = "button";
-                  }}
-                  aria-label={`Size for ${name}`}
-                  className="min-h-11 w-full cursor-pointer appearance-none rounded-control border border-white/15 bg-white/10 py-2 pl-3 pr-10 text-sm font-bold text-white transition-colors [color-scheme:dark] hover:bg-white/20 focus-visible:border-white/60 focus-visible:outline-none"
-                >
-                  {sizes.map((size) => (
-                    <option key={size.text} value={size.text} className="bg-[#1a1a1a] text-white">
-                      {size.text} · {size.variant.load_index}
-                      {size.variant.speed_rating}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDownIcon aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white" />
-              </div>
-            )}
+            <p className="mt-3 text-sm text-white/75">
+              {sizeText(active)} · {active.load_index}
+              {active.speed_rating}
+            </p>
 
             <fieldset className="mt-3 flex flex-col gap-1.5">
               <legend className="sr-only">Quantity for {activeLabel}</legend>
