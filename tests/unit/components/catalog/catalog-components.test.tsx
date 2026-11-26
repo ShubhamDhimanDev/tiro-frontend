@@ -8,6 +8,7 @@ vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 import { CartProvider } from "@/components/cart/cart-provider";
 import { FilterBar } from "@/components/catalog/catalog-filters";
 import { TyreModelCard } from "@/components/catalog/tyre-model-card";
+import { TyreResultsGrid } from "@/components/catalog/tyre-results-grid";
 import { NoResultsState, InvalidSizeState, InvalidFilterState, BackendErrorState } from "@/components/catalog/results-states";
 import { groupTyresByModel } from "@/lib/catalog/group-by-model";
 import type { TyreFacets, TyreListItem } from "@/lib/catalog/types";
@@ -200,27 +201,47 @@ describe("TyreModelCard", () => {
     expect(screen.getByText("$215.00")).toBeInTheDocument();
   });
 
-  it("asks which size on the back face when a model has several, and adds the chosen one", async () => {
+  it("has no size picker: a multi-size group shows and adds its cheapest variant", async () => {
     const user = userEvent.setup();
     stubLadder(null);
     const [group] = groupTyresByModel([
-      item({ id: 2201, slug: "x-1", list_price: 18000 }),
       item({ id: 2202, slug: "x-2", width: 225, profile: 45, rim_diameter: 17, list_price: 24000 }),
+      item({ id: 2201, slug: "x-1", list_price: 18000 }),
     ]);
     render(
       <CartProvider>
         <TyreModelCard group={group} />
       </CartProvider>,
     );
-    expect(screen.getByText(/\+1 more size/)).toBeInTheDocument();
-    expect(screen.queryByRole("combobox")).toBeNull(); // hidden face is not exposed until flipped
-    await user.click(screen.getByRole("button", { name: /Select quantity for/ }));
-    const picker = screen.getByRole("combobox", { name: /Size for/ });
-    expect(picker).toHaveValue("205/55 R16");
-    await user.selectOptions(picker, "225/45 R17");
+    expect(screen.queryByText(/more size/)).toBeNull();
+    await user.click(screen.getByRole("button", { name: /Select quantity for Bridgestone Turanza T005 205\/55 R16/ }));
+    expect(screen.queryByRole("combobox")).toBeNull();
     await user.click(screen.getByTestId("quick-add"));
     const stored = JSON.parse(localStorage.getItem("mts_cart")!).items[0];
-    expect(stored).toMatchObject({ tyre_variant_id: 2202, unit_cents: 24000 });
+    expect(stored).toMatchObject({ tyre_variant_id: 2201, unit_cents: 18000 });
+  });
+});
+
+describe("TyreResultsGrid", () => {
+  it("renders one card per variant, so each size of a pattern is its own card", () => {
+    render(
+      <CartProvider>
+        <TyreResultsGrid
+          anchorIds
+          items={[
+            item({ id: 2301, slug: "t-1", list_price: 18000 }),
+            item({ id: 2302, slug: "t-2", width: 225, profile: 45, rim_diameter: 17, list_price: 24000 }),
+            item({ id: 2303, slug: "t-3", width: 215, profile: 50, rim_diameter: 17, list_price: 22000 }),
+          ]}
+        />
+      </CartProvider>,
+    );
+    const cards = screen.getAllByTestId("tyre-card");
+    expect(cards).toHaveLength(3);
+    expect(within(cards[1]).getAllByText(/225\/45 R17 · 91V/).length).toBeGreaterThanOrEqual(1);
+    expect(screen.queryByRole("combobox")).toBeNull();
+    // The pattern-chip anchor is only on the first card of the pattern.
+    expect(document.querySelectorAll("#model-turanza")).toHaveLength(1);
   });
 });
 
