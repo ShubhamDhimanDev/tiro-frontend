@@ -110,7 +110,8 @@ export function TyreModelCard({
     [],
   );
 
-  const ladderState = usePriceLadder(active.id, canFlip && (flipped || fourForThree));
+  // Loaded on mount (batched across the page's cards) so "From" can show the cheapest per-tyre price, i.e. the 4-tyre one.
+  const ladderState = usePriceLadder(active.id, canFlip);
   const ladderLoading = ladderState.status === "loading";
   const ladderFailed = ladderState.status === "error";
   const activePrice = effectivePrice(active) ?? fromPrice;
@@ -118,6 +119,10 @@ export function TyreModelCard({
   const unitForQty = ladder.find((row) => row.qty === qty)?.unitCents ?? activePrice ?? 0;
   const dealWas = ladderState.status === "ready" ? ladder.find((row) => row.qty === 1)?.unitCents : undefined;
   const dealNow = ladderState.status === "ready" ? ladder.find((row) => row.qty === 4)?.unitCents : undefined;
+  // "From" is the cheapest per-tyre price across the quantity ladder (usually 4 tyres), not the 1-tyre price.
+  const ladderLowest = ladderState.status === "ready" && ladder.length > 0 ? Math.min(...ladder.map((row) => row.unitCents)) : undefined;
+  const shownFrom = fromPrice !== undefined && ladderLowest !== undefined ? Math.min(fromPrice, ladderLowest) : fromPrice;
+  const shownWas = shownFrom !== undefined && effectivePrice(primary) === shownFrom ? wasPrice(primary) : undefined;
 
   function flip(next: boolean, by: "hover" | "button" = "button") {
     setFlipped(next);
@@ -264,8 +269,8 @@ export function TyreModelCard({
               >
                 <span className="text-sm text-muted">From</span>
                 <span className="flex items-baseline gap-2">
-                  {was !== undefined && <s className="type-mono text-sm text-muted">{formatMoney(was)}</s>}
-                  <span className="type-mono text-xl font-extrabold text-green">{formatEa(fromPrice)}ea</span>
+                  {shownWas !== undefined && <s className="type-mono text-sm text-muted">{formatMoney(shownWas)}</s>}
+                  <span className="type-mono text-xl font-extrabold text-green">{formatEa(shownFrom ?? fromPrice)}ea</span>
                 </span>
               </div>
             )
