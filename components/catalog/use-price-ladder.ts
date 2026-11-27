@@ -34,22 +34,55 @@ function cached(key: string): PriceLadder | undefined {
 }
 const inflight = new Map<string, Promise<PriceLadder | null>>();
 
+/** Most ids the `/api/catalog/tyres/price-ladders` proxy accepts in one request. */
+const BATCH_MAX = 24;
+let queue = new Map<number, { zoneKey: string; resolvers: ((entry: PriceLadder | null) => void)[] }>();
+let flushScheduled = false;
+
+async function fetchBatch(ids: number[]): Promise<Record<string, PriceLadder> | null> {
+  try {
+    const res = await fetch(`/api/catalog/tyres/price-ladders?ids=${ids.join(",")}`, { cache: "no-store" });
+    if (!res.ok) return null;
+    return ((await res.json()) as PriceLaddersResponse).data ?? {};
+  } catch {
+    return null;
+  }
+}
+
+/** Sends every id asked for in the same tick as one request: a results page mounts one card per tyre, each wanting its ladder. */
+function flush() {
+  flushScheduled = false;
+  const pending = queue;
+  queue = new Map();
+  const ids = [...pending.keys()];
+  for (let i = 0; i < ids.length; i += BATCH_MAX) {
+    const chunk = ids.slice(i, i + BATCH_MAX);
+    void fetchBatch(chunk).then((data) => {
+      for (const id of chunk) {
+        const job = pending.get(id)!;
+        const entry = data?.[String(id)] ?? null;
+        if (entry) cache.set(`${job.zoneKey}:${id}`, { entry, at: Date.now() });
+        for (const resolve of job.resolvers) resolve(entry);
+      }
+    });
+  }
+}
+
 function load(id: number, zoneKey: string): Promise<PriceLadder | null> {
   const key = `${zoneKey}:${id}`;
   const hit = cached(key);
   if (hit) return Promise.resolve(hit);
   const pending = inflight.get(key);
   if (pending) return pending;
-  const promise = fetch(`/api/catalog/tyres/price-ladders?ids=${id}`, { cache: "no-store" })
-    .then(async (res) => {
-      if (!res.ok) return null;
-      const body = (await res.json()) as PriceLaddersResponse;
-      const entry = body.data?.[String(id)] ?? null;
-      if (entry) cache.set(key, { entry, at: Date.now() });
-      return entry;
-    })
-    .catch(() => null)
-    .finally(() => inflight.delete(key));
+  const promise = new Promise<PriceLadder | null>((resolve) => {
+    const job = queue.get(id) ?? { zoneKey, resolvers: [] };
+    job.resolvers.push(resolve);
+    queue.set(id, job);
+    if (!flushScheduled) {
+      flushScheduled = true;
+      setTimeout(flush, 0);
+    }
+  }).finally(() => inflight.delete(key));
   inflight.set(key, promise);
   return promise;
 }
